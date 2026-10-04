@@ -1,0 +1,12 @@
+numpy
+torch
+gymnasium
+tensorboard
+matplotlib
+pillow
+sumolib
+traci
+# 선택: headless 학습/수집 가속 (설치된 SUMO와 같은 버전)
+# libsumo==1.27.1
+# 선택: HuggingFace 업로드
+# huggingface_hub

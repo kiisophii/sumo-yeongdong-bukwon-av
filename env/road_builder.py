@@ -407,6 +407,12 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     traffic["vehs_per_hour"] = sum(float(r["vehs_per_hour"]) for r in routes.values())
     route_lines = [f'    <route id="r0" edges="{" ".join(ego_edges)}"/>']
     flow_lines = []
+    # 계산값을 파일로도 남긴다 — build()를 거치지 않는 프로세스(병렬 수집
+    # 워커 등)에서도 sumo_env가 읽어 쓸 수 있도록.
+    import json
+    with open(os.path.join(out_dir, "meta.json"), "w", encoding="utf-8") as f:
+        json.dump({"length": road["length"], "num_lanes": road["num_lanes"],
+                   "vehs_per_hour": traffic["vehs_per_hour"]}, f)
     vtypes_block, flow_type = _vtypes_block(traffic)
     for name, r in routes.items():
         edges = path(r["from"], r["to"])

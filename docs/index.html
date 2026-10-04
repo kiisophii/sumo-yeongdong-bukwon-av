@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>북수원IC 자율주행 — Team 14</title>
+<meta name="description" content="영동고속도로 북수원IC 일대를 SUMO로 구축하고 PPO로 자율주행 의사결정 모델을 학습한 팀 프로젝트">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sign:#0b6b47;        /* 고속도로 표지판 녹색 */
+  --sign-dark:#06492f;
+  --asphalt:#1d2023;
+  --asphalt-2:#2a2e33;
+  --paper:#f3f1ea;
+  --ink:#16181a;
+  --muted:#5d636a;
+  --line:#d8d4c8;
+  --yellow:#f2c230;      /* 중앙선 황색 */
+  --blue:#1d4f91;        /* 도로공사 청색 */
+  --red:#d33a2c;         /* ego */
+  --card:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141618; --ink:#ecebe6; --muted:#a3a8ad; --line:#30353a; --card:#1c1f22;
+  }
+}
+:root[data-theme="dark"]{--paper:#141618; --ink:#ecebe6; --muted:#a3a8ad; --line:#30353a; --card:#1c1f22;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 "IBM Plex Sans KR",sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+.mono{font-family:"JetBrains Mono",monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ── HERO: 표지판 ── */
+.hero{background:var(--asphalt);color:#fff;position:relative;overflow:hidden;padding:56px 0 0}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;
+  background:repeating-linear-gradient(90deg,#fff 0 60px,transparent 60px 110px);opacity:.85}
+.sign{background:var(--sign);border:4px solid #fff;outline:3px solid var(--sign);border-radius:14px;
+  padding:26px 30px;display:grid;grid-template-columns:auto 1fr;gap:10px 26px;align-items:center;
+  box-shadow:0 18px 40px rgba(0,0,0,.45);animation:drop .8s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes drop{from{transform:translateY(-30px);opacity:0}}
+.shield{width:92px;height:100px;background:var(--blue);border:4px solid #fff;border-radius:10px 10px 46px 46px;
+  display:grid;place-items:center;font:700 40px "JetBrains Mono";position:relative}
+.shield::before{content:"";position:absolute;top:0;left:0;right:0;height:22px;background:var(--red);border-radius:6px 6px 0 0}
+.shield span{margin-top:14px}
+.sign h1{margin:0;font:400 clamp(30px,5.4vw,58px)/1.05 "Black Han Sans";letter-spacing:.01em}
+.sign .dir{font:400 clamp(17px,2.2vw,24px) "Black Han Sans";opacity:.95;display:flex;gap:18px;flex-wrap:wrap}
+.sign .dir b{font-weight:400;color:var(--yellow)}
+.hero-sub{display:flex;gap:28px;flex-wrap:wrap;align-items:end;justify-content:space-between;margin:28px 0 34px}
+.hero-sub p{max-width:620px;margin:0;color:#c9cdd1}
+.tag{display:inline-block;font:500 12px "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid #5b6168;padding:4px 10px;border-radius:999px;color:#c9cdd1}
+.gif{border-radius:12px 12px 0 0;border:3px solid #3a3f45;border-bottom:0;background:#0f1113;aspect-ratio:16/7;object-fit:cover;width:100%}
+
+/* ── 공통 섹션 ── */
+section{padding:72px 0;border-bottom:1px solid var(--line)}
+.kicker{font:700 12px "JetBrains Mono";letter-spacing:.14em;color:var(--sign);text-transform:uppercase}
+:root[data-theme="dark"] .kicker{color:#3fbf8a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .kicker{color:#3fbf8a}}
+h2{font:400 clamp(26px,3.6vw,40px)/1.2 "Black Han Sans";margin:.2em 0 .6em}
+h3{font-size:18px;margin:0 0 8px}
+.lead{color:var(--muted);max-width:760px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+figure{margin:0}
+figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* ── 노선 스트립 ── */
+.strip{position:relative;margin:34px 0 10px;padding:30px 0 10px;overflow-x:auto}
+.road{position:relative;min-width:820px;height:118px;background:var(--asphalt);border-radius:8px}
+.lanes{position:absolute;inset:14px 0}
+.stops{display:grid;grid-template-columns:repeat(9,1fr);min-width:820px;margin-top:12px;gap:6px}
+.stop{font-size:13px;line-height:1.35}
+.stop b{display:block;font:700 13px "JetBrains Mono";color:var(--sign)}
+:root[data-theme="dark"] .stop b{color:#3fbf8a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stop b{color:#3fbf8a}}
+.car{position:absolute;width:26px;height:12px;background:var(--red);border-radius:3px;top:60px;left:0;
+  box-shadow:0 0 0 2px #fff;animation:drive 14s linear infinite}
+@keyframes drive{
+  0%{left:1%;top:60px}18%{left:18%;top:60px}24%{left:23%;top:44px}48%{left:47%;top:44px}
+  62%{left:61%;top:44px}70%{left:69%;top:44px}100%{left:97%;top:44px}}
+@media (prefers-reduced-motion: reduce){.car{animation:none;left:50%}}
+
+/* ── 지표 ── */
+.metric{border-left:5px solid var(--sign);padding:6px 0 6px 16px}
+.metric .v{font:700 clamp(30px,4vw,44px)/1 "JetBrains Mono"}
+.metric .k{color:var(--muted);font-size:14px;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.num{font-family:"JetBrains Mono";text-align:right}
+.tbl{overflow-x:auto}
+.best{background:color-mix(in srgb,var(--sign) 12%,transparent)}
+pre{background:var(--asphalt);color:#e6e6e6;padding:18px;border-radius:10px;overflow-x:auto;font:14px/1.6 "JetBrains Mono"}
+code{font-family:"JetBrains Mono"}
+.pill{display:inline-block;background:var(--asphalt-2);color:#fff;border-radius:6px;padding:1px 8px;font:500 13px "JetBrains Mono"}
+footer{padding:40px 0 60px;color:var(--muted);font-size:14px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="sign">
+      <div class="shield"><span>50</span></div>
+      <div>
+        <h1>북수원IC 자율주행</h1>
+        <div class="dir"><span>영동고속도로 <b>→ 강릉</b></span><span>SUMO × PPO</span><span>Team 14</span></div>
+      </div>
+    </div>
+    <div class="hero-sub">
+      <p>실제 지도(OpenStreetMap)에서 가져온 영동고속도로 북수원IC 일대 7.1 km를 SUMO로 구축하고,
+        램프 합류·차로 감소·분기가 이어지는 구간을 스스로 통과하는 자율주행 차량을 강화학습으로 만들었습니다.</p>
+      <span class="tag">2026-2 자율주행 인공지능 및 제어 · 성균관대학교</span>
+    </div>
+    <img class="gif" src="img/drive.gif" alt="학습된 자율주행 차량(빨간색)이 북수원IC 합류부를 주행하는 SUMO 화면">
+  </div>
+</header>
+
+<main>
+<section class="reveal">
+  <div class="wrap">
+    <div class="kicker">01 · Road</div>
+    <h2>도로: 7.1 km 안에 고속도로의 거의 모든 상황</h2>
+    <p class="lead">대한민국 실제 도로를 본뜬다는 과제 조건에 맞춰, 손으로 그린 도로 대신 OSM 데이터를 그대로 변환했습니다.
+      차로 수·제한속도·램프 형상이 지도 원본을 따르며, 자율주행 차량(빨강)은 아래 순서대로 구조를 만납니다.</p>
+
+    <div class="strip">
+      <div class="road">
+        <svg class="lanes" viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#fff" stroke-width="1.5" stroke-dasharray="14 12" opacity=".7">
+            <line x1="0" y1="30" x2="1000" y2="30"/><line x1="0" y1="60" x2="1000" y2="60"/>
+          </g>
+          <path d="M440 90 L560 90 L560 60 L640 60" fill="none" stroke="#f2c230" stroke-width="2"/>
+          <path d="M150 60 L230 90" stroke="#f2c230" stroke-width="2" fill="none"/>
+          <path d="M880 60 L1000 90" stroke="#f2c230" stroke-width="2" fill="none"/>
+        </svg>
+        <div class="car" title="ego"></div>
+      </div>
+      <div class="stops">
+        <div class="stop"><b>0.0 km</b>3차로 본선 · 80 km/h</div>
+        <div class="stop"><b>①</b>진출 감속차로</div>
+        <div class="stop"><b>②</b>북수원IC 진출</div>
+        <div class="stop"><b>③</b>진입 2차로 램프 합류</div>
+        <div class="stop"><b>④</b>5차로</div>
+        <div class="stop"><b>⑤</b>차로 감소 5→4</div>
+        <div class="stop"><b>⑥</b>교량 3차로 병목</div>
+        <div class="stop"><b>⑦</b>분기 (진출 2차로)</div>
+        <div class="stop"><b>7.1 km</b>본선 3차로 · 100 km/h</div>
+      </div>
+    </div>
+
+    <figure class="card" style="margin-top:26px">
+      <img src="img/network_overview.png" alt="SUMO 도로망 개요도, 자율주행 경로가 빨간색으로 표시됨" loading="lazy">
+      <figcaption>SUMO 도로망 개요. 빨간 선이 자율주행 차량의 경로. 주변 건물·녹지·하천도 OSM에서 함께 가져왔습니다. Map data © OpenStreetMap contributors (ODbL)</figcaption>
+    </figure>
+
+    <div class="grid g3" style="margin-top:18px">
+      <figure><img src="img/a_diverge.png" alt="진출 감속차로 구간" loading="lazy"><figcaption>① 진출 감속차로: 맨 오른쪽 차로는 진출 전용</figcaption></figure>
+      <figure><img src="img/b_merge5.png" alt="램프 합류 후 5차로" loading="lazy"><figcaption>③④ 북수원IC 2차로 램프가 합류해 5차로가 됨</figcaption></figure>
+      <figure><img src="img/c_drop3.png" alt="교량 3차로 병목" loading="lazy"><figcaption>⑥ 교량 구간 3차로 병목 (OSM 원본 데이터 그대로)</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="kicker">02 · Traffic</div>
+    <h2>일반 차량: 4종 운전자, 9개 경로, 시간당 4,800대</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>운전자 모델 믹스</h3>
+        <div class="tbl"><table>
+          <tr><th>모델</th><th>비율</th><th>성격</th><th>희망속도</th></tr>
+          <tr><td>Krauss</td><td class="num">35%</td><td>산만한 인간</td><td class="num">0.85×제한</td></tr>
+          <tr><td>IDM</td><td class="num">30%</td><td>부드러운 표준</td><td class="num">0.92×</td></tr>
+          <tr><td>EIDM</td><td class="num">20%</td><td>반응 지연</td><td class="num">0.95×</td></tr>
+          <tr><td>ACC</td><td class="num">15%</td><td>크루즈 차량</td><td class="num">1.00×</td></tr>
+        </table></div>
+        <p class="lead" style="font-size:14px;margin-top:10px">합류·분기 도로에서는 경로를 따라가려면 차선변경이 필수이므로
+          SUMO LC2013 차선변경 모델(전략·협조·속도이득)을 켰습니다.</p>
+      </div>
+      <div class="card">
+        <h3>안정성 검증 (교통류만, 5시간 시뮬레이션)</h3>
+        <div class="grid g2" style="gap:14px;margin-top:12px">
+          <div class="metric"><div class="v">24,000</div><div class="k">투입 차량</div></div>
+          <div class="metric"><div class="v">0</div><div class="k">충돌 · 순간이동</div></div>
+          <div class="metric"><div class="v">0 s</div><div class="k">정체 대기시간</div></div>
+          <div class="metric"><div class="v">77 km/h</div><div class="k">평균 속도</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="kicker">03 · POMDP</div>
+    <h2>자율주행 차량이 보는 것, 하는 것, 받는 것</h2>
+    <div class="grid g3">
+      <div class="card"><h3>관측 o<sub>t</sub> · 31차원</h3>
+        <p>내 속도, 좌2·좌1·현재·우1·우2 차선의 앞/뒤 차량 상대거리·속도, 차선별 밀도, 그리고
+          <b>경로 기준 차선 연결성</b>: 200 m 안에 지금 차선이 끝나거나 진출로로 갈라지는지.</p></div>
+      <div class="card"><h3>행동 a<sub>t</sub> · 연속 + 이산</h3>
+        <p>가감속 ∈ [−1, 1] (±5.4 m/s²)과 차선변경 {좌, 유지, 우}. 구간 제한속도(80/100 km/h)를 넘지 못하며,
+          측면 간격이 부족한 차선변경은 안전 게이트가 막습니다.</p></div>
+      <div class="card"><h3>보상 r<sub>t</sub></h3>
+        <p><span class="pill">+0.1·v/제한속도</span> <span class="pill">−0.1 근접&lt;6m</span>
+          <span class="pill">−0.05 막힘</span><br><span class="pill">−5 충돌·경로이탈</span> <span class="pill">+2 완주</span></p></div>
+    </div>
+    <p class="lead" style="margin-top:16px">“경로 이탈”은 끝나는 차선(차로 감소·진출 전용)에서 빠져나오지 못하고 차선 끝에 닿은 경우입니다.
+      실제 도로라면 정지·사고이므로 충돌과 같게 처리했습니다.</p>
+  </div>
+</section>
+
+<section class="reveal" id="results">
+  <div class="wrap">
+    <div class="kicker">04 · Results</div>
+    <h2>결과: 평가 <span id="n-ep">100</span>회 주행</h2>
+    <div class="grid g4" id="metrics"></div>
+    <div class="card tbl" style="margin-top:22px">
+      <table id="cmp">
+        <thead><tr><th>정책</th><th>충돌</th><th>경로이탈</th><th>완주</th><th>평균속도</th><th>통과시간</th><th>차선변경/회</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="grid g2" style="margin-top:22px">
+      <figure class="card"><img src="img/learning_curve.png" alt="PPO 학습 곡선" loading="lazy">
+        <figcaption>PPO 학습 곡선 (에피소드 보상, 평가 충돌률)</figcaption></figure>
+      <div class="card">
+        <h3>해석</h3>
+        <p id="interp" class="lead" style="font-size:15px"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="kicker">05 · Dataset</div>
+    <h2>주행 데이터셋</h2>
+    <p class="lead">학습된 정책으로 주행하며 (o, a, r, o′, done)과 주변 150 m 차량의 privileged state를 저장했습니다.
+      오프라인 강화학습·모방학습에 바로 쓸 수 있는 NPZ와 전체 기록 JSONL 두 형식입니다.</p>
+    <div class="grid g3">
+      <div class="metric"><div class="v" id="ds-ep">—</div><div class="k">에피소드</div></div>
+      <div class="metric"><div class="v" id="ds-tr">—</div><div class="k">transition</div></div>
+      <div class="metric"><div class="v">31 / 2</div><div class="k">관측 / 행동 차원</div></div>
+    </div>
+    <p style="margin-top:18px">HuggingFace: <a id="hf" href="#">업로드 후 링크 추가</a></p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="kicker">06 · Reproduce</div>
+    <h2>재현 방법</h2>
+<pre>pip install -r requirements.txt   # + SUMO 1.27 설치 (SUMO_HOME)
+pip install libsumo==1.27.1       # 선택: 학습 약 4배 가속
+python view_road.py               # 도로 확인 (GUI)
+python train.py                   # PPO 학습 → results/team14_ppo_v1/
+python tools/evaluate.py --model results/team14_ppo_v1/model.pt --episodes 100
+python collect_pomdp_data.py --model results/team14_ppo_v1/model.pt --episodes 200
+python test.py results/team14_ppo_v1/model.pt   # GUI 재생</pre>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Team 14 — 김동주(팀장) · 김수아 · 김준희 · 조윤호 &nbsp;|&nbsp; 기반 코드: bmil-ssu/Artificial-Intelligence-and-Control-for-Autonomous-Driving
+    &nbsp;|&nbsp; Map data © OpenStreetMap contributors (ODbL) &nbsp;|&nbsp; Simulator: Eclipse SUMO
+  </div>
+</footer>
+
+<script>
+/* 결과 수치 — tools/evaluate.py 결과(results/evaluation.json)로 갱신 */
+const RESULTS = {
+  "episodes": 100,
+  "policies": [
+    {
+      "name": "규칙 기반 기준선 (학습 없음)",
+      "collision": 0.0,
+      "lane_end": 0.0,
+      "arrival": 1.0,
+      "speed_kmh": 77.5,
+      "time_s": 333.8,
+      "lc": 0.0,
+      "best": false
+    },
+    {
+      "name": "PPO (강화학습, 50만 스텝)",
+      "collision": 0.01,
+      "lane_end": 0.0,
+      "arrival": 0.99,
+      "speed_kmh": 83.7,
+      "time_s": 306.3,
+      "lc": 1.09,
+      "best": true
+    },
+    {
+      "name": "BC (PPO 데이터 모방학습)",
+      "collision": 0.0,
+      "lane_end": 0.0,
+      "arrival": 1.0,
+      "speed_kmh": 82.9,
+      "time_s": 312.3,
+      "lc": 1.11,
+      "best": false
+    }
+  ],
+  "headline": [
+    {
+      "v": "1%",
+      "k": "PPO 충돌률 (목표 ≤ 5%)"
+    },
+    {
+      "v": "99%",
+      "k": "PPO 완주율"
+    },
+    {
+      "v": "83.7",
+      "k": "PPO 평균속도 km/h (기준선 77.5)"
+    },
+    {
+      "v": "−8%",
+      "k": "통과시간 (334 s → 306 s)"
+    }
+  ],
+  "interpretation": "규칙 기반 운전자는 앞차를 따라가기만 해서 충돌은 없지만, 느린 차(Krauss, 제한속도의 약 85%) 뒤에 갇힙니다. PPO는 에피소드당 약 1회 안전한 틈을 골라 차선을 바꿔 평균 6 km/h 빠르게 달렸습니다. 100회 중 충돌은 출발 5.5초 만에 난 1회(1%)뿐이고, 끝나는 차선(진출 전용·차로 감소)에 갇히는 경로 이탈은 0회입니다. PPO 주행 데이터 약 9.4만 스텝으로 학습한 BC 모델은 환경과 상호작용하지 않고도 충돌 0%, 82.9 km/h로 PPO와 비슷한 성능을 냈습니다.",
+  "dataset": {
+    "episodes": 200,
+    "transitions": 125059,
+    "hf": null
+  }
+};
+function pct(x){return (x*100).toFixed(0)+"%"}
+document.getElementById("n-ep").textContent = RESULTS.episodes;
+const m = document.getElementById("metrics");
+RESULTS.headline.forEach(h=>{
+  m.insertAdjacentHTML("beforeend",`<div class="metric"><div class="v">${h.v}</div><div class="k">${h.k}</div></div>`);
+});
+const tb = document.querySelector("#cmp tbody");
+RESULTS.policies.forEach(p=>{
+  tb.insertAdjacentHTML("beforeend",`<tr class="${p.best?'best':''}"><td>${p.name}</td><td class="num">${pct(p.collision)}</td><td class="num">${pct(p.lane_end)}</td><td class="num">${pct(p.arrival)}</td><td class="num">${p.speed_kmh.toFixed(1)} km/h</td><td class="num">${p.time_s.toFixed(0)} s</td><td class="num">${p.lc.toFixed(1)}</td></tr>`);
+});
+document.getElementById("interp").textContent = RESULTS.interpretation;
+if (RESULTS.dataset.episodes) document.getElementById("ds-ep").textContent = RESULTS.dataset.episodes.toLocaleString();
+if (RESULTS.dataset.transitions) document.getElementById("ds-tr").textContent = RESULTS.dataset.transitions.toLocaleString();
+if (RESULTS.dataset.hf){const a=document.getElementById("hf");a.href=RESULTS.dataset.hf;a.textContent=RESULTS.dataset.hf;}
+/* 스크롤 등장 */
+const io = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

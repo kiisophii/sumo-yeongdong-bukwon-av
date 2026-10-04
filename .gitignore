@@ -1,3 +1,6 @@
 train_*.log
 __pycache__/
 data/*.jsonl.gz
+data/release/
+data/team14_*
+.claude/

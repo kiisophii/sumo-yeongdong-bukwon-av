@@ -1,0 +1,47 @@
+{
+  "rule_based": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 100,
+    "mean_speed_mps": 21.5398947121173,
+    "mean_return": 59.811600164790796,
+    "mean_length_steps": 667.69,
+    "mean_travel_time_s": 333.845,
+    "lane_changes_per_ep": 0.0,
+    "min_gap_median_m": 29.220164471887074,
+    "wall_time_s": 394.92763590812683
+  },
+  "ppo": {
+    "collision_rate": 0.01,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 0.99,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.01,
+    "episodes": 100,
+    "mean_speed_mps": 23.247148967114004,
+    "mean_return": 59.39911097448753,
+    "mean_length_steps": 612.56,
+    "mean_travel_time_s": 306.28,
+    "lane_changes_per_ep": 1.09,
+    "min_gap_median_m": 18.069090927890386,
+    "wall_time_s": 382.892121553421
+  },
+  "bc_from_ppo": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 100,
+    "mean_speed_mps": 23.02531754695011,
+    "mean_return": 60.82145231636278,
+    "mean_length_steps": 624.65,
+    "mean_travel_time_s": 312.325,
+    "lane_changes_per_ep": 1.11,
+    "min_gap_median_m": 17.698898249473103,
+    "wall_time_s": 399.6855947971344
+  }
+}

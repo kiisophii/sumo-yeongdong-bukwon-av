@@ -99,6 +99,12 @@ class SumoHighwayEnv(gym.Env):
         self.gui_autostart = gui_autostart
 
         # ----- 도로/차량 설정에서 필요한 값들 -----
+        if road.get("length") is None:
+            # OSM 도로: build()가 계산해 둔 경로 길이/차선 수를 읽는다
+            import json
+            meta = os.path.join(os.path.dirname(cfg_path), "meta.json")
+            with open(meta, encoding="utf-8") as f:
+                road = {**road, **json.load(f)}
         self.vmax = float(road["speed_limit"])   # 속도 정규화 기준
         self.num_lanes = int(road["num_lanes"])
         # 시작 차선: "center"면 중앙 차선(차선수//2)으로 자동 결정.
