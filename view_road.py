@@ -42,12 +42,20 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 
 
 def print_summary():
+    # (OSM 도로의 길이/차선 수는 build() 이후에 채워지므로 build 뒤에 호출할 것)
     """현재 road_config 내용을 표로 요약 출력."""
     print("─" * 46)
     print(" 현재 도로 설정 (env/road_config.py)")
     print("─" * 46)
-    print(f"  도로 길이      : {ROAD['length']} m")
-    print(f"  차선 수        : {ROAD['num_lanes']}")
+    if ROAD.get("type") == "osm":
+        print(f"  도로           : {ROAD.get('name', ROAD['osm_file'])} (OSM)")
+        print(f"  ego 경로 길이  : {ROAD['length']:.0f} m")
+        print(f"  최대 차선 수   : {ROAD['num_lanes']}")
+        for name, r in TRAFFIC.get("routes", {}).items():
+            print(f"    · {name:<22}: {r['vehs_per_hour']} 대/시간")
+    else:
+        print(f"  도로 길이      : {ROAD['length']} m")
+        print(f"  차선 수        : {ROAD['num_lanes']}")
     print(f"  제한속도       : {ROAD['speed_limit']} m/s "
           f"(≈ {float(ROAD['speed_limit']) * 3.6:.0f} km/h)")
     print(f"  배경 교통량    : {TRAFFIC['vehs_per_hour']} 대/시간")
@@ -106,7 +114,10 @@ if __name__ == "__main__":
         print(f"  · 확대: env/mdp_config.py의 gui_zoom={SIMULATION['gui_zoom']}")
         print("  · 속도 조절: 상단 Delay(ms) 값을 조정 (크게 = 느리게)")
         print("  · 종료하려면 창을 닫으세요.")
-        subprocess.run(
-            [checkBinary("sumo-gui"), "-c", sumocfg,
-             "--step-length", str(SIMULATION["step_length"]),
-             "--delay", str(SIMULATION["gui_delay"])])
+        cmd = [checkBinary("sumo-gui"), "-c", sumocfg,
+               "--step-length", str(SIMULATION["step_length"]),
+               "--delay", str(SIMULATION["gui_delay"])]
+        scenery = os.path.join(BASE, "env", "sumo", "highway.scenery.xml")
+        if ROAD.get("type") == "osm" and os.path.exists(scenery):
+            cmd += ["--additional-files", scenery]   # 주변 지형(GUI 전용)
+        subprocess.run(cmd)

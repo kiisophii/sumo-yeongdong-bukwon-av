@@ -1,0 +1,2124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API 0.7.62.4 2390de5a">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2026-10-04T11:45:06Z"/>
+
+  <node id="436276432" lat="37.3231794" lon="126.9617676"/>
+  <node id="436276716" lat="37.3090291" lon="127.0354099"/>
+  <node id="436276717" lat="37.3109400" lon="127.0329600"/>
+  <node id="436276718" lat="37.3119668" lon="127.0315538"/>
+  <node id="436276719" lat="37.3123890" lon="127.0309595"/>
+  <node id="436276720" lat="37.3128441" lon="127.0300838"/>
+  <node id="436276721" lat="37.3131500" lon="127.0292500"/>
+  <node id="436276722" lat="37.3134800" lon="127.0281800"/>
+  <node id="436276723" lat="37.3136200" lon="127.0274700"/>
+  <node id="436276724" lat="37.3136900" lon="127.0268000"/>
+  <node id="436276725" lat="37.3136236" lon="127.0247789"/>
+  <node id="436276726" lat="37.3134461" lon="127.0236531"/>
+  <node id="436276728" lat="37.3123245" lon="127.0195805"/>
+  <node id="436276729" lat="37.3112035" lon="127.0155639"/>
+  <node id="436276730" lat="37.3108036" lon="127.0139420"/>
+  <node id="436276731" lat="37.3105569" lon="127.0120856"/>
+  <node id="436276732" lat="37.3105830" lon="127.0101132"/>
+  <node id="436276733" lat="37.3107193" lon="127.0089533"/>
+  <node id="436276734" lat="37.3109622" lon="127.0078166"/>
+  <node id="436276735" lat="37.3115500" lon="127.0059900"/>
+  <node id="436276736" lat="37.3121000" lon="127.0047900"/>
+  <node id="436276737" lat="37.3129200" lon="127.0030500"/>
+  <node id="436276738" lat="37.3136278" lon="127.0016748"/>
+  <node id="436276739" lat="37.3146648" lon="126.9995119"/>
+  <node id="436276740" lat="37.3169457" lon="126.9948445">
+    <tag k="highway" v="motorway_junction"/>
+    <tag k="name" v="북수원IC"/>
+    <tag k="name:en" v="N.Suwon IC"/>
+    <tag k="name:ko" v="북수원IC"/>
+    <tag k="ref" v="11"/>
+  </node>
+  <node id="436276741" lat="37.3175100" lon="126.9936100"/>
+  <node id="436276742" lat="37.3179600" lon="126.9926400"/>
+  <node id="436276743" lat="37.3187284" lon="126.9907214"/>
+  <node id="436276744" lat="37.3189700" lon="126.9900700"/>
+  <node id="436276746" lat="37.3195966" lon="126.9879735"/>
+  <node id="436276747" lat="37.3198609" lon="126.9868029"/>
+  <node id="436276748" lat="37.3200990" lon="126.9854763"/>
+  <node id="436276749" lat="37.3204192" lon="126.9821510"/>
+  <node id="436276750" lat="37.3203612" lon="126.9783020"/>
+  <node id="436276751" lat="37.3202466" lon="126.9763085"/>
+  <node id="436276752" lat="37.3199205" lon="126.9721833"/>
+  <node id="436276753" lat="37.3202095" lon="126.9691315"/>
+  <node id="436276754" lat="37.3205753" lon="126.9678099"/>
+  <node id="436276755" lat="37.3213669" lon="126.9658399"/>
+  <node id="436276756" lat="37.3217691" lon="126.9649400"/>
+  <node id="436276757" lat="37.3232648" lon="126.9618680"/>
+  <node id="436276758" lat="37.3236884" lon="126.9610182"/>
+  <node id="436276795" lat="37.3168400" lon="126.9947900"/>
+  <node id="436276796" lat="37.3145700" lon="126.9994200"/>
+  <node id="436276798" lat="37.3135039" lon="127.0016234"/>
+  <node id="436276799" lat="37.3128300" lon="127.0029900"/>
+  <node id="436276800" lat="37.3120100" lon="127.0047300"/>
+  <node id="436276801" lat="37.3114600" lon="127.0059200"/>
+  <node id="436276802" lat="37.3108600" lon="127.0077300"/>
+  <node id="436276803" lat="37.3104663" lon="127.0100549"/>
+  <node id="436276804" lat="37.3103818" lon="127.0112069"/>
+  <node id="436276805" lat="37.3104148" lon="127.0121213"/>
+  <node id="436276806" lat="37.3106790" lon="127.0140080"/>
+  <node id="436276808" lat="37.3110601" lon="127.0155422"/>
+  <node id="436276809" lat="37.3122307" lon="127.0196491"/>
+  <node id="436276811" lat="37.3133216" lon="127.0237218"/>
+  <node id="436276812" lat="37.3135589" lon="127.0247561"/>
+  <node id="436276813" lat="37.3135355" lon="127.0267757"/>
+  <node id="436276814" lat="37.3132886" lon="127.0281191"/>
+  <node id="436276815" lat="37.3129806" lon="127.0291735"/>
+  <node id="436276817" lat="37.3126367" lon="127.0300006"/>
+  <node id="436276818" lat="37.3121612" lon="127.0308034"/>
+  <node id="436276819" lat="37.3117268" lon="127.0313857"/>
+  <node id="436276821" lat="37.3100600" lon="127.0336700"/>
+  <node id="436276823" lat="37.3088363" lon="127.0352254"/>
+  <node id="436285561" lat="37.3221962" lon="126.9637849"/>
+  <node id="436285563" lat="37.3209647" lon="126.9664443"/>
+  <node id="436285564" lat="37.3205082" lon="126.9676354"/>
+  <node id="436285565" lat="37.3199032" lon="126.9705031"/>
+  <node id="436285566" lat="37.3198933" lon="126.9736928"/>
+  <node id="436285567" lat="37.3201145" lon="126.9763320"/>
+  <node id="436285569" lat="37.3202400" lon="126.9783734"/>
+  <node id="436285570" lat="37.3202905" lon="126.9799161"/>
+  <node id="436285571" lat="37.3199713" lon="126.9854374"/>
+  <node id="436285572" lat="37.3196568" lon="126.9870537"/>
+  <node id="436285574" lat="37.3194571" lon="126.9880828"/>
+  <node id="436285575" lat="37.3191319" lon="126.9892318"/>
+  <node id="436402131" lat="37.3291580" lon="126.9842073"/>
+  <node id="444706550" lat="37.3328588" lon="126.9818341"/>
+  <node id="513170823" lat="37.3193394" lon="126.9889067"/>
+  <node id="513173589" lat="37.3203089" lon="126.9821578"/>
+  <node id="650024086" lat="37.3188584" lon="126.9900271"/>
+  <node id="650024087" lat="37.3186197" lon="126.9906606">
+    <tag k="highway" v="motorway_junction"/>
+    <tag k="name" v="북수원IC"/>
+    <tag k="name:en" v="N.Suwon IC"/>
+    <tag k="name:ko" v="북수원IC"/>
+    <tag k="ref" v="11"/>
+  </node>
+  <node id="650024088" lat="37.3174000" lon="126.9935565"/>
+  <node id="650024089" lat="37.3183584" lon="126.9913560"/>
+  <node id="650024090" lat="37.3178394" lon="126.9925944"/>
+  <node id="650024104" lat="37.3084761" lon="127.0351097"/>
+  <node id="650024123" lat="37.3130397" lon="127.0220005"/>
+  <node id="650024124" lat="37.3129098" lon="127.0220408"/>
+  <node id="650024135" lat="37.3135738" lon="127.0259300"/>
+  <node id="650024136" lat="37.3134526" lon="127.0259300"/>
+  <node id="650024137" lat="37.3134412" lon="127.0247726"/>
+  <node id="650024138" lat="37.3137216" lon="127.0259347"/>
+  <node id="650024139" lat="37.3130056" lon="127.0283781"/>
+  <node id="650024140" lat="37.3131382" lon="127.0279399"/>
+  <node id="650024141" lat="37.3133617" lon="127.0268683"/>
+  <node id="650024142" lat="37.3134526" lon="127.0274303"/>
+  <node id="650024143" lat="37.3115017" lon="127.0311740"/>
+  <node id="650024144" lat="37.3120775" lon="127.0303643"/>
+  <node id="650024145" lat="37.3125434" lon="127.0295117"/>
+  <node id="651274628" lat="37.3197854" lon="126.9722735"/>
+  <node id="651274630" lat="37.3199830" lon="126.9734045"/>
+  <node id="651274631" lat="37.3200185" lon="126.9705070"/>
+  <node id="651274632" lat="37.3201031" lon="126.9690513"/>
+  <node id="651274633" lat="37.3204294" lon="126.9799096"/>
+  <node id="651274637" lat="37.3210624" lon="126.9665062"/>
+  <node id="651274638" lat="37.3104846" lon="127.0128140"/>
+  <node id="651274640" lat="37.3106033" lon="127.0089527"/>
+  <node id="651292055" lat="37.3176544" lon="126.9908193"/>
+  <node id="651292057" lat="37.3192252" lon="126.9898864"/>
+  <node id="651292058" lat="37.3192646" lon="126.9902536"/>
+  <node id="651292059" lat="37.3193386" lon="126.9904944"/>
+  <node id="651292060" lat="37.3173725" lon="126.9909042"/>
+  <node id="651292061" lat="37.3171904" lon="126.9910771"/>
+  <node id="651292062" lat="37.3170664" lon="126.9913158"/>
+  <node id="651292063" lat="37.3170352" lon="126.9915954"/>
+  <node id="651292064" lat="37.3170447" lon="126.9917584"/>
+  <node id="651292065" lat="37.3170929" lon="126.9919017"/>
+  <node id="651292066" lat="37.3171901" lon="126.9920110"/>
+  <node id="651292067" lat="37.3173000" lon="126.9920972"/>
+  <node id="651292068" lat="37.3174926" lon="126.9921149"/>
+  <node id="651292069" lat="37.3176843" lon="126.9920701"/>
+  <node id="651292070" lat="37.3188426" lon="126.9910852"/>
+  <node id="651292071" lat="37.3180985" lon="126.9908392"/>
+  <node id="651292072" lat="37.3178805" lon="126.9919634"/>
+  <node id="651292073" lat="37.3181069" lon="126.9916510"/>
+  <node id="651292074" lat="37.3182726" lon="126.9913361"/>
+  <node id="651292075" lat="37.3184389" lon="126.9914198"/>
+  <node id="651292076" lat="37.3194585" lon="126.9907204"/>
+  <node id="651292077" lat="37.3196248" lon="126.9909156"/>
+  <node id="651292078" lat="37.3197642" lon="126.9910239"/>
+  <node id="651292079" lat="37.3201114" lon="126.9911685"/>
+  <node id="651292080" lat="37.3204216" lon="126.9911857"/>
+  <node id="651292081" lat="37.3202023" lon="126.9913987"/>
+  <node id="651292082" lat="37.3198905" lon="126.9913800"/>
+  <node id="651292084" lat="37.3197007" lon="126.9913460"/>
+  <node id="651292085" lat="37.3215504" lon="126.9907277"/>
+  <node id="651292086" lat="37.3223612" lon="126.9902404"/>
+  <node id="651292087" lat="37.3235975" lon="126.9894929"/>
+  <node id="651292088" lat="37.3248267" lon="126.9887237"/>
+  <node id="651292090" lat="37.3259082" lon="126.9880251">
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="651292091" lat="37.3249279" lon="126.9890735"/>
+  <node id="651292093" lat="37.3236241" lon="126.9895956"/>
+  <node id="651292094" lat="37.3224115" lon="126.9903589"/>
+  <node id="651292095" lat="37.3295399" lon="126.9824790"/>
+  <node id="651292096" lat="37.3296087" lon="126.9823456"/>
+  <node id="651292097" lat="37.3297066" lon="126.9822041"/>
+  <node id="651292098" lat="37.3299403" lon="126.9820569"/>
+  <node id="651292099" lat="37.3300964" lon="126.9820363"/>
+  <node id="651292100" lat="37.3300990" lon="126.9821421"/>
+  <node id="651292101" lat="37.3299850" lon="126.9821482"/>
+  <node id="651292102" lat="37.3297546" lon="126.9823029"/>
+  <node id="651292103" lat="37.3296813" lon="126.9823742"/>
+  <node id="651292104" lat="37.3296141" lon="126.9825103"/>
+  <node id="651292105" lat="37.3303439" lon="126.9821535"/>
+  <node id="651292106" lat="37.3306316" lon="126.9823506"/>
+  <node id="651292107" lat="37.3309828" lon="126.9824805"/>
+  <node id="651292108" lat="37.3312643" lon="126.9824969"/>
+  <node id="651292109" lat="37.3315142" lon="126.9824740"/>
+  <node id="651292110" lat="37.3304679" lon="126.9825926"/>
+  <node id="651292111" lat="37.3303936" lon="126.9823648"/>
+  <node id="651292112" lat="37.3303058" lon="126.9822423"/>
+  <node id="651292113" lat="37.3296030" lon="126.9853545"/>
+  <node id="651292114" lat="37.3296276" lon="126.9847472"/>
+  <node id="651292115" lat="37.3295916" lon="126.9844433"/>
+  <node id="651292116" lat="37.3294971" lon="126.9836199"/>
+  <node id="651292117" lat="37.3294717" lon="126.9832175"/>
+  <node id="651292118" lat="37.3294708" lon="126.9828295"/>
+  <node id="651292119" lat="37.3297416" lon="126.9837628"/>
+  <node id="651292120" lat="37.3300681" lon="126.9834802"/>
+  <node id="651292121" lat="37.3295371" lon="126.9828295"/>
+  <node id="651292122" lat="37.3295422" lon="126.9831788"/>
+  <node id="651292123" lat="37.3295699" lon="126.9836066"/>
+  <node id="651292124" lat="37.3296631" lon="126.9844412"/>
+  <node id="651292125" lat="37.3296934" lon="126.9847550"/>
+  <node id="651292126" lat="37.3296681" lon="126.9853714"/>
+  <node id="651292127" lat="37.3303518" lon="126.9831088"/>
+  <node id="651292128" lat="37.3304303" lon="126.9829198"/>
+  <node id="651292129" lat="37.3304637" lon="126.9827661"/>
+  <node id="651292130" lat="37.3274570" lon="126.9871350"/>
+  <node id="651292131" lat="37.3278058" lon="126.9869313"/>
+  <node id="651292132" lat="37.3290516" lon="126.9861965"/>
+  <node id="651292133" lat="37.3286070" lon="126.9866370"/>
+  <node id="651292134" lat="37.3281302" lon="126.9870012"/>
+  <node id="651292135" lat="37.3275566" lon="126.9874731"/>
+  <node id="651292136" lat="37.3260758" lon="126.9884299">
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="651292138" lat="37.3292866" lon="126.9860465"/>
+  <node id="651292139" lat="37.3295024" lon="126.9856809"/>
+  <node id="651292140" lat="37.3295708" lon="126.9857097"/>
+  <node id="651292142" lat="37.3293232" lon="126.9861506"/>
+  <node id="651292143" lat="37.3206587" lon="126.9911967"/>
+  <node id="651292144" lat="37.3210810" lon="126.9910010"/>
+  <node id="651292145" lat="37.3215916" lon="126.9908242"/>
+  <node id="651292146" lat="37.3209161" lon="126.9911983"/>
+  <node id="651292147" lat="37.3206903" lon="126.9912852"/>
+  <node id="651292148" lat="37.3319759" lon="126.9823006"/>
+  <node id="651292149" lat="37.3322610" lon="126.9821313"/>
+  <node id="651292750" lat="37.3176536" lon="126.9907340"/>
+  <node id="651292751" lat="37.3173504" lon="126.9908134"/>
+  <node id="651292752" lat="37.3181145" lon="126.9907640"/>
+  <node id="651292753" lat="37.3169979" lon="126.9912777"/>
+  <node id="651292754" lat="37.3169652" lon="126.9915815"/>
+  <node id="651292755" lat="37.3169843" lon="126.9918427"/>
+  <node id="651292756" lat="37.3170462" lon="126.9920668"/>
+  <node id="651292757" lat="37.3171199" lon="126.9923335"/>
+  <node id="651292758" lat="37.3171496" lon="126.9909985"/>
+  <node id="651292759" lat="37.3175655" lon="126.9936560"/>
+  <node id="651292760" lat="37.3171553" lon="126.9926781"/>
+  <node id="651292761" lat="37.3171788" lon="126.9929966"/>
+  <node id="651292762" lat="37.3171494" lon="126.9933930"/>
+  <node id="651292763" lat="37.3170492" lon="126.9938709"/>
+  <node id="651292764" lat="37.3169284" lon="126.9943599"/>
+  <node id="651292765" lat="37.3167859" lon="126.9947440"/>
+  <node id="651292766" lat="37.3165266" lon="126.9954167"/>
+  <node id="651292767" lat="37.3180185" lon="126.9927068"/>
+  <node id="651292770" lat="37.3182542" lon="126.9922530"/>
+  <node id="651292771" lat="37.3184348" lon="126.9919910"/>
+  <node id="651292772" lat="37.3188429" lon="126.9917017"/>
+  <node id="651292773" lat="37.3189671" lon="126.9916579"/>
+  <node id="651292774" lat="37.3188015" lon="126.9909860"/>
+  <node id="651292775" lat="37.3194375" lon="126.9915758"/>
+  <node id="651292776" lat="37.3196550" lon="126.9915505"/>
+  <node id="651292777" lat="37.3199166" lon="126.9915238"/>
+  <node id="651292778" lat="37.3196625" lon="126.9912322"/>
+  <node id="651292779" lat="37.3194218" lon="126.9911745"/>
+  <node id="651292780" lat="37.3201815" lon="126.9914814"/>
+  <node id="651292781" lat="37.3204386" lon="126.9914077"/>
+  <node id="651292782" lat="37.3200098" lon="126.9912793"/>
+  <node id="651292786" lat="37.3288183" lon="126.9848304">
+    <tag k="highway" v="crossing"/>
+  </node>
+  <node id="651292787" lat="37.3289707" lon="126.9848789"/>
+  <node id="651292788" lat="37.3291683" lon="126.9850812"/>
+  <node id="651292789" lat="37.3292550" lon="126.9852562"/>
+  <node id="651292790" lat="37.3302168" lon="126.9848690"/>
+  <node id="651292791" lat="37.3304474" lon="126.9844746"/>
+  <node id="651292792" lat="37.3306903" lon="126.9841451"/>
+  <node id="651292794" lat="37.3309330" lon="126.9838800"/>
+  <node id="651292795" lat="37.3313637" lon="126.9834895"/>
+  <node id="651292797" lat="37.3296154" lon="126.9859371"/>
+  <node id="651292798" lat="37.3298897" lon="126.9855623"/>
+  <node id="651292799" lat="37.3300659" lon="126.9851995"/>
+  <node id="651292800" lat="37.3293063" lon="126.9854782"/>
+  <node id="651292801" lat="37.3293172" lon="126.9856773"/>
+  <node id="651292802" lat="37.3292702" lon="126.9858778"/>
+  <node id="651292803" lat="37.3292047" lon="126.9859850"/>
+  <node id="651292804" lat="37.3325016" lon="126.9824932">
+    <tag k="highway" v="crossing"/>
+  </node>
+  <node id="728690629" lat="37.3199580" lon="126.9713093"/>
+  <node id="728690630" lat="37.3200953" lon="126.9698294"/>
+  <node id="728690631" lat="37.3203558" lon="126.9684718"/>
+  <node id="728690632" lat="37.3208055" lon="126.9672018"/>
+  <node id="728691002" lat="37.3207102" lon="126.9671298"/>
+  <node id="728691003" lat="37.3202708" lon="126.9683983"/>
+  <node id="728691005" lat="37.3200067" lon="126.9697559"/>
+  <node id="728691007" lat="37.3198069" lon="126.9715779"/>
+  <node id="930164460" lat="37.3201907" lon="126.9837540"/>
+  <node id="930164462" lat="37.3203108" lon="126.9837529"/>
+  <node id="2684577895" lat="37.3118335" lon="127.0317363"/>
+  <node id="3953896620" lat="37.3139946" lon="127.0006069"/>
+  <node id="3953896621" lat="37.3150058" lon="126.9987216"/>
+  <node id="3953896622" lat="37.3150172" lon="126.9983922"/>
+  <node id="3953896626" lat="37.3204568" lon="126.9810443"/>
+  <node id="3953896627" lat="37.3228229" lon="126.9627458">
+    <tag k="destination" v="1;부곡,의왕"/>
+    <tag k="highway" v="motorway_junction"/>
+    <tag k="name" v="부곡IC"/>
+    <tag k="name:en" v="Bugok IC"/>
+    <tag k="name:ko" v="부곡IC"/>
+    <tag k="ref" v="10"/>
+  </node>
+  <node id="4053666246" lat="37.3139228" lon="127.0007571"/>
+  <node id="4053666247" lat="37.3140424" lon="127.0008710"/>
+  <node id="4053666248" lat="37.3142313" lon="127.0001185"/>
+  <node id="4053666249" lat="37.3143222" lon="127.0002738"/>
+  <node id="4185199920" lat="37.3302077" lon="126.9821664"/>
+  <node id="4185199921" lat="37.3302248" lon="126.9832849"/>
+  <node id="4185199922" lat="37.3302291" lon="126.9820699"/>
+  <node id="4185199925" lat="37.3304434" lon="126.9824869"/>
+  <node id="4185200724" lat="37.3335481" lon="126.9816195"/>
+  <node id="4185201519" lat="37.3282850" lon="126.9866585"/>
+  <node id="4185201521" lat="37.3288693" lon="126.9848408"/>
+  <node id="4185201524" lat="37.3290891" lon="126.9849660"/>
+  <node id="4185201526" lat="37.3293664" lon="126.9839702"/>
+  <node id="4185201528" lat="37.3294634" lon="126.9830187"/>
+  <node id="4185201529" lat="37.3294943" lon="126.9826486"/>
+  <node id="4185201530" lat="37.3295327" lon="126.9830039"/>
+  <node id="4185201532" lat="37.3295690" lon="126.9826713"/>
+  <node id="4185201540" lat="37.3298292" lon="126.9821061"/>
+  <node id="4185201541" lat="37.3298686" lon="126.9822026"/>
+  <node id="4185201543" lat="37.3299081" lon="126.9836309"/>
+  <node id="4185203593" lat="37.3317693" lon="126.9824004">
+    <tag k="highway" v="crossing"/>
+  </node>
+  <node id="4557953858" lat="37.3217327" lon="126.9647859"/>
+  <node id="4646380687" lat="37.3201174" lon="126.9837774"/>
+  <node id="4646380789" lat="37.3196908" lon="126.9866582"/>
+  <node id="4646380790" lat="37.3196862" lon="126.9869403"/>
+  <node id="4646380792" lat="37.3203513" lon="126.9810255"/>
+  <node id="4687440852" lat="37.3235595" lon="126.9609935">
+    <tag k="highway" v="motorway_junction"/>
+    <tag k="name" v="부곡IC"/>
+    <tag k="name:en" v="Bugok IC"/>
+    <tag k="name:ko" v="부곡IC"/>
+    <tag k="ref" v="10"/>
+  </node>
+  <node id="4851400963" lat="37.3203220" lon="126.9772336"/>
+  <node id="4851400964" lat="37.3201954" lon="126.9772648"/>
+  <node id="5303668878" lat="37.3134467" lon="127.0253327"/>
+  <node id="5303668879" lat="37.3132703" lon="127.0266054"/>
+  <node id="5303668880" lat="37.3129566" lon="127.0277886"/>
+  <node id="5303668881" lat="37.3125842" lon="127.0287560"/>
+  <node id="5303668882" lat="37.3119323" lon="127.0298775"/>
+  <node id="5303668883" lat="37.3114761" lon="127.0304899"/>
+  <node id="5303668884" lat="37.3110893" lon="127.0309312"/>
+  <node id="5303668885" lat="37.3080901" lon="127.0350479"/>
+  <node id="5303668893" lat="37.3135398" lon="127.0243748"/>
+  <node id="5872861263" lat="37.3242804" lon="126.9893759"/>
+  <node id="5872861276" lat="37.3254270" lon="126.9883065"/>
+  <node id="5872862162" lat="37.3200201" lon="126.9845914"/>
+  <node id="5872862163" lat="37.3202113" lon="126.9826385"/>
+  <node id="5872862164" lat="37.3202156" lon="126.9846234"/>
+  <node id="5872862165" lat="37.3201004" lon="126.9846046"/>
+  <node id="5872862166" lat="37.3199767" lon="126.9862005"/>
+  <node id="5872862167" lat="37.3198700" lon="126.9861549"/>
+  <node id="6635162812" lat="37.3131431" lon="127.0228711"/>
+  <node id="6635162813" lat="37.3132720" lon="127.0228271"/>
+  <node id="7779842155" lat="37.3110515" lon="127.0149851"/>
+  <node id="7779842156" lat="37.3109108" lon="127.0149580"/>
+  <node id="10211554713" lat="37.3128281" lon="127.0217530"/>
+  <node id="10211554714" lat="37.3105163" lon="127.0112123"/>
+  <node id="10211554715" lat="37.3106140" lon="127.0127339"/>
+  <node id="10211554716" lat="37.3111331" lon="127.0068137"/>
+  <node id="10211562517" lat="37.3112496" lon="127.0068168"/>
+  <node id="10211562518" lat="37.3126643" lon="127.0211760"/>
+  <node id="10211562520" lat="37.3141536" lon="127.0002788"/>
+  <node id="10211562521" lat="37.3169863" lon="126.9913856"/>
+  <node id="11465629233" lat="37.3255149" lon="126.9882511"/>
+  <node id="11465629234" lat="37.3258124" lon="126.9877739">
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="11465629235" lat="37.3267419" lon="126.9872967"/>
+  <node id="11465629236" lat="37.3255733" lon="126.9879156"/>
+  <node id="11465629237" lat="37.3256498" lon="126.9887072"/>
+  <node id="11465629240" lat="37.3319009" lon="126.9830051"/>
+  <node id="11465629241" lat="37.3297032" lon="126.9850850"/>
+  <node id="11465629242" lat="37.3296390" lon="126.9850832"/>
+  <node id="11465629243" lat="37.3270428" lon="126.9881189"/>
+  <node id="11465629244" lat="37.3261568" lon="126.9886351">
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="12105436708" lat="37.3114023" lon="127.0060778"/>
+  <node id="12105436709" lat="37.3113054" lon="127.0063426"/>
+  <node id="12105436710" lat="37.3114931" lon="127.0061466"/>
+  <node id="12105436711" lat="37.3113942" lon="127.0064189"/>
+  <node id="12283231316" lat="37.3191088" lon="126.9896533"/>
+  <node id="12283231317" lat="37.3193491" lon="126.9889994"/>
+  <node id="12283231318" lat="37.3193203" lon="126.9891377"/>
+  <node id="12283231319" lat="37.3192789" lon="126.9893354"/>
+  <node id="12283231320" lat="37.3192453" lon="126.9895531"/>
+  <node id="12283231321" lat="37.3192310" lon="126.9897113"/>
+  <node id="12283231322" lat="37.3192302" lon="126.9900230"/>
+  <node id="12283231323" lat="37.3192401" lon="126.9901314"/>
+  <node id="12283231324" lat="37.3192973" lon="126.9903825"/>
+  <node id="12283231325" lat="37.3193979" lon="126.9906236"/>
+  <node id="12283231326" lat="37.3195380" lon="126.9908226"/>
+  <node id="12283231327" lat="37.3196933" lon="126.9909790"/>
+  <node id="12283231328" lat="37.3198851" lon="126.9910870"/>
+  <node id="12283231329" lat="37.3199799" lon="126.9911293"/>
+  <node id="12283231330" lat="37.3202499" lon="126.9911856"/>
+  <node id="12283231331" lat="37.3185459" lon="126.9918789"/>
+  <node id="12283231332" lat="37.3186920" lon="126.9917801"/>
+  <node id="12283231333" lat="37.3191406" lon="126.9916168"/>
+  <node id="12283231334" lat="37.3211159" lon="126.9910997"/>
+  <node id="12283231335" lat="37.3213509" lon="126.9909655"/>
+  <node id="12283231336" lat="37.3213047" lon="126.9908680"/>
+  <node id="12283231337" lat="37.3209050" lon="126.9910959"/>
+  <node id="12283231338" lat="37.3207671" lon="126.9911584"/>
+  <node id="12283231339" lat="37.3205061" lon="126.9913376"/>
+  <node id="12283231340" lat="37.3203408" lon="126.9913796"/>
+  <node id="12283231341" lat="37.3200647" lon="126.9913982"/>
+  <node id="12283231342" lat="37.3193934" lon="126.9912660"/>
+  <node id="12283231343" lat="37.3203862" lon="126.9912654"/>
+  <node id="12283231344" lat="37.3202043" lon="126.9912750"/>
+  <node id="12283231345" lat="37.3198594" lon="126.9912673"/>
+  <node id="12283231346" lat="37.3205383" lon="126.9912342"/>
+  <node id="12283231347" lat="37.3194453" lon="126.9885306"/>
+  <node id="12283231348" lat="37.3195258" lon="126.9882510"/>
+  <node id="12283231349" lat="37.3196851" lon="126.9876088"/>
+  <way id="41948037">
+    <nd ref="436276747"/>
+    <nd ref="5872862166"/>
+    <nd ref="436276748"/>
+    <nd ref="5872862164"/>
+    <nd ref="930164462"/>
+    <nd ref="436276749"/>
+    <nd ref="3953896626"/>
+    <nd ref="651274633"/>
+    <nd ref="436276750"/>
+    <nd ref="4851400963"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="50981258">
+    <nd ref="436276823"/>
+    <nd ref="436276821"/>
+    <nd ref="436276819"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="layer" v="-1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+    <tag k="tunnel" v="yes"/>
+  </way>
+  <way id="50981259">
+    <nd ref="436276716"/>
+    <nd ref="436276717"/>
+    <nd ref="2684577895"/>
+    <nd ref="436276718"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="layer" v="-1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+    <tag k="tunnel" v="yes"/>
+  </way>
+  <way id="50981260">
+    <nd ref="650024143"/>
+    <nd ref="650024104"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="-1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+    <tag k="tunnel" v="yes"/>
+  </way>
+  <way id="50981262">
+    <nd ref="7779842155"/>
+    <nd ref="436276730"/>
+    <nd ref="10211554715"/>
+    <nd ref="436276731"/>
+    <nd ref="10211554714"/>
+    <nd ref="436276732"/>
+    <nd ref="436276733"/>
+    <nd ref="436276734"/>
+    <nd ref="10211562517"/>
+    <nd ref="12105436711"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="50981265">
+    <nd ref="5303668878"/>
+    <nd ref="650024136"/>
+    <nd ref="650024141"/>
+    <nd ref="650024140"/>
+    <nd ref="650024139"/>
+    <nd ref="650024145"/>
+    <nd ref="650024144"/>
+    <nd ref="650024143"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="50981266">
+    <nd ref="436276718"/>
+    <nd ref="436276719"/>
+    <nd ref="436276720"/>
+    <nd ref="436276721"/>
+    <nd ref="436276722"/>
+    <nd ref="436276723"/>
+    <nd ref="436276724"/>
+    <nd ref="650024138"/>
+    <nd ref="436276725"/>
+    <nd ref="436276726"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="50981267">
+    <nd ref="650024123"/>
+    <nd ref="436276728"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="광교교"/>
+    <tag k="bridge:name:ko" v="광교교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="50981268">
+    <nd ref="436276809"/>
+    <nd ref="10211562518"/>
+    <nd ref="10211554713"/>
+    <nd ref="650024124"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="광교교"/>
+    <tag k="bridge:name:ko" v="광교교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="50981269">
+    <nd ref="650024124"/>
+    <nd ref="6635162812"/>
+    <nd ref="436276811"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="51066048">
+    <nd ref="436285575"/>
+    <nd ref="650024086"/>
+    <nd ref="650024087"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066049">
+    <nd ref="513170823"/>
+    <nd ref="12283231347"/>
+    <nd ref="12283231348"/>
+    <nd ref="436276746"/>
+    <nd ref="12283231349"/>
+    <nd ref="436276747"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="파정육교"/>
+    <tag k="bridge:name:ko" v="파정육교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066050">
+    <nd ref="436285572"/>
+    <nd ref="436285574"/>
+    <nd ref="436285575"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="파정육교"/>
+    <tag k="bridge:name:ko" v="파정육교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066820">
+    <nd ref="4185203593"/>
+    <nd ref="651292109"/>
+    <nd ref="651292108"/>
+    <nd ref="651292107"/>
+    <nd ref="651292106"/>
+    <nd ref="651292105"/>
+    <nd ref="4185199922"/>
+    <nd ref="651292099"/>
+    <nd ref="651292098"/>
+    <nd ref="4185201540"/>
+    <nd ref="651292097"/>
+    <nd ref="651292096"/>
+    <nd ref="651292095"/>
+    <nd ref="4185201529"/>
+    <nd ref="651292118"/>
+    <nd ref="4185201528"/>
+    <nd ref="651292117"/>
+    <nd ref="651292116"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066821">
+    <nd ref="651292074"/>
+    <nd ref="651292073"/>
+    <nd ref="651292072"/>
+    <nd ref="651292069"/>
+    <nd ref="651292068"/>
+    <nd ref="651292067"/>
+    <nd ref="651292066"/>
+    <nd ref="651292065"/>
+    <nd ref="651292064"/>
+    <nd ref="651292063"/>
+    <nd ref="651292062"/>
+    <nd ref="651292061"/>
+    <nd ref="651292060"/>
+    <nd ref="651292055"/>
+    <nd ref="651292071"/>
+    <nd ref="651292070"/>
+    <nd ref="12283231342"/>
+    <nd ref="651292084"/>
+    <nd ref="651292082"/>
+    <nd ref="12283231341"/>
+    <nd ref="651292081"/>
+    <nd ref="12283231340"/>
+    <nd ref="12283231339"/>
+    <nd ref="651292147"/>
+    <tag k="destination" v="북수원"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066822">
+    <nd ref="436276743"/>
+    <nd ref="436276744"/>
+    <nd ref="12283231316"/>
+    <nd ref="513170823"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066823">
+    <nd ref="651292075"/>
+    <nd ref="436276743"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="북수원IC교"/>
+    <tag k="bridge:name:ko" v="북수원IC교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066824">
+    <nd ref="650024087"/>
+    <nd ref="650024089"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="북수원IC교"/>
+    <tag k="bridge:name:ko" v="북수원IC교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066825">
+    <nd ref="650024089"/>
+    <nd ref="650024090"/>
+    <nd ref="650024088"/>
+    <nd ref="436276795"/>
+    <nd ref="651292766"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="51066826">
+    <nd ref="650024087"/>
+    <nd ref="651292074"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="destination" v="북수원"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="layer" v="1"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066895">
+    <nd ref="651292142"/>
+    <nd ref="651292797"/>
+    <nd ref="651292798"/>
+    <nd ref="651292799"/>
+    <nd ref="651292790"/>
+    <nd ref="651292791"/>
+    <nd ref="651292792"/>
+    <nd ref="651292794"/>
+    <nd ref="651292795"/>
+    <nd ref="11465629240"/>
+    <nd ref="651292804"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066896">
+    <nd ref="436276740"/>
+    <nd ref="651292759"/>
+    <nd ref="651292767"/>
+    <nd ref="651292770"/>
+    <nd ref="651292771"/>
+    <nd ref="12283231331"/>
+    <nd ref="12283231332"/>
+    <nd ref="651292772"/>
+    <nd ref="651292773"/>
+    <nd ref="12283231333"/>
+    <nd ref="651292775"/>
+    <nd ref="651292776"/>
+    <nd ref="651292777"/>
+    <nd ref="651292780"/>
+    <nd ref="651292781"/>
+    <nd ref="651292147"/>
+    <tag k="destination" v="북수원;의왕"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066897">
+    <nd ref="651292143"/>
+    <nd ref="12283231346"/>
+    <nd ref="12283231343"/>
+    <nd ref="12283231344"/>
+    <nd ref="651292782"/>
+    <nd ref="12283231345"/>
+    <nd ref="651292778"/>
+    <nd ref="651292779"/>
+    <nd ref="651292774"/>
+    <nd ref="651292752"/>
+    <nd ref="651292750"/>
+    <nd ref="651292751"/>
+    <nd ref="651292758"/>
+    <nd ref="651292753"/>
+    <nd ref="10211562521"/>
+    <nd ref="651292754"/>
+    <nd ref="651292755"/>
+    <nd ref="651292756"/>
+    <nd ref="651292757"/>
+    <nd ref="651292760"/>
+    <nd ref="651292761"/>
+    <nd ref="651292762"/>
+    <nd ref="651292763"/>
+    <nd ref="651292764"/>
+    <nd ref="651292765"/>
+    <nd ref="651292766"/>
+    <tag k="destination" v="원주;동수원"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066898">
+    <nd ref="651292115"/>
+    <nd ref="651292114"/>
+    <nd ref="11465629242"/>
+    <nd ref="651292113"/>
+    <nd ref="651292139"/>
+    <nd ref="651292138"/>
+    <nd ref="651292132"/>
+    <nd ref="4185201519"/>
+    <nd ref="651292131"/>
+    <nd ref="651292130"/>
+    <nd ref="651292090"/>
+    <nd ref="11465629233"/>
+    <nd ref="5872861276"/>
+    <nd ref="651292088"/>
+    <nd ref="651292087"/>
+    <nd ref="651292086"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066899">
+    <nd ref="651292786"/>
+    <nd ref="4185201521"/>
+    <nd ref="651292787"/>
+    <nd ref="4185201524"/>
+    <nd ref="651292788"/>
+    <nd ref="651292789"/>
+    <nd ref="651292800"/>
+    <nd ref="651292801"/>
+    <nd ref="651292802"/>
+    <nd ref="651292803"/>
+    <nd ref="651292132"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066900">
+    <nd ref="651292124"/>
+    <nd ref="651292123"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="layer" v="1"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066901">
+    <nd ref="651292123"/>
+    <nd ref="651292122"/>
+    <nd ref="4185201530"/>
+    <nd ref="651292121"/>
+    <nd ref="4185201532"/>
+    <nd ref="651292104"/>
+    <nd ref="651292103"/>
+    <nd ref="651292102"/>
+    <nd ref="4185201541"/>
+    <nd ref="651292101"/>
+    <nd ref="651292100"/>
+    <nd ref="4185199920"/>
+    <nd ref="651292112"/>
+    <nd ref="651292111"/>
+    <nd ref="4185199925"/>
+    <nd ref="651292110"/>
+    <nd ref="651292129"/>
+    <nd ref="651292128"/>
+    <nd ref="651292127"/>
+    <nd ref="4185199921"/>
+    <nd ref="651292120"/>
+    <nd ref="4185201543"/>
+    <nd ref="651292119"/>
+    <nd ref="4185201526"/>
+    <nd ref="436402131"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="51066902">
+    <nd ref="651292116"/>
+    <nd ref="651292115"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="layer" v="1"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="124023057">
+    <nd ref="651292143"/>
+    <nd ref="651292080"/>
+    <nd ref="12283231330"/>
+    <nd ref="651292079"/>
+    <nd ref="12283231329"/>
+    <nd ref="12283231328"/>
+    <nd ref="651292078"/>
+    <nd ref="12283231327"/>
+    <nd ref="651292077"/>
+    <nd ref="12283231326"/>
+    <nd ref="651292076"/>
+    <nd ref="12283231325"/>
+    <nd ref="651292059"/>
+    <nd ref="12283231324"/>
+    <nd ref="651292058"/>
+    <nd ref="12283231323"/>
+    <nd ref="12283231322"/>
+    <nd ref="651292057"/>
+    <nd ref="12283231321"/>
+    <nd ref="12283231320"/>
+    <nd ref="12283231319"/>
+    <nd ref="12283231318"/>
+    <nd ref="12283231317"/>
+    <nd ref="513170823"/>
+    <tag k="destination" v="인천;부곡"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="206488360">
+    <nd ref="651292766"/>
+    <nd ref="3953896622"/>
+    <nd ref="436276796"/>
+    <nd ref="4053666248"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="5"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="206488361">
+    <nd ref="436276740"/>
+    <nd ref="436276741"/>
+    <nd ref="436276742"/>
+    <nd ref="651292075"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="206488362">
+    <nd ref="12105436709"/>
+    <nd ref="10211554716"/>
+    <nd ref="436276802"/>
+    <nd ref="651274640"/>
+    <nd ref="436276803"/>
+    <nd ref="436276804"/>
+    <nd ref="436276805"/>
+    <nd ref="651274638"/>
+    <nd ref="436276806"/>
+    <nd ref="7779842156"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="206488363">
+    <nd ref="436276739"/>
+    <nd ref="3953896621"/>
+    <nd ref="436276740"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="206488707">
+    <nd ref="436276726"/>
+    <nd ref="6635162813"/>
+    <nd ref="650024123"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="402970466">
+    <nd ref="4053666249"/>
+    <nd ref="436276739"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="402970467">
+    <nd ref="4053666247"/>
+    <nd ref="4053666249"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="파장교"/>
+    <tag k="bridge:name:ko" v="파장교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="402970468">
+    <nd ref="4053666248"/>
+    <nd ref="10211562520"/>
+    <nd ref="3953896620"/>
+    <nd ref="4053666246"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="파장교"/>
+    <tag k="bridge:name:ko" v="파장교"/>
+    <tag k="bridge:structure" v="beam"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="5"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="402970469">
+    <nd ref="4053666246"/>
+    <nd ref="436276798"/>
+    <nd ref="436276799"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="5"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="474882669">
+    <nd ref="4687440852"/>
+    <nd ref="436276432"/>
+    <nd ref="436285561"/>
+    <nd ref="4557953858"/>
+    <nd ref="436285563"/>
+    <nd ref="728691002"/>
+    <nd ref="436285564"/>
+    <nd ref="728691003"/>
+    <nd ref="651274632"/>
+    <nd ref="728691005"/>
+    <nd ref="436285565"/>
+    <nd ref="728691007"/>
+    <nd ref="651274628"/>
+    <nd ref="436285566"/>
+    <nd ref="436285567"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="493209384">
+    <nd ref="651292086"/>
+    <nd ref="651292085"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="layer" v="1"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="493209385">
+    <nd ref="651292094"/>
+    <nd ref="651292093"/>
+    <nd ref="5872861263"/>
+    <nd ref="651292091"/>
+    <nd ref="11465629237"/>
+    <nd ref="651292136"/>
+    <nd ref="651292135"/>
+    <nd ref="651292134"/>
+    <nd ref="651292133"/>
+    <nd ref="651292142"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="493209386">
+    <nd ref="651292085"/>
+    <nd ref="12283231336"/>
+    <nd ref="651292144"/>
+    <nd ref="12283231337"/>
+    <nd ref="12283231338"/>
+    <nd ref="651292143"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="493209387">
+    <nd ref="651292145"/>
+    <nd ref="651292094"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="layer" v="1"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="493209389">
+    <nd ref="4851400963"/>
+    <nd ref="436276751"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="이목교"/>
+    <tag k="bridge:name:ko" v="이목교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="493209390">
+    <nd ref="436276751"/>
+    <nd ref="651274630"/>
+    <nd ref="436276752"/>
+    <nd ref="728690629"/>
+    <nd ref="651274631"/>
+    <nd ref="728690630"/>
+    <nd ref="436276753"/>
+    <nd ref="728690631"/>
+    <nd ref="436276754"/>
+    <nd ref="728690632"/>
+    <nd ref="651274637"/>
+    <nd ref="436276755"/>
+    <nd ref="436276756"/>
+    <nd ref="3953896627"/>
+    <nd ref="436276757"/>
+    <nd ref="436276758"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="493209391">
+    <nd ref="4851400964"/>
+    <nd ref="436285569"/>
+    <nd ref="436285570"/>
+    <nd ref="4646380792"/>
+    <nd ref="513173589"/>
+    <nd ref="930164460"/>
+    <nd ref="5872862165"/>
+    <nd ref="436285571"/>
+    <nd ref="5872862167"/>
+    <nd ref="4646380790"/>
+    <nd ref="436285572"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="493209392">
+    <nd ref="436285567"/>
+    <nd ref="4851400964"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="이목교"/>
+    <tag k="bridge:name:ko" v="이목교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:advisory" v="80"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="549032648">
+    <nd ref="5303668878"/>
+    <nd ref="5303668879"/>
+    <nd ref="5303668880"/>
+    <nd ref="5303668881"/>
+    <nd ref="5303668882"/>
+    <nd ref="5303668883"/>
+    <nd ref="5303668884"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="549032649">
+    <nd ref="436276819"/>
+    <nd ref="436276818"/>
+    <nd ref="436276817"/>
+    <nd ref="436276815"/>
+    <nd ref="436276814"/>
+    <nd ref="650024142"/>
+    <nd ref="436276813"/>
+    <nd ref="650024135"/>
+    <nd ref="436276812"/>
+    <nd ref="5303668893"/>
+    <nd ref="436276726"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="549032650">
+    <nd ref="5303668884"/>
+    <nd ref="5303668885"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="2"/>
+    <tag k="layer" v="-1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="maxspeed:hgv" v="80"/>
+    <tag k="minspeed" v="50"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+    <tag k="toll" v="yes"/>
+    <tag k="tunnel" v="yes"/>
+  </way>
+  <way id="582107258">
+    <nd ref="651292804"/>
+    <nd ref="4185200724"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="582107260">
+    <nd ref="444706550"/>
+    <nd ref="651292149"/>
+    <nd ref="651292148"/>
+    <nd ref="4185203593"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="621670387">
+    <nd ref="4646380789"/>
+    <nd ref="4646380790"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="621670389">
+    <nd ref="513173589"/>
+    <nd ref="5872862163"/>
+    <nd ref="4646380687"/>
+    <nd ref="5872862162"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="833403519">
+    <nd ref="436276729"/>
+    <nd ref="7779842155"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="조원교"/>
+    <tag k="bridge:name:ko" v="조원교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="833403520">
+    <nd ref="436276728"/>
+    <nd ref="436276729"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="833403521">
+    <nd ref="436276808"/>
+    <nd ref="436276809"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="833403522">
+    <nd ref="7779842156"/>
+    <nd ref="436276808"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="bridge:name" v="조원교"/>
+    <tag k="bridge:name:ko" v="조원교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="1116479400">
+    <nd ref="436276811"/>
+    <nd ref="650024137"/>
+    <nd ref="5303668878"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="1235185547">
+    <nd ref="651292147"/>
+    <nd ref="651292146"/>
+    <nd ref="12283231334"/>
+    <nd ref="12283231335"/>
+    <nd ref="651292145"/>
+    <tag k="destination" v="북수원"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1235185549">
+    <nd ref="651292130"/>
+    <nd ref="11465629235"/>
+    <nd ref="11465629234"/>
+    <nd ref="11465629236"/>
+    <nd ref="11465629233"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1235185550">
+    <nd ref="11465629237"/>
+    <nd ref="11465629244"/>
+    <nd ref="11465629243"/>
+    <nd ref="651292135"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1235185551">
+    <nd ref="651292142"/>
+    <nd ref="651292140"/>
+    <nd ref="651292126"/>
+    <nd ref="11465629241"/>
+    <nd ref="651292125"/>
+    <nd ref="651292124"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1307152437">
+    <nd ref="12105436708"/>
+    <nd ref="12105436709"/>
+    <tag k="bridge:name" v="송죽교"/>
+    <tag k="bridge:name:ko" v="송죽교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="1307152438">
+    <nd ref="436276799"/>
+    <nd ref="436276800"/>
+    <nd ref="436276801"/>
+    <nd ref="12105436708"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="1307152439">
+    <nd ref="12105436710"/>
+    <nd ref="436276735"/>
+    <nd ref="436276736"/>
+    <nd ref="436276737"/>
+    <nd ref="436276738"/>
+    <nd ref="4053666247"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+  <way id="1307152440">
+    <nd ref="12105436711"/>
+    <nd ref="12105436710"/>
+    <tag k="bridge:name" v="송죽교"/>
+    <tag k="bridge:name:ko" v="송죽교"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="4"/>
+    <tag k="maxspeed" v="100"/>
+    <tag k="name" v="영동고속도로"/>
+    <tag k="name:el" v="Αυτοκινητόδρομος Γιόνγκντονγκ"/>
+    <tag k="name:en" v="Yeongdong Expressway"/>
+    <tag k="name:ja" v="嶺東高速道路"/>
+    <tag k="name:ko" v="영동고속도로"/>
+    <tag k="name:ko-Hani" v="嶺東高速道路"/>
+    <tag k="name:ko-Latn" v="Yeongdonggosokdoro"/>
+    <tag k="name:zh" v="嶺東高速公路"/>
+    <tag k="name:zh-Hans" v="岭东高速公路"/>
+    <tag k="name:zh-Hant" v="嶺東高速公路"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="operator" v="한국도로공사"/>
+    <tag k="operator:en" v="Korea Expressway Corporation"/>
+    <tag k="operator:ko" v="한국도로공사"/>
+    <tag k="operator:short" v="ex"/>
+    <tag k="operator:type" v="public"/>
+    <tag k="operator:website" v="https://www.ex.co.kr"/>
+    <tag k="operator:wikidata" v="Q489325"/>
+    <tag k="ref" v="50"/>
+  </way>
+
+</osm>

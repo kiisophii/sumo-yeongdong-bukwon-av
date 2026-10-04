@@ -57,6 +57,17 @@ sys.path.append(os.path.join(os.environ["SUMO_HOME"], "tools"))
 import traci
 from sumolib import checkBinary
 
+# libsumo: SUMO를 파이썬 프로세스 안에서 직접 실행하는 라이브러리 (TraCI와 같은 API).
+# 소켓 왕복이 없어서 화면 없는(headless) 학습/수집이 수 배 빨라진다.
+#   설치: pip install libsumo==<설치된 SUMO 버전>   (예: 1.27.1)
+#   GUI는 지원하지 않으므로 gui=True일 때는 항상 TraCI를 쓴다.
+#   끄고 싶으면 환경변수 SUMO_USE_LIBSUMO=0
+_traci_socket = traci
+try:
+    import libsumo as _libsumo
+except ImportError:
+    _libsumo = None
+
 
 class SumoHighwayEnv(gym.Env):
     metadata = {"render_modes": ["human"]}
@@ -115,6 +126,25 @@ class SumoHighwayEnv(gym.Env):
         self.lc_spawn_protect = float(lcs.get("spawn_protect", 60.0))  # m
         self.lc_horizon = float(lcs.get("approach_horizon", 1.0))       # s
         self.road_length = float(road["length"])
+        # ---- 실제 지도(OSM) 도로 모드 ----
+        #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
+        self.osm_mode = road.get("type", "straight") == "osm"
+        wu = self.traffic.get("warmup_seconds")
+        if isinstance(wu, (int, float)):
+            wu = (float(wu), float(wu))
+        self.warmup_seconds = tuple(wu) if wu else None
+        # 경로 기반 차선 연결성을 볼 거리 (합류/차로감소 예고용, 기본 = 시야 W)
+        self.route_lookahead = float(mdp_obs.get("route_lookahead",
+                                                 mdp_obs["visibility"]))
+        # 속도 보상/막힘 판정 기준: "global"=vmax, "lane"=현재 구간 제한속도
+        self.speed_ref = str(reward.get("speed_reference", "global"))
+        # 시뮬레이션 재사용 설정 (reset 참고)
+        self.reuse_episodes = int(self.traffic.get("reuse_episodes", 0))
+        self.reuse_gap_seconds = tuple(self.traffic.get("reuse_gap_seconds", (5, 20)))
+        self._episodes_since_start = 0
+        # privileged state(데이터셋용)에 담을 주변 차량 반경 (None = 전체)
+        pr = mdp_obs.get("privileged_radius")
+        self.privileged_radius = float(pr) if pr else None
         self.traffic_max_speed = float(self.traffic.get("max_speed", self.vmax))
         # 차선당 배치 간격: 지정값이 없으면 교통류 이론대로 자동 계산
         #   차선당 유량 q_lane = (vehs/h) / 3600 / 차선수  [대/초]
@@ -206,7 +236,20 @@ class SumoHighwayEnv(gym.Env):
             # --start가 없으면: 창이 뜬 뒤 ▶(플레이)를 눌러야 진행된다.
             #   매 에피소드가 reset()에서 SUMO를 새로 띄우므로,
             #   에피소드마다 ▶를 눌러 시작하게 된다.
-        traci.start(cmd)   # SUMO를 자식 프로세스로 띄우고 소켓 연결
+        # OSM 도로의 주변 지형 폴리곤은 순수 시각 요소라 GUI일 때만 불러온다
+        scenery = os.path.join(os.path.dirname(self.cfg_path), "highway.scenery.xml")
+        if self.gui and self.osm_mode and os.path.exists(scenery):
+            cmd += ["--additional-files", scenery]
+
+        # 모듈 전역 traci를 실행 방식에 맞게 바꿔 끼운다 (이 파일의 모든
+        # traci.* 호출이 그대로 libsumo 또는 소켓 TraCI로 동작).
+        global traci
+        if (not self.gui and _libsumo is not None
+                and os.environ.get("SUMO_USE_LIBSUMO", "1") != "0"):
+            traci = _libsumo
+        else:
+            traci = _traci_socket
+        traci.start(cmd)   # SUMO 시작 (TraCI: 자식 프로세스 + 소켓 / libsumo: 프로세스 내부)
         self._started = True
 
     # ==================================================================
@@ -258,22 +301,50 @@ class SumoHighwayEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
 
-        # SUMO 상태를 완전히 초기화하는 가장 확실한 방법은 껐다 켜는 것.
-        if self._started:
-            traci.close()
-            self._started = False
-        self._start_sumo()
+        # ── 시뮬레이션 재사용 (OSM 도로 + headless) ──
+        # 교통류가 이미 형성된 시뮬레이션을 끄지 않고, 이전 ego만 치운 뒤
+        # 몇 초 더 흘려서 새 ego를 투입한다. 매번 SUMO를 재시작 + warm-up
+        # 하는 비용(~1.3초)이 사라지고, 교통 상황은 계속 변하므로 다양성도
+        # 유지된다. 안전을 위해 reuse_episodes마다 한 번은 완전히 재시작.
+        reuse = (self._started and self.osm_mode and not self.gui
+                 and self.reuse_episodes > 0
+                 and self._episodes_since_start < self.reuse_episodes)
+        if reuse:
+            if self.ego_id in traci.vehicle.getIDList():
+                traci.vehicle.remove(self.ego_id)
+            gap = float(np.random.uniform(*self.reuse_gap_seconds))
+            traci.simulationStep(traci.simulation.getTime() + gap)
+            self._episodes_since_start += 1
+        else:
+            # SUMO 상태를 완전히 초기화하는 가장 확실한 방법은 껐다 켜는 것.
+            if self._started:
+                traci.close()
+                self._started = False
+            self._start_sumo()
+            self._episodes_since_start = 1
 
-        # 도로 전 구간에 배경차를 미리 배치 (첫 스텝부터 실제 교통류 상태)
-        if self.prefill_enabled:
-            self._prefill_traffic()
-        # 배치된 차들이 자리를 잡도록 몇 스텝만 정착시킨다.
-        for _ in range(self.warmup_steps):
-            traci.simulationStep()
+            # 도로 전 구간에 배경차를 미리 배치 (첫 스텝부터 실제 교통류 상태)
+            if self.prefill_enabled:
+                self._prefill_traffic()
+            # 배치된 차들이 자리를 잡도록 몇 스텝만 정착시킨다.
+            for _ in range(self.warmup_steps):
+                traci.simulationStep()
+            # OSM 도로: 교통류가 모든 경로에 퍼질 때까지 미리 돌린다 (한 번의
+            # TraCI 호출로 목표 시각까지 진행하므로 빠르다). 길이를 무작위로 해서
+            # 에피소드마다 시작 교통 상황이 달라진다.
+            if self.warmup_seconds:
+                lo, hi = self.warmup_seconds
+                t_end = traci.simulation.getTime() + float(np.random.uniform(lo, hi))
+                traci.simulationStep(t_end)
 
         # ego 차량 투입 — 반드시 "도로 시작점(0m)"에서 출발
+        depart_lane = self.ego_depart_lane
+        if self.osm_mode and str(self.ego_depart_lane) == str(self.num_lanes // 2):
+            # "center"는 시작 edge의 차선 수 기준으로 다시 계산
+            first = traci.route.getEdges("r0")[0]
+            depart_lane = str(traci.edge.getLaneNumber(first) // 2)
         traci.vehicle.add(self.ego_id, "r0", typeID="ego_type",
-                          departLane=self.ego_depart_lane,
+                          departLane=depart_lane,
                           departPos="0",
                           departSpeed=self.ego_depart_speed)
 
@@ -386,6 +457,8 @@ class SumoHighwayEnv(gym.Env):
         연결(link) 존재 여부를 SUMO 네트워크에서 직접 조회한다.
         차선 감소/합류 지점은 "링크 없는 차선의 끝"으로 자연히 감지된다.
         """
+        if self.osm_mode:
+            return self._route_lane_connectivity(offset)
         try:
             edge = traci.vehicle.getRoadID(self.ego_id)
             if edge.startswith(":"):          # 교차로(junction) 내부 통과 중
@@ -403,6 +476,58 @@ class SumoHighwayEnv(gym.Env):
             return float(np.clip(remaining / self.visibility, 0.0, 1.0))
         except traci.TraCIException:
             return 1.0                        # 조회 실패 시 중립값
+
+    def _route_ahead(self):
+        """현재 edge 각 차선에서 "차선변경 없이 경로를 따라 더 갈 수 있는 거리".
+
+        SUMO getBestLanes는 ego의 경로(route)를 기준으로 차선마다
+        (laneID, 연속 주행 가능 길이, 점유율, 필요 변경 수, 경로 연속 여부, …)
+        를 알려준다. 길이는 차선 시작점 기준이므로 현재 위치를 빼서
+        "앞으로 남은 거리"로 바꾼다. 경로 끝까지 이어지는 차선은 inf.
+        Returns: {lane_index: 남은 거리(m)} (교차로 내부면 None)
+        """
+        edge = traci.vehicle.getRoadID(self.ego_id)
+        if edge.startswith(":"):
+            return None
+        pos = traci.vehicle.getLanePosition(self.ego_id)
+        to_route_end = self.road_length - traci.vehicle.getDistance(self.ego_id)
+        out = {}
+        for lane_id, length, _occ, _off, _cont, _nxt in \
+                traci.vehicle.getBestLanes(self.ego_id):
+            if not lane_id.startswith(edge + "_"):
+                continue
+            ahead = float(length) - pos
+            # 경로 끝까지 가는 차선은 "끊김 없음"으로 취급
+            out[int(lane_id.rsplit("_", 1)[1])] = (
+                float("inf") if ahead >= to_route_end - 1.0 else ahead)
+        return out
+
+    def _route_lane_connectivity(self, offset: int) -> float:
+        """(OSM 모드) 경로 기준 차선 연결성.
+
+        -1 : 차선 없음 / 1 : route_lookahead 이상 계속 갈 수 있음
+        0~1: 그 비율 거리 안에 차선이 끝나거나 경로에서 갈라짐
+             (차로 감소, 진출 전용 차로 등 → 미리 차선을 옮기라는 신호)
+        """
+        try:
+            ahead = self._route_ahead()
+            if ahead is None:
+                return 1.0
+            li = traci.vehicle.getLaneIndex(self.ego_id) + offset
+            if li not in ahead:
+                return -1.0
+            return float(np.clip(ahead[li] / self.route_lookahead, 0.0, 1.0))
+        except traci.TraCIException:
+            return 1.0
+
+    def _speed_ref(self) -> float:
+        """속도 보상/막힘 판정의 기준 속도."""
+        if self.speed_ref == "lane":
+            try:
+                return max(traci.vehicle.getAllowedSpeed(self.ego_id), 1.0)
+            except traci.TraCIException:
+                pass
+        return self.vmax
 
     def _lane_density(self, offset: int) -> float:
         """오프셋 차선의 '전방 차량 밀도'를 0~1로 반환.
@@ -598,8 +723,8 @@ class SumoHighwayEnv(gym.Env):
         이웃은 getNeighbors 결과와 차선 직접 스캔 결과 중 "더 가까운 쪽"을
         쓴다 (스폰 직후 차량 사각지대 보완).
         """
-        my_pos = traci.vehicle.getLanePosition(self.ego_id)
-        if my_pos < self.lc_spawn_protect:
+        # 입구 보호: 출발 후 주행거리 기준 (여러 edge로 된 경로에서도 동작)
+        if traci.vehicle.getDistance(self.ego_id) < self.lc_spawn_protect:
             return False
 
         v = traci.vehicle.getSpeed(self.ego_id)
@@ -673,6 +798,11 @@ class SumoHighwayEnv(gym.Env):
             for vid in traci.vehicle.getIDList():
                 try:
                     vx, vy = traci.vehicle.getPosition(vid)
+                    # 넓은 실제 도로망에서는 ego 주변 반경 안의 차량만 저장
+                    # (반대 방향/먼 램프 차량까지 다 넣으면 데이터가 수십 배 커짐)
+                    if (self.privileged_radius is not None and
+                            (vx - x) ** 2 + (vy - y) ** 2 > self.privileged_radius ** 2):
+                        continue
                     vehicles.append({
                         "id": vid,
                         "x": float(vx),
@@ -720,8 +850,11 @@ class SumoHighwayEnv(gym.Env):
             accel_cmd = (accel_raw * self.max_accel
                          if accel_raw >= 0.0 else accel_raw * self.max_decel)
             dv = accel_cmd * self.step_length
+            # OSM 도로: 구간 제한속도(80/100 km/h)를 넘지 않는다 (규정속도 준수)
+            v_cap = (min(self.vmax, traci.vehicle.getAllowedSpeed(self.ego_id))
+                     if self.osm_mode else self.vmax)
             traci.vehicle.setSpeed(
-                self.ego_id, float(np.clip(v + dv, 0.0, self.vmax)))
+                self.ego_id, float(np.clip(v + dv, 0.0, v_cap)))
 
             lane_change_applied = self._apply_lane_change(lane_change)
 
@@ -732,7 +865,22 @@ class SumoHighwayEnv(gym.Env):
         # ----- (3) 이벤트/관측 -----
         collided = self.ego_id in traci.simulation.getCollidingVehiclesIDList()
         arrived = self.ego_id in traci.simulation.getArrivedIDList()
+        # 순간이동(SUMO가 오래 멈춘 차를 치움)도 실패로 처리
+        if self.ego_id in traci.simulation.getStartingTeleportIDList():
+            collided = True
         alive = self.ego_id in traci.vehicle.getIDList()
+        # 경로 이탈: 끝나는 차선(차로 감소 / 진출 전용)에서 빠져나오지 못하고
+        # 차선 끝에 도달 → 실제 도로라면 정지/사고이므로 충돌과 같게 처리
+        lane_end = False
+        if alive and self.osm_mode and not collided:
+            try:
+                ahead = self._route_ahead()
+                li = traci.vehicle.getLaneIndex(self.ego_id)
+                if ahead is not None and ahead.get(li, 1e9) < 3.0:
+                    lane_end = True
+                    collided = True
+            except traci.TraCIException:
+                pass
         lane_after = int(traci.vehicle.getLaneIndex(self.ego_id)) if alive else None
 
         obs = self._get_obs()
@@ -754,7 +902,8 @@ class SumoHighwayEnv(gym.Env):
             same_lane_leader = self._neighbor(0, leader=True)
             if same_lane_leader is not None:
                 ego_gap = same_lane_leader[0]
-            reward = float(self.rw["speed_weight"]) * ego_speed / self.vmax
+            v_ref = self._speed_ref()
+            reward = float(self.rw["speed_weight"]) * min(ego_speed / v_ref, 1.0)
             if (ego_gap is not None and
                     ego_gap < float(self.rw["close_gap_threshold"])):
                 reward -= float(self.rw["close_gap_penalty"])
@@ -767,7 +916,7 @@ class SumoHighwayEnv(gym.Env):
             if (bp > 0.0 and ego_gap is not None
                     and ego_gap < float(self.rw.get("blocked_gap", 20.0))
                     and ego_speed < float(self.rw.get("blocked_speed_frac", 0.7))
-                        * self.vmax):
+                        * v_ref):
                 reward -= bp
 
             # ---- 차선변경 보상 항 ----
@@ -791,6 +940,7 @@ class SumoHighwayEnv(gym.Env):
 
         info = {
             "collided": collided,
+            "lane_end": lane_end,
             "arrived": arrived,
             "speed": ego_speed,
             "gap": ego_gap,

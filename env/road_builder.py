@@ -30,7 +30,12 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         ego:     configs.road_config.EGO     (RL 차량 속성)
         traffic: configs.road_config.TRAFFIC (배경 교통류)
         out_dir: 생성 위치 (보통 프로젝트의 sumo/ 폴더)
+
+    road["type"] == "osm" 이면 실제 지도(OpenStreetMap) 기반 도로망을 만든다
+    (_build_osm 참고). 지정하지 않으면 기존 "직선 편도 도로" 방식.
     """
+    if road.get("type", "straight") == "osm":
+        return _build_osm(road, ego, traffic, out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     # ──────────────────────────────────────────────────────
@@ -70,6 +75,23 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     #               ego는 여기에 없고, 환경(sumo_env.py)이 reset마다
     #               traci.vehicle.add()로 직접 투입한다.
     # ──────────────────────────────────────────────────────
+    vtypes_block, flow_type = _vtypes_block(traffic)
+
+    with open(os.path.join(out_dir, "highway.rou.xml"), "w") as f:
+        f.write(f"""<routes>
+    <vType id="ego_type" accel="{ego['accel']}" decel="{ego['decel']}" maxSpeed="{ego['max_speed']}" color="1,0,0" vClass="passenger" guiShape="passenger/sedan"/>
+{vtypes_block}
+    <route id="r0" edges="e0"/>
+    <flow id="traffic" type="{flow_type}" route="r0" begin="0" end="100000"
+          period="{3600.0 / traffic['vehs_per_hour']:.2f}"
+          departLane="{traffic['depart_lane']}" departSpeed="{traffic['depart_speed']}"/>
+</routes>
+""")
+    return _finish_straight(road, out_dir)
+
+
+def _vtypes_block(traffic: dict):
+    """배경차 vType(Distribution) XML 블록과 flow가 쓸 type id를 반환."""
     controllers = traffic.get("controllers")
     if controllers:
         # probability 합이 1이 아니어도 되도록 자동 정규화
@@ -90,8 +112,6 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
                 # 컨트롤러마다 속도를 다르게 주면 차선 간 속도차가 생겨
                 # "추월할 이유"가 자연스럽게 만들어진다.
                 f'maxSpeed="{c.get("max_speed", traffic["max_speed"])}"',
-                # speedDev: 같은 타입 안에서도 개체별 희망속도 편차 (0~)
-                f'speedDev="{c.get("speed_dev", 0.1)}"',
                 f'color="{c.get("color", "1,1,0")}"',
                 'vClass="passenger"', 'guiShape="passenger/sedan"',
             ]
@@ -107,9 +127,22 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
             #   배경차가 차선을 유지하면 "느린 차 뒤 → 옆 틈으로 변경 →
             #   가속"이라는 추월 패턴이 재현 가능한 형태로 나타난다.
             # 특정 컨트롤러만 돌아다니게 하려면 그 항목에 "keep_lane": False.
+            # speedDev: 같은 타입 안에서도 개체별 희망속도 편차 (0~)
+            #   speed_factor(분포 직접 지정)가 있으면 그쪽이 편차까지 정의한다.
+            if "speed_factor" not in c:
+                attrs.append(f'speedDev="{c.get("speed_dev", 0.1)}"')
+            if "speed_factor" in c:
+                # 희망속도 = 차선 제한속도 × speedFactor (OSM 도로처럼 구간마다
+                # 제한속도가 다를 때 자연스럽다). speedDev와 함께 분포를 이룬다.
+                attrs.append(f'speedFactor="{c["speed_factor"]}"')
             if c.get("keep_lane", True):
                 attrs += ['lcStrategic="0"', 'lcCooperative="0"',
                           'lcSpeedGain="0"', 'lcKeepRight="0"']
+            else:
+                # 차선변경 허용 시 성향 파라미터(lcStrategic 등)를 그대로 전달.
+                # 합류/분기 도로에서는 경로를 따라가기 위한 전략적 변경이 필수.
+                for k, v in (c.get("lc") or {}).items():
+                    attrs.append(f'{k}="{v}"')
             vtype_lines.append("        <vType " + " ".join(attrs) + "/>")
         vtypes_block = ('    <vTypeDistribution id="carDist">\n'
                         + "\n".join(vtype_lines)
@@ -123,17 +156,11 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
                         f'vClass="passenger" guiShape="passenger/sedan"/>')
         flow_type = "car"
 
-    with open(os.path.join(out_dir, "highway.rou.xml"), "w") as f:
-        f.write(f"""<routes>
-    <vType id="ego_type" accel="{ego['accel']}" decel="{ego['decel']}" maxSpeed="{ego['max_speed']}" color="1,0,0" vClass="passenger" guiShape="passenger/sedan"/>
-{vtypes_block}
-    <route id="r0" edges="e0"/>
-    <flow id="traffic" type="{flow_type}" route="r0" begin="0" end="100000"
-          period="{3600.0 / traffic['vehs_per_hour']:.2f}"
-          departLane="{traffic['depart_lane']}" departSpeed="{traffic['depart_speed']}"/>
-</routes>
-""")
+    return vtypes_block, flow_type
 
+
+def _finish_straight(road: dict, out_dir: str) -> str:
+    """직선 도로 모드의 GUI 설정 / 장식 / sumocfg / netconvert 단계."""
     # ──────────────────────────────────────────────────────
     # 4) GUI 기본 시각화 설정
     #    GUI 관련 값의 source of truth는 env/mdp_config.py의 SIMULATION 하나뿐이다.
@@ -315,3 +342,136 @@ def _write_scenery(out_dir: str, road: dict):
     lines.append("</additional>")
     with open(path, "w") as f:
         f.write("\n".join(lines) + "\n")
+
+
+# ══════════════════════════════════════════════════════════════════
+# 실제 지도(OpenStreetMap) 기반 도로망
+# ══════════════════════════════════════════════════════════════════
+def _resolve(path: str) -> str:
+    """road_config의 상대경로를 프로젝트 루트 기준 절대경로로."""
+    if os.path.isabs(path):
+        return path
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(root, path)
+
+
+def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
+    """OSM 파일로 실제 도로망을 만들고 sumocfg 경로를 반환한다.
+
+    처리 순서:
+      1) netconvert  : OSM(고속도로 본선+램프) → highway.net.xml
+                       (--ramps.guess로 가속/감속 차로를 자동 생성)
+      2) 경로 계산    : road_config의 (출발 edge, 도착 edge) 쌍을
+                       sumolib 최단경로로 edge 나열로 변환
+      3) rou.xml     : ego 경로(r0) + 배경차 경로별 flow
+      4) polyconvert : 주변 건물/녹지/하천 OSM → highway.scenery.xml (시각 요소)
+      5) gui.xml / sumocfg
+
+    ★ 이 함수는 계산된 ego 경로 길이를 road["length"]에 기록한다.
+      (sumo_env가 도로 길이·GUI 기준값으로 사용)
+    """
+    import sumolib
+
+    os.makedirs(out_dir, exist_ok=True)
+    net_path = os.path.join(out_dir, "highway.net.xml")
+
+    # ── 1) netconvert ──
+    netconvert = checkBinary("netconvert")
+    cmd = [netconvert, "--osm-files", _resolve(road["osm_file"]),
+           "-o", net_path,
+           "--geometry.remove",           # 불필요한 중간 노드 정리
+           "--ramps.guess",               # 진입/진출 램프의 가감속 차로 생성
+           "--junctions.join",            # 가까운 교차점 병합
+           "--remove-edges.isolated",
+           "--no-turnarounds",
+           "--output.street-names",
+           "--no-warnings"]
+    cmd += list(road.get("netconvert_options", []))
+    subprocess.run(cmd, check=True, capture_output=True)
+
+    net = sumolib.net.readNet(net_path)
+
+    def path(frm: str, to: str):
+        edges, _ = net.getShortestPath(net.getEdge(frm), net.getEdge(to))
+        if not edges:
+            raise RuntimeError(f"경로 없음: {frm} → {to} (road_config 확인)")
+        return [e.getID() for e in edges]
+
+    # ── 2) 경로 ──
+    ego_edges = path(*road["ego_route"])
+    road["length"] = sum(net.getEdge(e).getLength() for e in ego_edges)
+    road["num_lanes"] = max(net.getEdge(e).getLaneNumber() for e in ego_edges)
+
+    routes = traffic.get("routes", {})
+    # 콘솔 요약용 총 교통량 (train.py 등이 출력)
+    traffic["vehs_per_hour"] = sum(float(r["vehs_per_hour"]) for r in routes.values())
+    route_lines = [f'    <route id="r0" edges="{" ".join(ego_edges)}"/>']
+    flow_lines = []
+    vtypes_block, flow_type = _vtypes_block(traffic)
+    for name, r in routes.items():
+        edges = path(r["from"], r["to"])
+        route_lines.append(f'    <route id="r_{name}" edges="{" ".join(edges)}"/>')
+        flow_lines.append(
+            f'    <flow id="f_{name}" type="{flow_type}" route="r_{name}" '
+            f'begin="0" end="100000" vehsPerHour="{r["vehs_per_hour"]}" '
+            f'departLane="{r.get("depart_lane", traffic["depart_lane"])}" '
+            f'departSpeed="{r.get("depart_speed", traffic["depart_speed"])}"/>')
+
+    with open(os.path.join(out_dir, "highway.rou.xml"), "w") as f:
+        f.write(f"""<routes>
+    <vType id="ego_type" accel="{ego['accel']}" decel="{ego['decel']}" maxSpeed="{ego['max_speed']}" speedFactor="1" color="1,0,0" vClass="passenger" guiShape="passenger/sedan"/>
+{vtypes_block}
+{chr(10).join(route_lines)}
+{chr(10).join(flow_lines)}
+</routes>
+""")
+
+    # ── 4) 주변 지형 폴리곤 (순수 시각 요소) ──
+    scenery = os.path.join(out_dir, "highway.scenery.xml")
+    ctx = road.get("context_osm_file")
+    if ctx and SCENERY.get("osm_polygons", True):
+        typemap = os.path.join(os.environ.get("SUMO_HOME", ""),
+                               "data", "typemap", "osmPolyconvert.typ.xml")
+        subprocess.run(
+            [checkBinary("polyconvert"), "--net-file", net_path,
+             "--osm-files", _resolve(ctx), "--type-file", typemap,
+             "-o", scenery, "--no-warnings"],
+            check=True, capture_output=True)
+    else:
+        with open(scenery, "w") as f:
+            f.write("<additional/>\n")
+
+    # ── 5) GUI 시작 화면: 지정한 관심 지점(합류부 등)을 확대 ──
+    #   SUMO zoom(%)은 "네트워크 전체 폭 = 100%" 기준
+    (xmin, ymin), (xmax, ymax) = net.getBBoxXY()
+    view_width = float(SIMULATION.get("gui_view_width", 500.0))
+    zoom = (xmax - xmin) / view_width * 100.0
+    if road.get("gui_focus_edge"):
+        shape = net.getEdge(road["gui_focus_edge"]).getShape()
+        cx, cy = shape[len(shape) // 2]
+    else:
+        cx, cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+    with open(os.path.join(out_dir, "highway.gui.xml"), "w") as f:
+        f.write(f"""<viewsettings>
+    <scheme name="real world"/>
+    <viewport zoom="{zoom:.0f}" x="{cx:.1f}" y="{cy:.1f}" angle="0"/>
+    <delay value="{float(SIMULATION.get('gui_delay', 100.0))}"/>
+</viewsettings>
+""")
+
+    # 주변 지형(highway.scenery.xml)은 sumocfg에 넣지 않는다 — 학습(headless)마다
+    # 1MB가 넘는 폴리곤을 읽지 않도록, GUI를 띄울 때만 추가로 불러온다
+    # (sumo_env / view_road.py가 --additional-files로 지정).
+    cfg_path = os.path.join(out_dir, "highway.sumocfg")
+    with open(cfg_path, "w") as f:
+        f.write("""<configuration>
+    <input>
+        <net-file value="highway.net.xml"/>
+        <route-files value="highway.rou.xml"/>
+    </input>
+    <gui_only>
+        <gui-settings-file value="highway.gui.xml"/>
+    </gui_only>
+</configuration>
+""")
+    return cfg_path
