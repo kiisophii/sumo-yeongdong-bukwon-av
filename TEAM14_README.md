@@ -97,7 +97,7 @@ Windows에서 한글 경로 문제가 생기면 `set PYTHONUTF8=1`을 먼저 실
 | 10/6 수업의 `5_Project_Preparation` 내용 반영 | 10/6 이후 | 수업 코드가 바뀌면 병합 필요 |
 | HuggingFace 데이터 업로드 | 발표 전 | `tools/upload_hf.py` (본인 계정으로 로그인) |
 | 프로젝트 페이지 공개 (GitHub Pages: `docs/` 폴더) | 발표 전 | Settings → Pages → `/docs` |
-| 보고서 다듬기 / 발표 자료 다듬기 | 11/28 전 | 초안: `docs/report/`, `docs/slides/` |
+| 보고서 다듬기 / 발표 자료 다듬기 | 11/28 전 | 초안은 claude.ai의 보고서 문서와 발표 슬라이드(김수아 계정, 공유 필요). Word·PDF·PPTX로 내보내기 가능 |
 | 팀별 컨설팅(10/27, 11/10, 11/17, 11/24) 피드백 반영 | 매 컨설팅 후 | |
 | 로보월드 보고서 | 11/9 23:59 | **개인 과제**, 각자 작성 |
 
