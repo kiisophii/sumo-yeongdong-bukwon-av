@@ -111,7 +111,7 @@ EVAL_INTERVAL = 5       # 몇 번의 업데이트마다 주행 지표를 평가�
 EVAL_EPISODES = 5       # 평가 1회당 에피소드 수
 LOG_INTERVAL = 1        # 몇 번의 업데이트마다 콘솔에 출력할지
 RESULTS_DIR = "results" # 결과 저장 폴더
-RUN_NAME = "team14_ppo_v2"         # None이면 run_날짜_시각 자동 생성.
+RUN_NAME = None         # None이면 run_날짜_시각 자동 생성.
                         # 문자열을 주면 그 이름으로 저장 (예: "exp_lr1e-4")
 # ══════════════════════════════════════════════════════════════════
 
