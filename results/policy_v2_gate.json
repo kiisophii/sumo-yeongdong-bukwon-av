@@ -1,0 +1,18 @@
+{
+  "tag": "v2_gate",
+  "model": "results/team14_ppo_v2/model.pt",
+  "seed": 2026,
+  "episodes": 300,
+  "brake_check": true,
+  "collision_count": 4,
+  "lane_end_count": 0,
+  "arrival_count": 296,
+  "timeout_count": 0,
+  "mean_speed_kmh": 83.69967766259597,
+  "mean_travel_time_s": 305.25333333333333,
+  "lane_changes_per_ep": 0.9266666666666666,
+  "lane_command_step_share": 0.7904197162839836,
+  "blocked_unsafe_per_ep": 10.18,
+  "blocked_no_lane_per_ep": 463.18,
+  "blocked_junction_per_ep": 6.466666666666667
+}

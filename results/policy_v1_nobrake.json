@@ -1,0 +1,18 @@
+{
+  "tag": "v1_nobrake",
+  "model": "results/team14_ppo_v1/model.pt",
+  "seed": 2026,
+  "episodes": 300,
+  "brake_check": false,
+  "collision_count": 1,
+  "lane_end_count": 0,
+  "arrival_count": 299,
+  "timeout_count": 0,
+  "mean_speed_kmh": 83.10832261700683,
+  "mean_travel_time_s": 310.47833333333335,
+  "lane_changes_per_ep": 1.0166666666666666,
+  "lane_command_step_share": 0.4246174623197207,
+  "blocked_unsafe_per_ep": 12.57,
+  "blocked_no_lane_per_ep": 239.97333333333333,
+  "blocked_junction_per_ep": 6.53
+}

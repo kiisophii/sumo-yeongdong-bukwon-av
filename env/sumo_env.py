@@ -785,20 +785,26 @@ class SumoHighwayEnv(gym.Env):
         "위험한 변경 = 실행도 안 되고 감점"이라, 측면충돌로 즉사하며
         배우는 대신 안전한 타이밍을 고르는 쪽으로 학습이 유도된다.
         """
+        # 실행되지 않은 이유 (분석용, info["lane_change_blocked"]):
+        #   "junction" 교차로 내부 / "no_lane" 그 방향에 차선 없음 / "unsafe" 안전 게이트
+        self._lc_block_reason = None
         if self.ego_id not in traci.vehicle.getIDList():
             return False
         try:
             edge = traci.vehicle.getRoadID(self.ego_id)
             if edge.startswith(":"):
+                self._lc_block_reason = "junction" if lane_change else None
                 return False
             current = traci.vehicle.getLaneIndex(self.ego_id)
             n_lanes = traci.edge.getLaneNumber(edge)
             target = current + lane_change
             if target < 0 or target >= n_lanes:
+                self._lc_block_reason = "no_lane"
                 return False
             # ★ 측면충돌 방지: 실제 이동 명령(0이 아닌 변경)에만 안전 검사
             if (lane_change != 0 and self.lc_safety_enabled
                     and not self._lane_change_is_safe(lane_change)):
+                self._lc_block_reason = "unsafe"
                 return False
             traci.vehicle.changeLane(
                 self.ego_id, target, self.lane_change_duration)
@@ -863,6 +869,7 @@ class SumoHighwayEnv(gym.Env):
         lane_change = self._quantize_lane_change(lane_raw)
         lane_change_applied = False
         lane_before = None
+        self._lc_block_reason = None
 
         # ----- (1) 종방향 + 횡방향 행동 적용 -----
         if self.ego_id in traci.vehicle.getIDList():
@@ -970,6 +977,7 @@ class SumoHighwayEnv(gym.Env):
             "lane_change_raw": lane_raw,
             "lane_change": lane_change,
             "lane_change_applied": lane_change_applied,
+            "lane_change_blocked": getattr(self, "_lc_block_reason", None),
             "lane_before": lane_before,
             "lane_after": lane_after,
         }
