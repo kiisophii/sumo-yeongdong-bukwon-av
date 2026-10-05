@@ -1,0 +1,49 @@
+{
+  "rule_based": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 300,
+    "mean_speed_mps": 21.592560828094605,
+    "mean_return": 59.83724583121088,
+    "mean_length_steps": 666.0866666666667,
+    "mean_travel_time_s": 333.04333333333335,
+    "lane_changes_per_ep": 0.0,
+    "min_gap_median_m": 28.930472312038944,
+    "wall_time_s": 1009.724053144455
+  },
+  "ppo": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 300,
+    "mean_speed_mps": 23.16245762834456,
+    "mean_return": 60.353544556683666,
+    "mean_length_steps": 620.95,
+    "mean_travel_time_s": 310.475,
+    "lane_changes_per_ep": 0.9933333333333333,
+    "min_gap_median_m": 15.04886272437193,
+    "mode": "new",
+    "model": "results/team14_ppo_v1/model.pt",
+    "seed": 2026
+  },
+  "bc": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 300,
+    "mean_speed_mps": 23.2094602136107,
+    "mean_return": 60.039086644375054,
+    "mean_length_steps": 619.6966666666667,
+    "mean_travel_time_s": 309.84833333333336,
+    "lane_changes_per_ep": 1.01,
+    "min_gap_median_m": 17.46210881494528,
+    "wall_time_s": 1234.3646392822266
+  }
+}

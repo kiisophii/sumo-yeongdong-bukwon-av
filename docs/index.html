@@ -287,26 +287,26 @@ python test.py results/team14_ppo_v1/model.pt   # GUI 재생</pre>
 <script>
 /* 결과 수치 — tools/evaluate.py 결과(results/evaluation.json)로 갱신 */
 const RESULTS = {
-  "episodes": 100,
+  "episodes": 300,
   "policies": [
     {
       "name": "규칙 기반 기준선 (학습 없음)",
       "collision": 0.0,
       "lane_end": 0.0,
       "arrival": 1.0,
-      "speed_kmh": 77.5,
-      "time_s": 333.8,
+      "speed_kmh": 77.7,
+      "time_s": 333.0,
       "lc": 0.0,
       "best": false
     },
     {
       "name": "PPO (강화학습, 50만 스텝)",
-      "collision": 0.01,
+      "collision": 0.0,
       "lane_end": 0.0,
-      "arrival": 0.99,
-      "speed_kmh": 83.7,
-      "time_s": 306.3,
-      "lc": 1.09,
+      "arrival": 1.0,
+      "speed_kmh": 83.4,
+      "time_s": 310.5,
+      "lc": 0.9933333333333333,
       "best": true
     },
     {
@@ -314,31 +314,31 @@ const RESULTS = {
       "collision": 0.0,
       "lane_end": 0.0,
       "arrival": 1.0,
-      "speed_kmh": 82.9,
-      "time_s": 312.3,
-      "lc": 1.11,
+      "speed_kmh": 83.6,
+      "time_s": 309.8,
+      "lc": 1.01,
       "best": false
     }
   ],
   "headline": [
     {
-      "v": "1%",
-      "k": "PPO 충돌률 (목표 ≤ 5%)"
+      "v": "0회",
+      "k": "PPO 충돌 / 300회 (목표 충돌률 ≤ 5%)"
     },
     {
-      "v": "99%",
+      "v": "100%",
       "k": "PPO 완주율"
     },
     {
-      "v": "83.7",
-      "k": "PPO 평균속도 km/h (기준선 77.5)"
+      "v": "83.4",
+      "k": "PPO 평균속도 km/h (기준선 77.7)"
     },
     {
-      "v": "−8%",
-      "k": "통과시간 (334 s → 306 s)"
+      "v": "−7%",
+      "k": "통과시간 (333 s → 311 s)"
     }
   ],
-  "interpretation": "규칙 기반 운전자는 앞차를 따라가기만 해서 충돌은 없지만, 느린 차(Krauss, 제한속도의 약 85%) 뒤에 갇힙니다. PPO는 에피소드당 약 1회 안전한 틈을 골라 차선을 바꿔 평균 6 km/h 빠르게 달렸습니다. 100회 중 충돌은 출발 5.5초 만에 난 1회(1%)뿐이고, 끝나는 차선(진출 전용·차로 감소)에 갇히는 경로 이탈은 0회입니다. PPO 주행 데이터 약 9.4만 스텝으로 학습한 BC 모델은 환경과 상호작용하지 않고도 충돌 0%, 82.9 km/h로 PPO와 비슷한 성능을 냈습니다.",
+  "interpretation": "규칙 기반 운전자는 앞차를 따라가기만 해서 충돌은 없지만, 느린 차(Krauss, 제한속도의 약 85%) 뒤에 갇힙니다. PPO는 에피소드당 약 1회 안전한 틈을 골라 차선을 바꿔 평균 5.7 km/h 빠르게 달렸고, 300회 모두 충돌·경로 이탈 없이 완주했습니다. 처음 평가에서 출발 5.5초 만에 난 충돌 1회는, 안전 게이트가 최대 제동으로도 피할 수 없는 차선변경(간격 11 m, 접근 9.5 m/s)을 허용한 것이 원인이었습니다. 제동 가능성 검사를 더해 고쳤고, 같은 모델로 300회 비교한 결과 속도는 그대로이고 충돌만 1회에서 0회가 됐습니다. PPO 주행 데이터 약 9.4만 스텝으로 학습한 BC 모델도 충돌 0회, 83.6 km/h로 PPO와 같은 수준이었습니다.",
   "dataset": {
     "episodes": 200,
     "transitions": 125059,
