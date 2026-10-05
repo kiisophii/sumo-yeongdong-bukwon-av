@@ -130,6 +130,14 @@ ACTION = {
         "min_rear_gap": 3.0,    # m
         "front_tau": 0.15,      # s (내 속도 기준)
         "rear_tau": 0.3,        # s (후행차 속도 기준)
+        # 제동 가능성 검사 (팀14 추가, 0이면 끔):
+        #   앞: gap > min_front_gap + (내속도−앞차속도)⁺² / (2 × brake_check_decel)
+        #   뒤: gap > min_rear_gap  + (뒤차속도−내속도)⁺² / (2 × follower_brake_decel)
+        # 위의 시간여유 규칙은 "접근속도 × 0.6초"만 봐서, 빠르게 다가가는 변경
+        # (예: 간격 11 m, 접근 9.5 m/s)을 통과시켰고 최대 제동(5.4)으로도
+        # 피할 수 없는 추돌이 났다. 감속도는 최대치보다 낮게 잡아 여유를 둔다.
+        "brake_check_decel": 4.0,     # m/s^2 — ego 최대 감속 5.4보다 여유
+        "follower_brake_decel": 3.0,  # m/s^2 — 일반 차량이 무리 없이 내는 감속
         "approach_horizon": 0.6,  # s. 접근 여유 판정 시간 — "이 시간 안에
                                   # 상대와 만나면 위험". 짧을수록 공격적.
         "spawn_protect": 60.0,  # m. 도로 시작 이 구간 안에서는 변경 금지.

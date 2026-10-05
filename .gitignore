@@ -4,3 +4,4 @@ data/*.jsonl.gz
 data/release/
 data/team14_*
 .claude/
+env/sumo_*/

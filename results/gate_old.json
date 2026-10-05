@@ -1,0 +1,17 @@
+{
+  "collision_rate": 0.0033333333333333335,
+  "lane_end_rate": 0.0,
+  "arrival_rate": 0.9966666666666667,
+  "timeout_rate": 0.0,
+  "failure_rate": 0.0033333333333333335,
+  "episodes": 300,
+  "mean_speed_mps": 23.085645171390787,
+  "mean_return": 60.28927972724792,
+  "mean_length_steps": 620.9566666666667,
+  "mean_travel_time_s": 310.47833333333335,
+  "lane_changes_per_ep": 1.0166666666666666,
+  "min_gap_median_m": 15.280437757216548,
+  "mode": "old",
+  "model": "results/team14_ppo_v1/model.pt",
+  "seed": 2026
+}

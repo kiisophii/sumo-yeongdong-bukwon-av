@@ -131,6 +131,9 @@ class SumoHighwayEnv(gym.Env):
         self.lc_rear_tau = float(lcs.get("rear_tau", 0.5))         # s
         self.lc_spawn_protect = float(lcs.get("spawn_protect", 60.0))  # m
         self.lc_horizon = float(lcs.get("approach_horizon", 1.0))       # s
+        # 제동 가능성 검사 (0이면 끔): 변경 직후 속도차를 이 감속도로 없앨 수 있어야 허용
+        self.lc_brake_decel = float(lcs.get("brake_check_decel", 0.0))          # m/s^2 (ego)
+        self.lc_follower_decel = float(lcs.get("follower_brake_decel", 0.0))    # m/s^2 (뒤차)
         self.road_length = float(road["length"])
         # ---- 실제 지도(OSM) 도로 모드 ----
         #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
@@ -750,6 +753,14 @@ class SumoHighwayEnv(gym.Env):
                 return False
             if gap <= max(v - lv, 0.0) * self.lc_horizon:  # 시간여유 내 접촉 위험
                 return False
+            # 제동 가능성: 내가 더 빠르면, 여유 감속도로 앞차 속도까지 줄이는 동안
+            # 줄어드는 간격 (v-lv)^2 / 2b 를 빼고도 최소 간격이 남아야 한다.
+            # (시간여유 규칙만으로는 접근속도 9.5 m/s, 간격 11 m인 변경이 통과해
+            #  최대 제동으로도 피할 수 없는 추돌이 났다 — 평가 ep79, 출발 5.5초)
+            if self.lc_brake_decel > 0.0:
+                closing = max(v - lv, 0.0)
+                if gap <= self.lc_front_min + closing ** 2 / (2.0 * self.lc_brake_decel):
+                    return False
 
         foll = closer(self._neighbor(direction, leader=False), scan_rear)
         if foll is not None:
@@ -758,6 +769,11 @@ class SumoHighwayEnv(gym.Env):
                 return False
             if gap <= max(fv - v, 0.0) * self.lc_horizon:  # 시간여유 내 접촉 위험
                 return False
+            # 뒤차도 무리 없는 감속으로 내 속도에 맞출 수 있어야 한다
+            if self.lc_follower_decel > 0.0:
+                closing = max(fv - v, 0.0)
+                if gap <= self.lc_rear_min + closing ** 2 / (2.0 * self.lc_follower_decel):
+                    return False
         return True
 
     def _apply_lane_change(self, lane_change: int) -> bool:
