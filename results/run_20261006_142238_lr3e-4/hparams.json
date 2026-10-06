@@ -1,0 +1,25 @@
+{
+  "lr": 0.0003,
+  "n_steps": 2048,
+  "n_epochs": 10,
+  "minibatch_size": 64,
+  "gamma": 0.99,
+  "gae_lambda": 0.95,
+  "clip_eps": 0.2,
+  "value_coef": 0.5,
+  "entropy_coef": 0.0,
+  "lane_entropy_coef": 0.01,
+  "max_grad_norm": 0.5,
+  "normalize_advantage": true,
+  "hidden_sizes": [
+    256,
+    256
+  ],
+  "activation": "relu",
+  "policy_type": "hybrid",
+  "lane_keep_bias": 0.5,
+  "init_log_std": -0.5,
+  "seed": 0,
+  "device": "auto",
+  "total_timesteps": 200000
+}
