@@ -116,9 +116,15 @@ RUN_NAME = None         # None이면 run_날짜_시각 자동 생성.
 # ══════════════════════════════════════════════════════════════════
 
 
-def make_run_dir() -> str:
-    """results/<run이름>/ 폴더를 만들고 경로를 반환."""
+def make_run_dir(tag: str = "") -> str:
+    """results/<run이름>/ 폴더를 만들고 경로를 반환.
+
+    tag를 주면 자동 이름 뒤에 붙인다: run_20261006_135500_lr3e-4
+    (학습 시작 시각이 이름 앞에 그대로 남아 TensorBoard에서 구분된다)
+    """
     name = RUN_NAME or datetime.now().strftime("run_%Y%m%d_%H%M%S")
+    if tag:
+        name = f"{name}_{tag}"
     run_dir = os.path.join(BASE, RESULTS_DIR, name)
     os.makedirs(run_dir, exist_ok=True)
     if not os.path.isdir(run_dir):
@@ -142,6 +148,27 @@ def snapshot_configs(run_dir: str):
 
 
 if __name__ == "__main__":
+    # ── (선택) 명령줄로 하이퍼파라미터 바꾸기 ──
+    # 파일을 고치지 않고 설정이 다른 모델을 여러 개 학습할 때 쓴다.
+    #   python train.py --lr 3e-4 --timesteps 200000 --tag lr3e-4
+    # 아무 옵션 없이 실행하면 위 블록의 값 그대로다.
+    import argparse
+    _ap = argparse.ArgumentParser(description="PPO 학습")
+    _ap.add_argument("--lr", type=float, help="학습률 (기본: HPARAMS['lr'])")
+    _ap.add_argument("--gamma", type=float, help="할인율 (기본: HPARAMS['gamma'])")
+    _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
+    _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
+    _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
+    _args = _ap.parse_args()
+    if _args.lr is not None:
+        HPARAMS["lr"] = _args.lr
+    if _args.gamma is not None:
+        HPARAMS["gamma"] = _args.gamma
+    if _args.n_steps is not None:
+        HPARAMS["n_steps"] = _args.n_steps
+    if _args.timesteps is not None:
+        TOTAL_TIMESTEPS = _args.timesteps
+
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
     sumocfg = road_builder.build(ROAD, EGO, TRAFFIC,
                                  os.path.join(BASE, "env", "sumo"))
@@ -150,7 +177,14 @@ if __name__ == "__main__":
           f"교통량 {TRAFFIC['vehs_per_hour']}대/시간")
 
     # 2) 결과 폴더 + 로거
-    run_dir = make_run_dir()
+    run_dir = make_run_dir(_args.tag)
+    print(f"하이퍼파라미터: lr={HPARAMS['lr']}, gamma={HPARAMS['gamma']}, "
+          f"n_steps={HPARAMS['n_steps']}, 총 {TOTAL_TIMESTEPS:,} 스텝")
+    # 명령줄로 바꾼 값까지 포함해 실제 사용한 설정을 남긴다 (train.py 사본은 기본값만 담음)
+    import json
+    with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
+        json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
+                   "total_timesteps": TOTAL_TIMESTEPS}, f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 
