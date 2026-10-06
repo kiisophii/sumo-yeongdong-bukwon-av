@@ -6,8 +6,7 @@
 param(
     [string]$At = "",
     [string]$Lr = "1e-4",
-    [string]$Tag = "",
-    [int]$Timesteps = 200000
+    [string]$Tag = ""
 )
 
 $env:PYTHONUTF8 = "1"
@@ -24,5 +23,6 @@ if ($At -ne "") {
     Write-Host ""
 }
 
-Write-Host ("[{0}] python train.py --lr {1} --timesteps {2} --tag {3}" -f (Get-Date -Format "HH:mm:ss"), $Lr, $Timesteps, $Tag)
-python train.py --lr $Lr --timesteps $Timesteps --tag $Tag
+# 학습 스텝 수(TOTAL_TIMESTEPS) 등 나머지 설정은 train.py 기본값 그대로 — 학습률만 바꾼다
+Write-Host ("[{0}] python train.py --lr {1} --tag {2}" -f (Get-Date -Format "HH:mm:ss"), $Lr, $Tag)
+python train.py --lr $Lr --tag $Tag
