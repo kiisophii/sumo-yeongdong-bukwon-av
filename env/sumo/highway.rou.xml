@@ -6,23 +6,29 @@
         <vType id="car_eidm" probability="0.2000" carFollowModel="EIDM" accel="2.0" decel="4.0" tau="1.1" minGap="2.0" maxSpeed="36.0" color="1,0.6,0" vClass="passenger" guiShape="passenger/sedan" speedFactor="normc(0.95,0.08,0.7,1.15)" lcStrategic="1.0" lcCooperative="0.7" lcSpeedGain="1.0" lcKeepRight="0.3"/>
         <vType id="car_acc" probability="0.1500" carFollowModel="ACC" accel="2.0" decel="4.0" tau="1.5" minGap="2.0" maxSpeed="36.0" color="1,0,1" vClass="passenger" guiShape="passenger/sedan" speedFactor="normc(1.0,0.03,0.9,1.1)" lcStrategic="1.0" lcCooperative="1.0" lcSpeedGain="0.3" lcKeepRight="1.0"/>
     </vTypeDistribution>
-    <route id="r0" edges="474882669 474882669-AddedOffRampEdge 493209391#1 493209391#2-AddedOnRampEdge 493209391#2 493209391#2-AddedOffRampEdge 51066824 206488360 1307152438 833403522 833403521 833403521-AddedOffRampEdge 50981265"/>
-    <route id="r_east_through" edges="474882669 474882669-AddedOffRampEdge 493209391#1 493209391#2-AddedOnRampEdge 493209391#2 493209391#2-AddedOffRampEdge 51066824 206488360 1307152438 833403522 833403521 833403521-AddedOffRampEdge 50981265"/>
-    <route id="r_east_to_exit" edges="474882669 474882669-AddedOffRampEdge 493209391#1 493209391#2-AddedOnRampEdge 493209391#2 493209391#2-AddedOffRampEdge 51066824 206488360 1307152438 833403522 833403521 833403521-AddedOffRampEdge 549032648"/>
-    <route id="r_east_to_bukwon" edges="474882669 474882669-AddedOffRampEdge 493209391#1 493209391#2-AddedOnRampEdge 493209391#2 493209391#2-AddedOffRampEdge 51066826 1235185547-AddedOnRampEdge 1235185547 1235185547-AddedOffRampEdge 493209385#1 493209385#2-AddedOnRampEdge 493209385#2 493209385#2-AddedOffRampEdge 51066895"/>
-    <route id="r_bukwon_to_east" edges="582107260 51066898#1-AddedOnRampEdge 51066898#1 51066898#2 51066898#3-AddedOnRampEdge 51066898#3 51066898#3-AddedOffRampEdge 51066897 206488360 1307152438 833403522 833403521 833403521-AddedOffRampEdge 50981265"/>
-    <route id="r_bukwon_to_east_exit" edges="582107260 51066898#1-AddedOnRampEdge 51066898#1 51066898#2 51066898#3-AddedOnRampEdge 51066898#3 51066898#3-AddedOffRampEdge 51066897 206488360 1307152438 833403522 833403521 833403521-AddedOffRampEdge 549032648"/>
-    <route id="r_west_through_a" edges="50981258 206488707 833403519 50981262 206488361 51066049 41948037"/>
-    <route id="r_west_through_b" edges="50981259 206488707 833403519 50981262 206488361 51066049 41948037"/>
-    <route id="r_west_to_bukwon" edges="50981258 206488707 833403519 50981262 51066896 1235185547-AddedOnRampEdge 1235185547 1235185547-AddedOffRampEdge 493209385#1 493209385#2-AddedOnRampEdge 493209385#2 493209385#2-AddedOffRampEdge 1235185551"/>
-    <route id="r_bukwon_to_west" edges="51066899 51066898#1-AddedOnRampEdge 51066898#1 51066898#2 51066898#3-AddedOnRampEdge 51066898#3 51066898#3-AddedOffRampEdge 124023057 51066049 41948037"/>
-    <flow id="f_east_through" type="carDist" route="r_east_through" begin="0" end="100000" vehsPerHour="1500" departLane="best" departSpeed="max"/>
-    <flow id="f_east_to_exit" type="carDist" route="r_east_to_exit" begin="0" end="100000" vehsPerHour="350" departLane="best" departSpeed="max"/>
-    <flow id="f_east_to_bukwon" type="carDist" route="r_east_to_bukwon" begin="0" end="100000" vehsPerHour="250" departLane="best" departSpeed="max"/>
-    <flow id="f_bukwon_to_east" type="carDist" route="r_bukwon_to_east" begin="0" end="100000" vehsPerHour="450" departLane="best" departSpeed="max"/>
-    <flow id="f_bukwon_to_east_exit" type="carDist" route="r_bukwon_to_east_exit" begin="0" end="100000" vehsPerHour="100" departLane="best" departSpeed="max"/>
-    <flow id="f_west_through_a" type="carDist" route="r_west_through_a" begin="0" end="100000" vehsPerHour="900" departLane="best" departSpeed="max"/>
-    <flow id="f_west_through_b" type="carDist" route="r_west_through_b" begin="0" end="100000" vehsPerHour="700" departLane="best" departSpeed="max"/>
-    <flow id="f_west_to_bukwon" type="carDist" route="r_west_to_bukwon" begin="0" end="100000" vehsPerHour="200" departLane="best" departSpeed="max"/>
-    <flow id="f_bukwon_to_west" type="carDist" route="r_bukwon_to_west" begin="0" end="100000" vehsPerHour="350" departLane="best" departSpeed="max"/>
+    <route id="r0" edges="W_C C_E"/>
+    <route id="r_w_e" edges="W_C C_E"/>
+    <route id="r_e_w" edges="E_C C_W"/>
+    <route id="r_w_n" edges="W_C C_N"/>
+    <route id="r_w_s" edges="W_C C_S"/>
+    <route id="r_e_n" edges="E_C C_N"/>
+    <route id="r_e_s" edges="E_C C_S"/>
+    <route id="r_n_s" edges="N_C C_S"/>
+    <route id="r_s_n" edges="S_C C_N"/>
+    <route id="r_n_e" edges="N_C C_E"/>
+    <route id="r_n_w" edges="N_C C_W"/>
+    <route id="r_s_e" edges="S_C C_E"/>
+    <route id="r_s_w" edges="S_C C_W"/>
+    <flow id="f_w_e" type="carDist" route="r_w_e" begin="0" end="100000" vehsPerHour="300" departLane="best" departSpeed="max"/>
+    <flow id="f_e_w" type="carDist" route="r_e_w" begin="0" end="100000" vehsPerHour="300" departLane="best" departSpeed="max"/>
+    <flow id="f_w_n" type="carDist" route="r_w_n" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_w_s" type="carDist" route="r_w_s" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_e_n" type="carDist" route="r_e_n" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_e_s" type="carDist" route="r_e_s" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_n_s" type="carDist" route="r_n_s" begin="0" end="100000" vehsPerHour="80" departLane="best" departSpeed="max"/>
+    <flow id="f_s_n" type="carDist" route="r_s_n" begin="0" end="100000" vehsPerHour="80" departLane="best" departSpeed="max"/>
+    <flow id="f_n_e" type="carDist" route="r_n_e" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_n_w" type="carDist" route="r_n_w" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_s_e" type="carDist" route="r_s_e" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
+    <flow id="f_s_w" type="carDist" route="r_s_w" begin="0" end="100000" vehsPerHour="40" departLane="best" departSpeed="max"/>
 </routes>
