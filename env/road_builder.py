@@ -497,8 +497,14 @@ def _routes_and_config(net_path: str, road: dict, ego: dict, traffic: dict,
              "-o", scenery, "--no-warnings"],
             check=True, capture_output=True)
     else:
+        # 지도 폴리곤이 없는 도로(사거리 등): 도로 뒤에 초록 잔디 한 장을 깐다.
+        # 없으면 "real world" 화면에서 배경과 아스팔트가 둘 다 검게 보인다.
+        (bx0, by0), (bx1, by1) = net.getBBoxXY()
+        m = 200.0
+        shape = f"{bx0 - m},{by0 - m} {bx1 + m},{by0 - m} {bx1 + m},{by1 + m} {bx0 - m},{by1 + m}"
         with open(scenery, "w") as f:
-            f.write("<additional/>\n")
+            f.write(f'<additional>\n    <poly id="grass" type="grass" color="0.13,0.45,0.18" '
+                    f'fill="1" layer="-10" shape="{shape}"/>\n</additional>\n')
 
     # ── 5) GUI 시작 화면: 지정한 관심 지점(합류부 등)을 확대 ──
     #   SUMO zoom(%)은 "네트워크 전체 폭 = 100%" 기준

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-13T14:00:03.604906+09:00 by Eclipse SUMO netconvert 1.27.1
+<!-- generated on 2026-10-13T14:05:58.935870+09:00 by Eclipse SUMO netconvert 1.27.1
 <netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <node-files value="D:\32자율주행인공지능\course_repo\env\sumo\highway.nod.xml"/>
-        <edge-files value="D:\32자율주행인공지능\course_repo\env\sumo\highway.edg.xml"/>
+        <node-files value="env/sumo\highway.nod.xml"/>
+        <edge-files value="env/sumo\highway.edg.xml"/>
     </input>
 
     <output>
-        <output-file value="D:\32자율주행인공지능\course_repo\env\sumo\highway.net.xml"/>
+        <output-file value="env/sumo\highway.net.xml"/>
     </output>
 
     <junctions>
