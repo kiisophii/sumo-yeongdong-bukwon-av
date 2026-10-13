@@ -137,7 +137,8 @@ class SumoHighwayEnv(gym.Env):
         self.road_length = float(road["length"])
         # ---- 실제 지도(OSM) 도로 모드 ----
         #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
-        self.osm_mode = road.get("type", "straight") == "osm"
+        # (이름은 osm_mode지만 사거리 등 여러 edge로 된 모든 도로에 쓰인다)
+        self.osm_mode = road.get("type", "straight") != "straight"
         wu = self.traffic.get("warmup_seconds")
         if isinstance(wu, (int, float)):
             wu = (float(wu), float(wu))

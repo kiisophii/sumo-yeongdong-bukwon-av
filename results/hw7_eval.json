@@ -1,0 +1,32 @@
+{
+  "rule_based": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 20,
+    "mean_speed_mps": 15.627302824640594,
+    "mean_return": 14.263340697665859,
+    "mean_length_steps": 128.45,
+    "mean_travel_time_s": 64.225,
+    "lane_changes_per_ep": 0.0,
+    "min_gap_median_m": 22.821576893369354,
+    "wall_time_s": 1.6038992404937744
+  },
+  "results\\team14_ppo_v1\\model.pt": {
+    "collision_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 20,
+    "mean_speed_mps": 16.523254003393696,
+    "mean_return": 13.780898951534656,
+    "mean_length_steps": 121.55,
+    "mean_travel_time_s": 60.775,
+    "lane_changes_per_ep": 0.45,
+    "min_gap_median_m": 23.148831820942835,
+    "wall_time_s": 1.382671594619751
+  }
+}

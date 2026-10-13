@@ -36,6 +36,8 @@ def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     """
     if road.get("type", "straight") == "osm":
         return _build_osm(road, ego, traffic, out_dir)
+    if road.get("type") == "intersection":
+        return _build_intersection(road, ego, traffic, out_dir)
     os.makedirs(out_dir, exist_ok=True)
 
     # ──────────────────────────────────────────────────────
@@ -388,7 +390,58 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
            "--no-warnings"]
     cmd += list(road.get("netconvert_options", []))
     subprocess.run(cmd, check=True, capture_output=True)
+    return _routes_and_config(net_path, road, ego, traffic, out_dir)
 
+
+def _build_intersection(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
+    """(7주차 과제) 직선 도로 가운데에 사거리를 만든다.
+
+    Node 5개: 서(W)·교차점(C)·동(E)·북(N)·남(S)
+    Edge 8개: 교차점과 각 끝을 잇는 양방향 도로
+      - 동서(본선): 방향별 main_lanes 차선, 제한속도 main_speed
+      - 남북(부도로): 방향별 side_lanes 차선, 제한속도 side_speed
+    교차점 type="priority": 본선이 우선, 부도로 차량은 양보 후 진입
+    (신호등 없이 시작 — 우리 자율주행 차는 SUMO 안전장치를 꺼 두어 신호를 모른다)
+    Connection(어느 차선에서 어느 도로로 갈 수 있는지)은 netconvert가 자동 생성.
+    ego 경로와 배경차 경로는 OSM 모드와 똑같이 (출발 edge, 도착 edge)로 적는다.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    L, S = float(road["main_half_length"]), float(road["side_length"])
+    nodes = {"W": (-L, 0), "C": (0, 0), "E": (L, 0), "N": (0, S), "S": (0, -S)}
+    with open(os.path.join(out_dir, "highway.nod.xml"), "w") as f:
+        f.write("<nodes>\n")
+        for nid, (x, y) in nodes.items():
+            kind = ' type="priority"' if nid == "C" else ""
+            f.write(f'    <node id="{nid}" x="{x}" y="{y}"{kind}/>\n')
+        f.write("</nodes>\n")
+
+    main = (road["main_lanes"], road["main_speed"], 3)   # priority 3 = 본선
+    side = (road["side_lanes"], road["side_speed"], 1)   # priority 1 = 부도로
+    edges = [("W_C", "W", "C", main), ("C_E", "C", "E", main),
+             ("E_C", "E", "C", main), ("C_W", "C", "W", main),
+             ("N_C", "N", "C", side), ("C_S", "C", "S", side),
+             ("S_C", "S", "C", side), ("C_N", "C", "N", side)]
+    with open(os.path.join(out_dir, "highway.edg.xml"), "w") as f:
+        f.write("<edges>\n")
+        for eid, a, b, (lanes, speed, prio) in edges:
+            f.write(f'    <edge id="{eid}" from="{a}" to="{b}" numLanes="{lanes}" '
+                    f'speed="{speed}" priority="{prio}"/>\n')
+        f.write("</edges>\n")
+
+    net_path = os.path.join(out_dir, "highway.net.xml")
+    subprocess.run(
+        [checkBinary("netconvert"),
+         "--node-files", os.path.join(out_dir, "highway.nod.xml"),
+         "--edge-files", os.path.join(out_dir, "highway.edg.xml"),
+         "--no-turnarounds", "-o", net_path],
+        check=True, capture_output=True)
+    return _routes_and_config(net_path, road, ego, traffic, out_dir)
+
+
+def _routes_and_config(net_path: str, road: dict, ego: dict, traffic: dict,
+                       out_dir: str) -> str:
+    """도로망(net.xml)이 준비된 뒤의 공통 단계: 경로 → rou.xml → 지형 → gui/sumocfg."""
+    import sumolib
     net = sumolib.net.readNet(net_path)
 
     def path(frm: str, to: str):

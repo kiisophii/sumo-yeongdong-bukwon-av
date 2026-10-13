@@ -179,3 +179,44 @@ TRAFFIC = {
     # 직선 도로용 프리필 — OSM 도로에서는 warm-up이 대신하므로 끈다.
     "prefill": {"enabled": False},
 }
+
+
+# ══════════════════════════════════════════════════════════════════
+# ★ 7주차 과제 (hw7 브랜치): 직선 도로 → 사거리로 구조 변경
+#   수업 안내(5_Project_Preparation 5.2)대로 Node·Edge·Route를 직접 정의한다.
+#   위의 북수원IC 설정은 그대로 두고, 아래 값으로 덮어쓴다.
+#   북수원IC로 돌아가려면 main 브랜치로 바꾸면 된다 (git checkout team14-yeongdong).
+# ══════════════════════════════════════════════════════════════════
+ROAD = {
+    "type": "intersection",
+    "name": "사거리 (7주차 과제)",
+    "main_half_length": 500,  # 교차점에서 동/서 끝까지 (m) → 본선 전체 1 km
+    "side_length": 300,       # 교차점에서 남/북 끝까지 (m)
+    "main_lanes": 2,          # 본선(동서) 방향별 차선 수
+    "side_lanes": 1,          # 부도로(남북) 방향별 차선 수
+    "main_speed": 16.67,      # 본선 제한속도 (m/s) = 60 km/h
+    "side_speed": 13.89,      # 부도로 제한속도 (m/s) = 50 km/h
+    "ego_route": ("W_C", "C_E"),   # 자율주행 차: 서쪽에서 출발해 교차로 직진 → 동쪽
+    "speed_limit": 27.78,     # 관측 정규화 기준 vmax (학습 때와 같게 유지)
+    "length": None,
+    "num_lanes": None,
+}
+
+TRAFFIC["routes"] = {
+    # 본선 직진 (양방향)
+    "w_e": {"from": "W_C", "to": "C_E", "vehs_per_hour": 300},
+    "e_w": {"from": "E_C", "to": "C_W", "vehs_per_hour": 300},
+    # 본선에서 좌회전/우회전
+    "w_n": {"from": "W_C", "to": "C_N", "vehs_per_hour": 40},
+    "w_s": {"from": "W_C", "to": "C_S", "vehs_per_hour": 40},
+    "e_n": {"from": "E_C", "to": "C_N", "vehs_per_hour": 40},
+    "e_s": {"from": "E_C", "to": "C_S", "vehs_per_hour": 40},
+    # 부도로 직진 / 회전 (본선에 양보 후 진입)
+    "n_s": {"from": "N_C", "to": "C_S", "vehs_per_hour": 80},
+    "s_n": {"from": "S_C", "to": "C_N", "vehs_per_hour": 80},
+    "n_e": {"from": "N_C", "to": "C_E", "vehs_per_hour": 40},
+    "n_w": {"from": "N_C", "to": "C_W", "vehs_per_hour": 40},
+    "s_e": {"from": "S_C", "to": "C_E", "vehs_per_hour": 40},
+    "s_w": {"from": "S_C", "to": "C_W", "vehs_per_hour": 40},
+}
+TRAFFIC["warmup_seconds"] = (60, 90)   # 도로가 짧아서 1분이면 차가 고르게 퍼진다
