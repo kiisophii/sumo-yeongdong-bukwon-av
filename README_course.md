@@ -46,5 +46,13 @@
 
 ### 이후. 팀별 프로젝트 진행
 
+#### 평가 기준
+
+- [프로젝트 평가 기준 소개](./project_materials/6_Project_Evaluation.md)
+- [동료 평가 표](https://docs.google.com/document/d/1czmE5ofrKckau2rMwK4-wXax-f5QrUia/edit?usp=sharing&ouid=107893289049883287038&rtpof=true&sd=true)
+
+#### 프로젝트 컨설팅
+
+- [팀별 컨설팅 진행 소개](./project_materials/7_Project_Consulting.md)
 ---
 > 수업 자료는 `project_materials/` 폴더에서도 확인 가능합니다.
