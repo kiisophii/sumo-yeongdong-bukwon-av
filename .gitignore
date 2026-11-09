@@ -5,3 +5,7 @@ data/release/
 data/team14_*
 .claude/
 env/sumo_*/
+
+# (팀14) 도로 생성 중간 파일
+env/sumo/osm_patched.osm
+env/sumo/kept_edges.txt
