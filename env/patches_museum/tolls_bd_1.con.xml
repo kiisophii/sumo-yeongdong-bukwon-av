@@ -36,4 +36,13 @@
     <connection from="1235185544" to="468241513" fromLane="1" toLane="1"/>
     <delete from="1235185544" to="50981089"/>
     <connection from="1235185544" to="50981089" fromLane="0" toLane="0"/>
+    <!-- 동수원IC 진출: 출구(50981102)가 2차로인데 본선에서 이어지는 차로가 맨 오른쪽 1개뿐이라
+         진출 차량(약 1,300대/h)이 한 차로에 몰려 AV가 끼어들 틈이 없었음(city_v1·v2 10회 중 8회 출구 직전 정지).
+         본선 오른쪽 2개 차로(0, 1)에서 출구 2차로로 이어지게 함 -->
+    <delete from="206488704" to="377057231"/>
+    <connection from="206488704" to="377057231" fromLane="0" toLane="0"/>
+    <connection from="206488704" to="377057231" fromLane="1" toLane="1"/>
+    <connection from="206488704" to="377057231" fromLane="2" toLane="2"/>
+    <connection from="206488704" to="377057231" fromLane="2" toLane="3"/>
+    <connection from="206488704" to="377057231" fromLane="3" toLane="4"/>
 </connections>
