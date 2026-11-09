@@ -261,6 +261,12 @@ if SCENARIO == "museum":
         "osm_file": "env/museum/source/museum_corridor.osm",   # 재생성용 원본(현재는 net_file 사용)
         "context_osm_file": None,
         "ego_edges_file": "env/museum/route_check.json",       # 주황 경로(오봉로) 72개 edge
+        # 갈림길 경로 선택: 의왕역회전교차로 → (주황) 오봉로 / (파랑) 부곡중앙로·덕영대로 → 다시 만남
+        #   mode "fastest" = 출발 직전 예상 통행시간이 짧은 길 (계산 방식 A)
+        #   disruption = 에피소드의 40%에서 한 길의 가운데 구간을 7 km/h로 (공사·사고 가정)
+        "route_choice": {"file": "env/museum/route_alternatives.json",
+                         "mode": "fastest",
+                         "disruption": {"prob": 0.4, "speed": 2.0}},
         "gui_focus_edge": "206488360",
         "speed_limit": 27.78,
         "net_patches": [

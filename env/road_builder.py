@@ -437,13 +437,29 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     # 콘솔 요약용 총 교통량 (train.py 등이 출력)
     traffic["vehs_per_hour"] = sum(float(r["vehs_per_hour"]) for r in routes.values())
     route_lines = [f'    <route id="r0" edges="{" ".join(ego_edges)}"/>']
+    # (팀14) ego 대안 경로 — 갈림길에서 어느 길로 갈지 고르는 실험용
+    #   ROAD["route_choice"]["file"]의 alternatives마다 route "r_alt_<이름>"을 만든다.
+    alt_meta = {}
+    rc = road.get("route_choice")
+    if rc:
+        import json as _json
+        with open(_resolve(rc["file"]), encoding="utf-8") as _f:
+            alts = _json.load(_f)
+        for name, a in alts["alternatives"].items():
+            route_lines.append(f'    <route id="r_alt_{name}" edges="{" ".join(a["edges"])}"/>')
+            alt_meta[name] = {
+                "route_id": f"r_alt_{name}",
+                "length": sum(net.getEdge(e).getLength() for e in a["edges"]),
+                "branch": list(a["branch"]),
+            }
     flow_lines = []
     # 계산값을 파일로도 남긴다 — build()를 거치지 않는 프로세스(병렬 수집
     # 워커 등)에서도 sumo_env가 읽어 쓸 수 있도록.
     import json
     with open(os.path.join(out_dir, "meta.json"), "w", encoding="utf-8") as f:
         json.dump({"length": road["length"], "num_lanes": road["num_lanes"],
-                   "vehs_per_hour": traffic["vehs_per_hour"]}, f)
+                   "vehs_per_hour": traffic["vehs_per_hour"],
+                   "route_alternatives": alt_meta}, f, ensure_ascii=False)
     vtypes_block, flow_type = _vtypes_block(traffic)
     for name, r in routes.items():
         edges = path(r["from"], r["to"])

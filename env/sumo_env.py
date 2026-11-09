@@ -135,6 +135,21 @@ class SumoHighwayEnv(gym.Env):
         self.lc_brake_decel = float(lcs.get("brake_check_decel", 0.0))          # m/s^2 (ego)
         self.lc_follower_decel = float(lcs.get("follower_brake_decel", 0.0))    # m/s^2 (뒤차)
         self.road_length = float(road["length"])
+        # ---- (팀14) 갈림길 경로 선택 ----
+        #   mode: "fastest" = 출발 직전 현재 교통으로 예상 통행시간이 짧은 길(계산 방식 A)
+        #         "random" / 경로 이름 = 비교 실험용, None = 예전처럼 r0
+        #   disruption: 에피소드마다 확률적으로 한 길의 한 구간을 공사·사고처럼 느리게 만들어
+        #               "어느 길이 빠른지"가 매번 달라지게 한다
+        self.route_choice = dict(road.get("route_choice") or {})
+        self.route_alts = {}
+        if self.route_choice:
+            import json as _json
+            _meta = os.path.join(os.path.dirname(cfg_path), "meta.json")
+            with open(_meta, encoding="utf-8") as _f:
+                self.route_alts = dict(_json.load(_f).get("route_alternatives") or {})
+        self.route_name = None
+        self.route_estimates = {}
+        self.disrupted = None
         # ---- 실제 지도(OSM) 도로 모드 ----
         #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
         self.osm_mode = road.get("type", "straight") == "osm"
@@ -368,7 +383,10 @@ class SumoHighwayEnv(gym.Env):
             # "center"는 시작 edge의 차선 수 기준으로 다시 계산
             first = traci.route.getEdges("r0")[0]
             depart_lane = str(traci.edge.getLaneNumber(first) // 2)
-        traci.vehicle.add(self.ego_id, "r0", typeID="ego_type",
+        route_id = "r0"
+        if self.route_alts:
+            route_id = self._choose_route()
+        traci.vehicle.add(self.ego_id, route_id, typeID="ego_type",
                           departLane=depart_lane,
                           departPos="0",
                           departSpeed=self.ego_depart_speed)
@@ -687,6 +705,41 @@ class SumoHighwayEnv(gym.Env):
             obs += self._junction_features()
 
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
+
+    def _choose_route(self) -> str:
+        """(팀14) 이번 에피소드의 ego 경로를 고르고 route id를 반환한다."""
+        rc = self.route_choice
+        # 1) 지난 에피소드에 느리게 만든 구간 원래대로
+        if self.disrupted:
+            for e, v in self.disrupted["orig"].items():
+                traci.edge.setMaxSpeed(e, v)
+            self.disrupted = None
+        # 2) 확률적으로 한 길의 한 구간을 막히게 (공사·사고 상황)
+        dis = rc.get("disruption") or {}
+        if dis and np.random.rand() < float(dis.get("prob", 0.0)):
+            name = str(np.random.choice(list(self.route_alts)))
+            branch = self.route_alts[name]["branch"]
+            mid = branch[len(branch) // 2 - 1: len(branch) // 2 + 2]
+            orig = {e: traci.lane.getMaxSpeed(e + "_0") for e in mid}
+            for e in mid:
+                traci.edge.setMaxSpeed(e, float(dis.get("speed", 2.0)))
+            self.disrupted = {"route": name, "edges": mid, "orig": orig}
+        # 3) 갈림길 구간의 현재 예상 통행시간 (SUMO: 길이 / 지금 그 구간 평균속도)
+        self.route_estimates = {
+            n: float(sum(traci.edge.getTraveltime(e) for e in a["branch"]))
+            for n, a in self.route_alts.items()}
+        mode = rc.get("mode", "fastest")
+        if mode == "fastest":
+            name = min(self.route_estimates, key=self.route_estimates.get)
+        elif mode == "random":
+            name = str(np.random.choice(list(self.route_alts)))
+        elif mode in self.route_alts:
+            name = mode
+        else:
+            raise ValueError(f"route_choice mode 알 수 없음: {mode}")
+        self.route_name = name
+        self.road_length = float(self.route_alts[name]["length"])
+        return self.route_alts[name]["route_id"]
 
     def _junction_features(self):
         """앞 신호등과 앞 교차로(신호 없는)의 상태 6개. 설명은 __init__ 주석 [31..36]."""
@@ -1066,6 +1119,9 @@ class SumoHighwayEnv(gym.Env):
             "collided": collided,
             "lane_end": lane_end,
             "red_light": red_light,
+            "route": self.route_name,
+            "route_estimates": dict(self.route_estimates),
+            "disrupted_route": (self.disrupted or {}).get("route"),
             "yield_violation": yield_violation,
             "arrived": arrived,
             "speed": ego_speed,
