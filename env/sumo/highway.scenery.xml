@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-06T01:49:13.160300+09:00 by Eclipse SUMO polyconvert 1.27.1
+<!-- generated on 2026-11-09T15:45:54.897970+09:00 by Eclipse SUMO polyconvert 1.27.1
 <polyconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/polyconvertConfiguration.xsd">
 
     <input>
-        <net-file value="D:\32자율주행인공지능\course_repo\env\sumo\highway.net.xml"/>
-        <osm-files value="D:\32자율주행인공지능\course_repo\env/osm/yeongdong_bukwon_context.osm"/>
+        <net-file value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env\sumo\highway.net.xml"/>
+        <osm-files value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env/osm/yeongdong_bukwon_context.osm"/>
         <type-file value="C:\Program Files (x86)\Eclipse\Sumo\data\typemap\osmPolyconvert.typ.xml"/>
     </input>
 
     <output>
-        <output-file value="D:\32자율주행인공지능\course_repo\env\sumo\highway.scenery.xml"/>
+        <output-file value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env\sumo\highway.scenery.xml"/>
     </output>
 
     <report>

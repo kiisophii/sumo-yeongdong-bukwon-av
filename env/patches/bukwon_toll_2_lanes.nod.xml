@@ -1,0 +1,13 @@
+<!--
+  북수원 영업소 2단계: 부스 뒤 차로가 줄어드는 지점을 zipper(지퍼식 합류) 교차점으로.
+  두 차로가 한 차로로 합칠 때 한쪽이 무조건 양보하는 대신 번갈아 들어가게 해서
+  실제 영업소 출구 합류처럼 흐르게 한다.
+-->
+<nodes>
+    <node id="51066898#2.180" type="zipper"/>
+    <node id="51066898#2.205" type="zipper"/>
+    <node id="11465629233" type="zipper"/>
+    <node id="493209385#1.65" type="zipper"/>
+    <node id="493209385#1.110" type="zipper"/>
+    <node id="493209385#1.150" type="zipper"/>
+</nodes>

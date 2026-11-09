@@ -1,0 +1,35 @@
+<!--
+  북수원 영업소 모델링 (1단계: 차로 연결). 차로 수를 바꾼 원래 edge 사이의 연결을
+  netconvert 자동 계산 대신 직접 지정한다(자동 계산은 일부 차로만 이어 줌).
+  분할로 새로 생긴 edge("X.165" 등)의 연결은 같은 단계에서 지우기가 안 되므로 2단계 파일에 있다.
+-->
+<connections>
+    
+    <delete from="51066898#3-AddedOnRampEdge" to="51066898#3"/>
+    <connection from="51066898#3-AddedOnRampEdge" to="51066898#3" fromLane="0" toLane="0"/>
+    <connection from="51066898#3-AddedOnRampEdge" to="51066898#3" fromLane="1" toLane="1"/>
+    <delete from="51066898#3" to="51066898#3-AddedOffRampEdge"/>
+    <!-- 다음 분기: 오른쪽 1차로 = 인천 방향, 왼쪽 2차로 = 강릉 방향 -->
+    <connection from="51066898#3" to="51066898#3-AddedOffRampEdge" fromLane="0" toLane="0"/>
+    <connection from="51066898#3" to="51066898#3-AddedOffRampEdge" fromLane="1" toLane="1"/>
+    <connection from="51066898#3" to="51066898#3-AddedOffRampEdge" fromLane="1" toLane="2"/>
+    <delete from="1235185547-AddedOnRampEdge" to="1235185547"/>
+    <connection from="1235185547-AddedOnRampEdge" to="1235185547" fromLane="0" toLane="0"/>
+    <connection from="1235185547-AddedOnRampEdge" to="1235185547" fromLane="1" toLane="1"/>
+    <delete from="1235185547" to="1235185547-AddedOffRampEdge"/>
+    <connection from="1235185547" to="1235185547-AddedOffRampEdge" fromLane="0" toLane="0"/>
+    <connection from="1235185547" to="1235185547-AddedOffRampEdge" fromLane="1" toLane="1"/>
+    <delete from="1235185547-AddedOffRampEdge" to="493209385#1"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="0" toLane="0"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="0" toLane="1"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="0" toLane="2"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="1" toLane="2"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="1" toLane="3"/>
+    <connection from="1235185547-AddedOffRampEdge" to="493209385#1" fromLane="1" toLane="4"/>
+    <delete from="493209385#2-AddedOnRampEdge" to="493209385#2"/>
+    <connection from="493209385#2-AddedOnRampEdge" to="493209385#2" fromLane="0" toLane="0"/>
+    <connection from="493209385#2-AddedOnRampEdge" to="493209385#2" fromLane="1" toLane="1"/>
+    <delete from="493209385#2" to="493209385#2-AddedOffRampEdge"/>
+    <connection from="493209385#2" to="493209385#2-AddedOffRampEdge" fromLane="0" toLane="0"/>
+    <connection from="493209385#2" to="493209385#2-AddedOffRampEdge" fromLane="1" toLane="1"/>
+</connections>

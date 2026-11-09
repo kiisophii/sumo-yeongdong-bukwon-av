@@ -33,6 +33,17 @@ ROAD = {
     #   edge id = OSM way id (netconvert가 그대로 사용)
     "ego_route": ("474882669", "50981265"),
     "gui_focus_edge": "206488360",   # GUI 시작 화면 중심 (합류 후 5차로 구간)
+    # OSM 변환 직후 순서대로 적용하는 도로망 패치 (env/patches/ 파일 안 설명 참고)
+    #   북수원 영업소: OSM에는 1차로 평행 도로 2개뿐 → 실제 운영 차로(입구 5·출구 5)와
+    #   하이패스/현금/화물차 차로 구분, 영업소 앞뒤 램프 2차로를 반영한다.
+    #   빈 리스트로 두면 예전(OSM 그대로) 도로망.
+    "net_patches": [
+        {"edg": "env/patches/bukwon_toll_1_shape.edg.xml",
+         "con": "env/patches/bukwon_toll_1_shape.con.xml"},
+        {"nod": "env/patches/bukwon_toll_2_lanes.nod.xml",
+         "edg": "env/patches/bukwon_toll_2_lanes.edg.xml",
+         "con": "env/patches/bukwon_toll_2_lanes.con.xml"},
+    ],
     "speed_limit": 27.78,  # 관측/보상 정규화 기준 vmax (= 구간 최고 제한속도 100 km/h).
                            # 실제 주행 상한은 구간별 제한속도(80/100 km/h)를 따른다.
     # 아래 두 값은 build()가 ego 경로에서 계산해 채운다.
@@ -97,18 +108,35 @@ TRAFFIC = {
     # ── 경로별 교통 수요 (대/시간) ──
     #   from / to : 출발·도착 edge (= OSM way id), 경로는 자동 계산
     #   ego는 여기에 포함되지 않는다 (환경이 r0 경로로 직접 투입)
+    #
+    #   ★ 실측 보정 (평일 아침 첨두 근사). 근거:
+    #     - 북수원 영업소(코드 212) 진입 07시 2,252대/h, 진출 07시 883대/h
+    #       (한국도로공사 영업소별 교통량, 2026-11-05 목)
+    #     - 진입 차량 방향: 강릉 68% / 인천 31%, 진출 차량 출발: 강릉쪽에서 21% / 인천쪽에서 78%
+    #       (도로공사 영업소간 교통량, 2026-11-05) → 강릉행 중 동수원 방면 24%
+    #     - 본선: VDS 0500VDE02700(32.6 km, IC 하류) 최대 3,167대/h,
+    #       0500VDS02700(31.9 km) 최대 4,256대/h (2026-11-08 일요일 — 평일 자료로 다시 확인 필요)
+    #     - 부곡~북수원(27.5~30.8 km) 검지기는 무자료라 상류 본선은 하류 값에서 역산
+    #     - 영업소로 들어오는 진입로 2개(582107260, 51066899)의 비율은 자료가 없어 반반 가정
+    #       (예전 설정처럼 강릉행 전부를 한 진입로에 넣으면 1차로 진입로가 막힌다)
+    #   예전 값(가정): 직진 1500, 진출 350, 북수원 진출 250, 합류 450+100, 인천 900+700+200, 350
     "routes": {
         # 강릉 방향 (ego와 같은 방향)
-        "east_through":   {"from": "474882669", "to": "50981265",   "vehs_per_hour": 1500},
-        "east_to_exit":   {"from": "474882669", "to": "549032648",  "vehs_per_hour": 350},
-        "east_to_bukwon": {"from": "474882669", "to": "51066895",   "vehs_per_hour": 250},
-        "bukwon_to_east": {"from": "582107260", "to": "50981265",   "vehs_per_hour": 450},
-        "bukwon_to_east_exit": {"from": "582107260", "to": "549032648", "vehs_per_hour": 100},
+        "east_through":   {"from": "474882669", "to": "50981265",   "vehs_per_hour": 1450},
+        "east_to_exit":   {"from": "474882669", "to": "549032648",  "vehs_per_hour": 220},
+        "east_to_bukwon": {"from": "474882669", "to": "51066895",   "vehs_per_hour": 185},
+        # 북수원 진입 → 강릉 방향 1,530 (본선 직진 1,160 + 동수원 방면 370), 진입로 2개에 반씩
+        "bukwon_to_east":        {"from": "582107260", "to": "50981265",  "vehs_per_hour": 580},
+        "bukwon_to_east_b":      {"from": "51066899",  "to": "50981265",  "vehs_per_hour": 580},
+        "bukwon_to_east_exit":   {"from": "582107260", "to": "549032648", "vehs_per_hour": 185},
+        "bukwon_to_east_exit_b": {"from": "51066899",  "to": "549032648", "vehs_per_hour": 185},
         # 인천 방향 (반대 차로 — 시각적 현실감 + 램프 상호작용)
-        "west_through_a": {"from": "50981258",  "to": "41948037",   "vehs_per_hour": 900},
-        "west_through_b": {"from": "50981259",  "to": "41948037",   "vehs_per_hour": 700},
-        "west_to_bukwon": {"from": "50981258",  "to": "1235185551", "vehs_per_hour": 200},
-        "bukwon_to_west": {"from": "51066899",  "to": "41948037",   "vehs_per_hour": 350},
+        "west_through_a": {"from": "50981258",  "to": "41948037",   "vehs_per_hour": 1900},
+        "west_through_b": {"from": "50981259",  "to": "41948037",   "vehs_per_hour": 1666},
+        "west_to_bukwon": {"from": "50981258",  "to": "1235185551", "vehs_per_hour": 690},
+        # 북수원 진입 → 인천 방향 700, 진입로 2개에 반씩
+        "bukwon_to_west":   {"from": "51066899",  "to": "41948037", "vehs_per_hour": 350},
+        "bukwon_to_west_b": {"from": "582107260", "to": "41948037", "vehs_per_hour": 350},
     },
 
     # ── 에피소드 시작 전 교통류 생성(warm-up) ──
@@ -173,6 +201,39 @@ TRAFFIC = {
             "keep_lane": False,
             "lc": {"lcStrategic": 1.0, "lcCooperative": 1.0,
                    "lcSpeedGain": 0.3, "lcKeepRight": 1.0},
+        },
+        # ── 영업소 이용 방식·차종 (실측 비율) ──
+        # 북수원 영업소 2026-11-05: 하이패스 96.3% / TCS(현금) 3.7%,
+        # 대형(2~5종) 8.6%. 위 4종 승용(합 1.0)에 아래를 더하고 자동 정규화하면
+        # 현금 승용 ≈ 3.7%, 화물차 ≈ 8.5%가 된다.
+        "tcs_car": {  # 현금 결제 승용차 — 영업소에서 TCS 부스만 쓸 수 있음
+            "probability": 0.042,
+            "carFollowModel": "Krauss",
+            "accel": 2.0, "decel": 4.5,
+            "tau": 1.0, "min_gap": 2.5,
+            "sigma": 0.3,
+            "speed_factor": "normc(0.88,0.08,0.7,1.05)",
+            "color": "0.6,0.6,1",   # 연보라
+            "v_class": "custom1",
+            "keep_lane": False,
+            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.8,
+                   "lcSpeedGain": 0.5, "lcKeepRight": 0.6},
+        },
+        "truck": {    # 화물차 — 영업소 입구는 화물차 전용 차로(축중)만 사용
+            "probability": 0.097,
+            "carFollowModel": "Krauss",
+            "accel": 1.0, "decel": 4.0,
+            "tau": 1.5, "min_gap": 3.0,
+            "sigma": 0.2,
+            "max_speed": 25.0,      # 화물차 고속도로 제한 90 km/h
+            "speed_factor": "normc(0.9,0.05,0.75,1.0)",
+            "length": 12.0,
+            "color": "0.9,0.9,0.9", # 흰색
+            "v_class": "truck",
+            "gui_shape": "truck",
+            "keep_lane": False,
+            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.6,
+                   "lcSpeedGain": 0.2, "lcKeepRight": 1.0},
         },
     },
 
