@@ -240,3 +240,64 @@ TRAFFIC = {
     # 직선 도로용 프리필 — OSM 도로에서는 warm-up이 대신하므로 끈다.
     "prefill": {"enabled": False},
 }
+
+
+# ══════════════════════════════════════════════════════════════════
+# ★ 시나리오 선택 (팀14)
+#   "bukwon" : 위의 영동고속도로 북수원IC 7.1 km (고속도로만)
+#   "museum" : 팀원(김준희)이 만든 철도박물관 주차장 → 수원광교박물관 주차장 14.4 km
+#              (신협오거리·의왕역회전교차로·부곡IC 진입·북수원 합류부·동수원IC 진출)
+#   환경변수 TEAM14_SCENARIO로도 바꿀 수 있다 (예: set TEAM14_SCENARIO=bukwon)
+# ══════════════════════════════════════════════════════════════════
+import os as _os
+SCENARIO = _os.environ.get("TEAM14_SCENARIO", "museum")
+
+if SCENARIO == "museum":
+    ROAD = {
+        "type": "osm",
+        "name": "철도박물관 → 수원광교박물관 (부곡IC·북수원IC·동수원IC)",
+        # 팀원 지도: env/museum/README 원본은 단톡 공유 ZIP(Museum_Parking_to_Gwanggyo_V2)
+        "net_file": "env/museum/museum_to_gwanggyo.net.xml",
+        "osm_file": "env/museum/source/museum_corridor.osm",   # 재생성용 원본(현재는 net_file 사용)
+        "context_osm_file": None,
+        "ego_edges_file": "env/museum/route_check.json",       # 주황 경로(오봉로) 72개 edge
+        "gui_focus_edge": "206488360",
+        "speed_limit": 27.78,
+        "net_patches": [
+            {"edg": "env/patches_museum/toll_1.edg.xml",
+             "con": "env/patches_museum/toll_1.con.xml"},
+            {"nod": "env/patches_museum/toll_2.nod.xml",
+             "edg": "env/patches_museum/toll_2.edg.xml",
+             "con": "env/patches_museum/toll_2.con.xml"},
+        ],
+        "length": None,
+        "num_lanes": None,
+    }
+    # 고속도로 흐름은 북수원 시나리오의 실측 보정값을 이 지도의 edge 번호로 옮김.
+    # 일반도로 흐름(신협오거리·회전교차로·부곡IC)은 팀원 설정값(가정, 실측 아님).
+    _hw = {
+        "east_through":          ("474882669#0", "50981265",  1450),
+        "east_to_exit":          ("474882669#0", "549032648", 220),
+        "east_to_bukwon":        ("474882669#0", "51066895",  185),
+        "bukwon_to_east":        ("582107260",   "50981265",  580),
+        "bukwon_to_east_b":      ("51066899",    "50981265",  580),
+        "bukwon_to_east_exit":   ("582107260",   "549032648", 185),
+        "bukwon_to_east_exit_b": ("51066899",    "549032648", 185),
+        "west_through_a":        ("50981263",    "41948037",  1900),
+        "west_through_b":        ("206488703",   "41948037",  1666),
+        "west_to_bukwon":        ("50981263",    "1235185551", 690),
+        "bukwon_to_west":        ("51066899",    "41948037",  350),
+        "bukwon_to_west_b":      ("582107260",   "41948037",  350),
+        "five_north_south":      ("155809507#1", "472043938#7", 90),
+        "five_east_northwest":   ("-155788504#0", "-40839116#1", 90),
+        "five_south_east":       ("-472043938#7", "155788504#3", 90),
+        "five_market_south":     ("461776049#5", "472043938#7", 60),
+        "circle_north_east":     ("682100872#0", "452597718#1", 90),
+        "circle_south_north":    ("496583281#0", "488779086#1", 90),
+        "circle_east_south":     ("-496583283",  "462907008#1", 90),
+        "bugok_to_citygoal":     ("51066582#0",  "667354425",  120),
+    }
+    TRAFFIC = {**TRAFFIC,
+               "routes": {k: {"from": a, "to": b, "vehs_per_hour": v}
+                          for k, (a, b, v) in _hw.items()}}
+    EGO = {**EGO, "depart_speed": 0}   # 주차장 안에서 정지 상태로 출발

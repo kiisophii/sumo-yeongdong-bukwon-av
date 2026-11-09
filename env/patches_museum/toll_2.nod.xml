@@ -1,0 +1,9 @@
+<!-- 북수원 영업소(팀원 지도용): 부스 뒤 차로가 줄어드는 지점을 지퍼식 합류로 -->
+<nodes>
+    <node id="51066898#2.175" type="zipper"/>
+    <node id="51066898#2.195" type="zipper"/>
+    <node id="11465629233" type="zipper"/>
+    <node id="493209385#1.60" type="zipper"/>
+    <node id="493209385#1.105" type="zipper"/>
+    <node id="493209385#1.145" type="zipper"/>
+</nodes>

@@ -392,7 +392,13 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
            "--output.street-names",
            "--no-warnings"]
     cmd += list(road.get("netconvert_options", []))
-    subprocess.run(cmd, check=True, capture_output=True)
+    if road.get("net_file"):
+        # 이미 만들어진 도로망(.net.xml)을 그대로 쓰는 경우 (예: 팀원이 만든
+        # env/museum 지도). OSM 변환을 건너뛰고 아래 패치만 적용한다.
+        import shutil
+        shutil.copy(_resolve(road["net_file"]), net_path)
+    else:
+        subprocess.run(cmd, check=True, capture_output=True)
 
     # ── 1-1) 도로망 패치 (영업소 등 OSM만으로 부족한 부분) ──
     #   ROAD["net_patches"]의 순서대로 netconvert에 "기존 net + 수정 파일"을 넣어
@@ -417,7 +423,13 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         return [e.getID() for e in edges]
 
     # ── 2) 경로 ──
-    ego_edges = path(*road["ego_route"])
+    if road.get("ego_edges_file"):
+        # 경유지가 많은 경로는 edge 나열을 파일로 받는다 (JSON: {"route_edges": [...]})
+        import json as _json
+        with open(_resolve(road["ego_edges_file"]), encoding="utf-8") as _f:
+            ego_edges = list(_json.load(_f)["route_edges"])
+    else:
+        ego_edges = path(*road["ego_route"])
     road["length"] = sum(net.getEdge(e).getLength() for e in ego_edges)
     road["num_lanes"] = max(net.getEdge(e).getLaneNumber() for e in ego_edges)
 
