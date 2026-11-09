@@ -533,6 +533,25 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
 </routes>
 """)
 
+    # ── 3-1) (팀14) 쓰지 않는 도로 지우기 ──
+    #   ROAD["prune_unused_edges"]가 True면 ego 경로·대안 경로·배경 흐름 어디에도 없는
+    #   도로를 도로망에서 뺀다 (시뮬레이션이 가볍고 화면이 깔끔해진다).
+    #   교차로에 붙은 안 쓰는 도로가 빠지면 그 교차로의 신호 순서도 다시 계산된다.
+    if road.get("prune_unused_edges"):
+        used = set()
+        for line in route_lines:
+            used.update(line.split('edges="', 1)[1].split('"', 1)[0].split())
+        keep_file = os.path.join(out_dir, "kept_edges.txt")
+        with open(keep_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(sorted(used)))
+        subprocess.run([netconvert, "-s", net_path, "-o", net_path,
+                        "--keep-edges.input-file", keep_file, "--no-warnings"],
+                       check=True, capture_output=True)
+        pruned = sumolib.net.readNet(net_path)
+        missing = [e for e in used if not pruned.hasEdge(e)]
+        if missing:
+            raise RuntimeError(f"도로 정리 뒤 경로 edge가 없음: {missing[:5]}")
+
     # ── 4) 주변 지형 폴리곤 (순수 시각 요소) ──
     scenery = os.path.join(out_dir, "highway.scenery.xml")
     ctx = road.get("context_osm_file")
