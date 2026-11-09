@@ -289,7 +289,8 @@ if SCENARIO == "museum":
         #   mode "fastest" = 출발 직전 예상 통행시간이 짧은 길 (계산 방식 A)
         #   disruption = 에피소드의 40%에서 한 길의 가운데 구간을 7 km/h로 (공사·사고 가정)
         "route_choice": {"file": "env/museum/route_alternatives.json",
-                         "mode": "fastest",
+                         "mode": "fastest",      # "learned" = 길 선택 AI (tools/train_route_policy.py)
+                         "decision_edge": "496583281#0",  # 회전교차로 직전 21 m 구간에서 고름(learned)
                          "disruption": {"prob": 0.4, "speed": 2.0}},
         "gui_focus_edge": "206488360",
         "speed_limit": 27.78,

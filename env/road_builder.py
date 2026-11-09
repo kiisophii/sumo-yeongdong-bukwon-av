@@ -491,6 +491,7 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
                 "route_id": f"r_alt_{name}",
                 "length": sum(net.getEdge(e).getLength() for e in a["edges"]),
                 "branch": list(a["branch"]),
+                "join_edge": alts.get("join_edge"),
             }
     flow_lines = []
     # 계산값을 파일로도 남긴다 — build()를 거치지 않는 프로세스(병렬 수집

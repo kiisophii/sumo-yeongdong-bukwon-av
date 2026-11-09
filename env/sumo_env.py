@@ -154,6 +154,17 @@ class SumoHighwayEnv(gym.Env):
         self.route_name = None
         self.route_estimates = {}
         self.disrupted = None
+        # 학습형 선택(mode "learned"): 갈림길 직전에 route_selector(context)로 고른다.
+        #   route_selector가 없으면 무작위(탐험). context 설명은 _route_context 참고.
+        self.route_selector = None
+        self._route_pending = False
+        self.route_context = None
+        self.decision_edge = str((road.get("route_choice") or {}).get("decision_edge", ""))
+        # 갈림 구간 실제 통과시간 (갈라진 첫 구간 진입 → 다시 만나는 구간 진입, 초)
+        self.branch_time = None
+        self._branch_t0 = None
+        self.join_edge = (next(iter(self.route_alts.values())).get("join_edge")
+                          if self.route_alts else None)
         # ---- 실제 지도(OSM) 도로 모드 ----
         #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
         self.osm_mode = road.get("type", "straight") == "osm"
@@ -733,7 +744,12 @@ class SumoHighwayEnv(gym.Env):
             n: float(sum(traci.edge.getTraveltime(e) for e in a["branch"]))
             for n, a in self.route_alts.items()}
         mode = rc.get("mode", "fastest")
-        if mode == "fastest":
+        self.branch_time, self._branch_t0, self._route_pending = None, None, False
+        if mode == "learned":
+            # 일단 첫 번째 길로 출발하고, 갈림길 직전(decision_edge)에서 다시 고른다
+            name = list(self.route_alts)[0]
+            self._route_pending = True
+        elif mode == "fastest":
             name = min(self.route_estimates, key=self.route_estimates.get)
         elif mode == "random":
             name = str(np.random.choice(list(self.route_alts)))
@@ -744,6 +760,50 @@ class SumoHighwayEnv(gym.Env):
         self.route_name = name
         self.road_length = float(self.route_alts[name]["length"])
         return self.route_alts[name]["route_id"]
+
+    def _route_context(self):
+        """(팀14) 길 선택 AI가 보는 정보. 길마다 3개 (route_alts 순서):
+        [갈림 구간 예상 통행시간/300초, 구간 평균속도/제한속도, 멈춰 있는 차 수/20]"""
+        ctx = []
+        for n, a in self.route_alts.items():
+            tt = sum(traci.edge.getTraveltime(e) for e in a["branch"])
+            ratios, halt = [], 0
+            for e in a["branch"]:
+                vmax = max(traci.lane.getMaxSpeed(e + "_0"), 1.0)
+                ms = traci.edge.getLastStepMeanSpeed(e)
+                ratios.append(min(ms / vmax, 1.0))
+                halt += traci.edge.getLastStepHaltingNumber(e)
+            ctx += [min(tt / 300.0, 3.0), float(np.mean(ratios)) if ratios else 1.0,
+                    min(halt / 20.0, 3.0)]
+        return np.array(ctx, dtype=np.float32)
+
+    def _route_step_hook(self):
+        """(팀14) 매 스텝: 학습형 선택 실행, 갈림 구간 통과시간 기록."""
+        if not self.route_alts or self.ego_id not in traci.vehicle.getIDList():
+            return
+        road = traci.vehicle.getRoadID(self.ego_id)
+        now = traci.simulation.getTime()
+        if self._route_pending and road == self.decision_edge:
+            self.route_context = self._route_context()
+            self.route_estimates = {
+                n: float(self.route_context[3 * i] * 300.0)
+                for i, n in enumerate(self.route_alts)}
+            if self.route_selector is not None:
+                name = self.route_selector(self.route_context)
+            else:
+                name = str(np.random.choice(list(self.route_alts)))
+            edges = list(traci.route.getEdges(self.route_alts[name]["route_id"]))
+            traci.vehicle.setRoute(self.ego_id, edges[edges.index(road):])
+            self.route_name = name
+            self.road_length = float(self.route_alts[name]["length"])
+            self._route_pending = False
+        alt = self.route_alts.get(self.route_name) if self.route_name else None
+        if alt:
+            if self._branch_t0 is None and road == alt["branch"][0]:
+                self._branch_t0 = now
+            if (self._branch_t0 is not None and self.branch_time is None
+                    and road == self.join_edge):
+                self.branch_time = now - self._branch_t0
 
     def _junction_features(self):
         """앞 신호등과 앞 교차로(신호 없는)의 상태 6개. 설명은 __init__ 주석 [31..36]."""
@@ -1075,6 +1135,7 @@ class SumoHighwayEnv(gym.Env):
         # ----- (2) 시뮬레이션 1스텝 -----
         traci.simulationStep()
         self.step_count += 1
+        self._route_step_hook()
 
         # ----- (3) 이벤트/관측 -----
         collided = self.ego_id in traci.simulation.getCollidingVehiclesIDList()
@@ -1188,6 +1249,7 @@ class SumoHighwayEnv(gym.Env):
             "route": self.route_name,
             "route_estimates": dict(self.route_estimates),
             "disrupted_route": (self.disrupted or {}).get("route"),
+            "branch_time": self.branch_time,
             "yield_violation": yield_violation,
             "arrived": arrived,
             "speed": ego_speed,
