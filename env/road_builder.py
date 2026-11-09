@@ -394,11 +394,18 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     cmd += list(road.get("netconvert_options", []))
     # (팀14) OSM 태그 고치기: 차로 수 등이 실제(로드뷰)와 다른 way를 고친 사본으로 변환
     #   ROAD["osm_tag_overrides"] = {way_id: {"lanes": "2", ...}}
-    if road.get("osm_tag_overrides"):
+    #   ROAD["osm_default_maxspeed"] = {highway 종류: "50", ...} — maxspeed 태그가 없는 way에만
+    #   넣는다 (OSM에 없으면 netconvert가 도로 종류별 기본값 80~100 km/h를 넣기 때문)
+    if road.get("osm_tag_overrides") or road.get("osm_default_maxspeed"):
         import xml.etree.ElementTree as _ET
         _tree = _ET.parse(_resolve(road["osm_file"]))
-        _ov = {str(k): v for k, v in road["osm_tag_overrides"].items()}
+        _ov = {str(k): v for k, v in (road.get("osm_tag_overrides") or {}).items()}
+        _dm = road.get("osm_default_maxspeed") or {}
         for _w in _tree.getroot().iter("way"):
+            _tags = {x.get("k"): x for x in _w.findall("tag")}
+            _hw = _tags["highway"].get("v") if "highway" in _tags else None
+            if _hw in _dm and "maxspeed" not in _tags:
+                _ET.SubElement(_w, "tag", k="maxspeed", v=str(_dm[_hw]))
             if _w.get("id") in _ov:
                 for _k, _v in _ov[_w.get("id")].items():
                     _t = [x for x in _w.findall("tag") if x.get("k") == _k]
@@ -442,6 +449,8 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     def repair(edges):
         """(팀14) edge 목록에서 패치(분할·삭제)로 끊긴 곳을 최단경로로 다시 잇는다.
         예: 영업소 패치로 51066582#1이 51066582#1 / .95 / .110으로 나뉘면 사이를 채운다."""
+        # 도로망을 다시 만들 때 같은 속성의 이웃 구간이 하나로 합쳐져 사라진 edge는 빼고 잇는다
+        edges = [e for e in edges if net.hasEdge(e)]
         out = [edges[0]]
         for b in edges[1:]:
             a = out[-1]

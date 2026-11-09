@@ -2,6 +2,8 @@
 <nodes>
     <node id="51066582#1.110" type="zipper"/>
     <node id="1224608702.75" type="zipper"/>
-    <node id="4627913063" type="zipper"/>
+    <!-- 4627913063(4→3차로)은 지퍼로 두면 배경차끼리 교차점 안 충돌이 났다(시드 3, 2026-11-09)
+         → 우선순위 교차점: 합쳐지는 쪽이 양보 -->
+    <node id="4627913063" type="priority"/>
     <node id="468241514.50" type="zipper"/>
 </nodes>
