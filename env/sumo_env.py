@@ -217,6 +217,19 @@ class SumoHighwayEnv(gym.Env):
         self.obs_offsets = (+2, +1, 0, -1, -2)
         n_lanes_view = len(self.obs_offsets)
         self.obs_dim = 1 + n_lanes_view * 4 + n_lanes_view + n_lanes_view
+        # ---- (팀14) 교차로·신호 관측 6개 [31..36] ----
+        #   일반도로(신호등·회전교차로·비보호 교차로)를 달리려면 앞 교차로를 봐야 한다.
+        #   OBSERVATION["junction_features"]가 True일 때만 붙는다(고속도로 기존 모델은 31차원 유지).
+        #   [31] 앞 신호까지 거리 / junction_lookahead (신호 없으면 1)
+        #   [32] 신호 색: 초록 +1, 노랑 0, 빨강 -1 (신호 없으면 +1)
+        #   [33] 신호 남은 시간 / 30초 (현재 색이 바뀌기까지, 신호 없으면 1)
+        #   [34] 앞 교차로(신호 없는)까지 거리 / junction_lookahead (없으면 1)
+        #   [35] 그 교차로에서 내가 양보해야 함 +1 / 우선 -1
+        #   [36] 양보해야 할 차가 다가오는 중 +1 / 없음 -1
+        self.junction_obs = bool(mdp_obs.get("junction_features", False))
+        self.junction_lookahead = float(mdp_obs.get("junction_lookahead", 150.0))
+        if self.junction_obs:
+            self.obs_dim += 6
         self.observation_space = spaces.Box(-1.0, 1.0, shape=(self.obs_dim,),
                                             dtype=np.float32)
 
@@ -232,6 +245,9 @@ class SumoHighwayEnv(gym.Env):
             # 충돌한 차량을 시뮬레이션에서 제거. (기본값 teleport는 순간이동시켜버려서
             # RL 학습에는 부적합. remove로 해야 "충돌 → 에피소드 종료"가 깔끔함)
             "--collision.action", "remove",
+            # (팀14) 교차로 안에서 엇갈리는 차끼리의 충돌도 검사 — 기본값은 꺼져 있어서
+            # 빨간불에 지나가도 충돌로 잡히지 않는다
+            "--collision.check-junctions", "true",
             "--no-warnings", "true",   # 콘솔 경고 끄기
             "--no-step-log", "true",   # 스텝 로그 끄기
             # 매 에피소드 다른 시드 → 배경 교통 패턴이 달라져서 과적합 방지
@@ -666,7 +682,45 @@ class SumoHighwayEnv(gym.Env):
         for offset in self.obs_offsets:
             obs.append(self._lane_density(offset))
 
+        # ----- (팀14) 앞 신호·교차로 -----
+        if self.junction_obs:
+            obs += self._junction_features()
+
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
+
+    def _junction_features(self):
+        """앞 신호등과 앞 교차로(신호 없는)의 상태 6개. 설명은 __init__ 주석 [31..36]."""
+        L = self.junction_lookahead
+        sig = [1.0, 1.0, 1.0]
+        try:
+            for tls_id, link_idx, dist, state in traci.vehicle.getNextTLS(self.ego_id):
+                if dist > L:
+                    break
+                color = {"G": 1.0, "g": 1.0, "y": 0.0, "Y": 0.0,
+                         "r": -1.0, "R": -1.0, "u": 0.0}.get(state, 1.0)
+                remain = (traci.trafficlight.getNextSwitch(tls_id)
+                          - traci.simulation.getTime())
+                sig = [dist / L, color, float(np.clip(remain / 30.0, 0.0, 1.0))]
+                break
+        except traci.TraCIException:
+            pass
+        jun = [1.0, -1.0, -1.0]
+        try:
+            lane = traci.vehicle.getLaneID(self.ego_id)
+            if not lane.startswith(":"):
+                ahead = (traci.lane.getLength(lane)
+                         - traci.vehicle.getLanePosition(self.ego_id))
+                links = traci.vehicle.getNextLinks(self.ego_id)
+                if links and ahead <= L:
+                    lk = links[0]
+                    # (다음 차선, 우선 여부, 진입 가능, 엇갈리는 차 있음, 교차로 내부 차선,
+                    #  신호/우선 상태 문자, 방향, 길이)
+                    signalized = lk[5] in "GgyYrRu"
+                    if not signalized and not lk[1]:
+                        jun = [ahead / L, 1.0, 1.0 if lk[3] else -1.0]
+        except traci.TraCIException:
+            pass
+        return sig + jun
 
     # ==================================================================
     # 1 스텝 진행: 행동 적용 → 시뮬레이션 1스텝 → 보상/종료 판정
@@ -871,6 +925,18 @@ class SumoHighwayEnv(gym.Env):
         lane_before = None
         self._lc_block_reason = None
 
+        # (팀14) 신호·양보 위반 판정용: 행동 적용 전 "바로 앞" 신호와 교차로 상태
+        pre_tls, pre_jun, pre_lane = None, None, None
+        if self.junction_obs and self.ego_id in traci.vehicle.getIDList():
+            try:
+                nxt = traci.vehicle.getNextTLS(self.ego_id)
+                if nxt:
+                    pre_tls = nxt[0]          # (신호 id, 링크 번호, 거리, 상태 문자)
+                pre_jun = self._junction_features()[3:]
+                pre_lane = traci.vehicle.getLaneID(self.ego_id)
+            except traci.TraCIException:
+                pass
+
         # ----- (1) 종방향 + 횡방향 행동 적용 -----
         if self.ego_id in traci.vehicle.getIDList():
             v = traci.vehicle.getSpeed(self.ego_id)
@@ -912,6 +978,29 @@ class SumoHighwayEnv(gym.Env):
                 pass
         lane_after = int(traci.vehicle.getLaneIndex(self.ego_id)) if alive else None
 
+        # (팀14) 신호 위반: 빨간불이던 정지선을 이번 스텝에 지나갔는가
+        #   = 앞 신호가 빨강이었고, 지금은 그 신호가 더 이상 "앞"에 없음(통과)
+        red_light, yield_violation = False, False
+        if alive and pre_tls is not None:
+            try:
+                nxt = traci.vehicle.getNextTLS(self.ego_id)
+                still_ahead = bool(nxt) and nxt[0][0] == pre_tls[0] and nxt[0][1] == pre_tls[1]
+                if not still_ahead and pre_tls[3] in "rR":
+                    red_light = True
+            except traci.TraCIException:
+                pass
+        # (팀14) 양보 위반: 양보해야 하는 교차로에 엇갈리는 차가 오는데 들어갔는가
+        if (alive and pre_jun is not None and pre_lane is not None
+                and not pre_lane.startswith(":")
+                and pre_jun[1] > 0 and pre_jun[2] > 0):
+            try:
+                if traci.vehicle.getLaneID(self.ego_id).startswith(":"):
+                    yield_violation = True
+            except traci.TraCIException:
+                pass
+        if red_light and self.rw.get("red_light_terminate", True):
+            collided = True    # 신호 위반은 충돌과 같은 실패로 처리
+
         obs = self._get_obs()
         terminated, truncated = False, False
         ego_speed, ego_gap = None, None
@@ -919,6 +1008,9 @@ class SumoHighwayEnv(gym.Env):
         # ----- (4) 기존 보상 유지 -----
         if collided:
             reward = -float(self.rw["collision_penalty"])
+            if red_light:
+                reward = -float(self.rw.get("red_light_penalty",
+                                            self.rw["collision_penalty"]))
             terminated = True
         elif arrived:
             reward = float(self.rw["arrival_bonus"])
@@ -964,12 +1056,17 @@ class SumoHighwayEnv(gym.Env):
                 # → 의미 없는 행동 출력을 줄이는 정칙화 (rl_action_penalty 대응)
                 reward -= float(self.rw.get("invalid_action_penalty", 0.0))
 
+        if yield_violation and not terminated:
+            reward -= float(self.rw.get("yield_penalty", 0.0))
+
         if self.step_count >= self.max_steps:
             truncated = True
 
         info = {
             "collided": collided,
             "lane_end": lane_end,
+            "red_light": red_light,
+            "yield_violation": yield_violation,
             "arrived": arrived,
             "speed": ego_speed,
             "gap": ego_gap,
