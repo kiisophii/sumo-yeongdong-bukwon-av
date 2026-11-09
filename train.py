@@ -159,6 +159,8 @@ if __name__ == "__main__":
     _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
     _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
     _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
+    _ap.add_argument("--init-model", default=None,
+                     help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _args = _ap.parse_args()
     if _args.lr is not None:
         HPARAMS["lr"] = _args.lr
@@ -209,6 +211,10 @@ if __name__ == "__main__":
         buffer=buffer,
         **HPARAMS,
     )
+    # (팀14) 기존 모델에서 이어서 학습
+    if globals().get("_args") is not None and getattr(_args, "init_model", None):
+        agent.load(_args.init_model)
+        print(f"이어서 학습: {_args.init_model}")
     print(f"obs_dim={env.observation_space.shape[0]}, "
           f"act_dim={env.action_space.shape[0]}, device={agent.device}")
 

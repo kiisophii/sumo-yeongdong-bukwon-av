@@ -365,8 +365,13 @@ class SumoHighwayEnv(gym.Env):
                  and self.reuse_episodes > 0
                  and self._episodes_since_start < self.reuse_episodes)
         if reuse:
-            if self.ego_id in traci.vehicle.getIDList():
+            # 이전 ego가 아직 출발 대기 중(주차장 입구가 막혀 도로에 못 들어감)이면 getIDList에는
+            # 없지만 시뮬레이션에는 남아 있다 → 상태와 상관없이 지운다 (city_v1 학습 63만 스텝에서
+            # "ego already exists"로 멈춘 원인)
+            try:
                 traci.vehicle.remove(self.ego_id)
+            except traci.TraCIException:
+                pass
             gap = float(np.random.uniform(*self.reuse_gap_seconds))
             traci.simulationStep(traci.simulation.getTime() + gap)
             self._episodes_since_start += 1
