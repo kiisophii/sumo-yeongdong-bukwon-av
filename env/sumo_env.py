@@ -134,6 +134,10 @@ class SumoHighwayEnv(gym.Env):
         # 제동 가능성 검사 (0이면 끔): 변경 직후 속도차를 이 감속도로 없앨 수 있어야 허용
         self.lc_brake_decel = float(lcs.get("brake_check_decel", 0.0))          # m/s^2 (ego)
         self.lc_follower_decel = float(lcs.get("follower_brake_decel", 0.0))    # m/s^2 (뒤차)
+        # 목표 차선 뒤차를 교차점 너머 앞 구간까지 찾는 거리 (m). 0이면 끔.
+        self.upstream_scan_m = float(lcs.get("upstream_scan", 80.0))
+        self._incoming = None   # 차선 → 들어오는 차선 표 (처음 쓸 때 만든다)
+        self._outgoing = None   # 차선 → 나가는 차선 표
         self.road_length = float(road["length"])
         # ---- (팀14) 갈림길 경로 선택 ----
         #   mode: "fastest" = 출발 직전 현재 교통으로 예상 통행시간이 짧은 길(계산 방식 A)
@@ -821,9 +825,71 @@ class SumoHighwayEnv(gym.Env):
                     g = -d - traci.vehicle.getLength(self.ego_id)
                     if rear is None or g < rear[0]:
                         rear = (g, traci.vehicle.getSpeed(vid))
+            # ── 교차점 뒤쪽까지 훑기 (팀14 추가) ──
+            # 목표 차선의 뒤차가 아직 교차점 안(내부 차선)이나 그 차선으로
+            # 이어지는 앞 구간에 있으면 위 스캔에 안 잡힌다. 두 진입로가
+            # 합쳐진 직후 이 사각지대에서 측면충돌이 났다(합류 경로 평가 60회 중
+            # 9건, 2026-11-09). 그래서 목표 차선으로 들어오는 차선을 한 단계 더 본다.
+            ego_len = traci.vehicle.getLength(self.ego_id)
+            for from_lane, from_len, via, via_len in self._incoming_lanes(lane_id):
+                for lid, extra, llen in ((via, 0.0, via_len), (from_lane, via_len, from_len)):
+                    if not lid:
+                        continue
+                    for vid in traci.lane.getLastStepVehicleIDs(lid):
+                        if vid == self.ego_id:
+                            continue
+                        g = my_pos + extra + (llen - traci.vehicle.getLanePosition(vid)) - ego_len
+                        if g < self.upstream_scan_m and (rear is None or g < rear[0]):
+                            rear = (g, traci.vehicle.getSpeed(vid))
+            # 앞쪽도 같은 이유로 교차점 너머(목표 차선이 이어지는 다음 구간)까지 본다.
+            # 차로를 옮기는 동안 다음 구간으로 넘어가 그 옆 차로 차와 부딪힌 사례(7건).
+            lane_len = traci.lane.getLength(lane_id)
+            for to_lane, to_len, via, via_len in self._outgoing_lanes(lane_id):
+                for lid, extra in ((via, 0.0), (to_lane, via_len)):
+                    if not lid:
+                        continue
+                    for vid in traci.lane.getLastStepVehicleIDs(lid):
+                        if vid == self.ego_id:
+                            continue
+                        g = ((lane_len - my_pos) + extra + traci.vehicle.getLanePosition(vid)
+                             - traci.vehicle.getLength(vid))
+                        if g < self.upstream_scan_m and (front is None or g < front[0]):
+                            front = (g, traci.vehicle.getSpeed(vid))
             return front, rear
         except traci.TraCIException:
             return None, None
+
+    def _incoming_lanes(self, lane_id: str):
+        """lane_id로 들어오는 (앞 차선, 길이, 교차점 내부 차선, 길이) 목록.
+
+        도로망 파일을 처음 한 번 읽어 표로 만들어 둔다 (도로가 바뀌면
+        SUMO를 다시 시작할 때 새로 읽음)."""
+        if self._incoming is None:
+            self._build_lane_tables()
+        return self._incoming.get(lane_id, [])
+
+    def _outgoing_lanes(self, lane_id: str):
+        """lane_id에서 나가는 (다음 차선, 길이, 교차점 내부 차선, 길이) 목록."""
+        if self._outgoing is None:
+            self._build_lane_tables()
+        return self._outgoing.get(lane_id, [])
+
+    def _build_lane_tables(self):
+        import sumolib
+        net_path = os.path.join(os.path.dirname(self.cfg_path), "highway.net.xml")
+        net = sumolib.net.readNet(net_path, withInternal=True)
+        inc, out = {}, {}
+        for e in net.getEdges(withInternal=False):
+            for ln in e.getLanes():
+                for c in ln.getOutgoing():
+                    via = c.getViaLaneID() or ""
+                    via_len = net.getLane(via).getLength() if via else 0.0
+                    to = c.getToLane()
+                    inc.setdefault(to.getID(), []).append(
+                        (ln.getID(), ln.getLength(), via, via_len))
+                    out.setdefault(ln.getID(), []).append(
+                        (to.getID(), to.getLength(), via, via_len))
+        self._incoming, self._outgoing = inc, out
 
     def _lane_change_is_safe(self, direction: int) -> bool:
         """목표 차선으로 지금 이동해도 측면충돌이 나지 않는지 검사한다.

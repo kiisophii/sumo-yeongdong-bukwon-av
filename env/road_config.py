@@ -256,9 +256,33 @@ if SCENARIO == "museum":
     ROAD = {
         "type": "osm",
         "name": "철도박물관 → 수원광교박물관 (부곡IC·북수원IC·동수원IC)",
-        # 팀원 지도: env/museum/README 원본은 단톡 공유 ZIP(Museum_Parking_to_Gwanggyo_V2)
-        "net_file": "env/museum/museum_to_gwanggyo.net.xml",
-        "osm_file": "env/museum/source/museum_corridor.osm",   # 재생성용 원본(현재는 net_file 사용)
+        # 팀원 지도(단톡 공유 ZIP Museum_Parking_to_Gwanggyo_V2)의 원본 OSM과 같은 변환 설정으로
+        # 다시 만들되, 차로 수가 실제와 다른 길만 고친다 (osm_tag_overrides).
+        # 원래 만들어진 도로망은 env/museum/museum_to_gwanggyo.net.xml (비교용)
+        "osm_file": "env/museum/source/museum_corridor.osm",
+        "netconvert_args": [
+            "-t", "@env/museum/source/osmNetconvert_base.typ.xml,"
+                  + "env/museum/source/service_types.typ.xml",
+            "--geometry.remove", "true", "--ramps.guess", "false",
+            "--ramps.set", "474882669#1",
+            "--junctions.join", "false", "--no-turnarounds", "true",
+            "--keep-edges.by-vclass", "passenger", "--osm.sidewalks", "false",
+            "--osm.bike-access", "false", "--output.street-names", "true",
+            "--output.original-names", "true",
+            "--tls.yellow.time", "5", "--tls.allred.time", "1", "--no-warnings"],
+        # 카카오 로드뷰로 확인한 차로 수 (방향별). 근거: 메인 세션 표 D:/자유대화/박물관경로_차선확인.md
+        #   덕영대로 1 → 2 (37.33136,126.95649 2023-11 / 37.32513,126.95794 2026-06)
+        #   철도박물관로 북쪽(회전교차로 → 오봉로) 1 → 2 (37.32468,126.94849 2023-11)
+        #   창룡대로 2 → 4 (37.29597,127.04455 2026-08)
+        "osm_tag_overrides": {
+            **{w: {"lanes": "2"} for w in [
+                "377720051", "491135704", "491135708", "1417143032", "51066581", "51066587",
+                "472039936", "491135707", "494855746",
+                "955971705", "955971706", "955971707", "955971708"]},          # 덕영대로 (일방 way)
+            **{w: {"lanes": "2"} for w in ["488779086", "568664957", "496583277"]},  # 철도박물관로 북쪽 일방
+            "488779084": {"lanes": "3", "lanes:forward": "1", "lanes:backward": "2"},  # 양방향 way, AV는 역방향
+            **{w: {"lanes": "4"} for w in ["667354422", "667354425", "621656305"]},    # 창룡대로
+        },
         "context_osm_file": None,
         "ego_edges_file": "env/museum/route_check.json",       # 주황 경로(오봉로) 72개 edge
         # 갈림길 경로 선택: 의왕역회전교차로 → (주황) 오봉로 / (파랑) 부곡중앙로·덕영대로 → 다시 만남
@@ -275,6 +299,13 @@ if SCENARIO == "museum":
             {"nod": "env/patches_museum/toll_2.nod.xml",
              "edg": "env/patches_museum/toll_2.edg.xml",
              "con": "env/patches_museum/toll_2.con.xml"},
+            # 부곡(진입)·동수원(진출) 영업소 — AV 경로가 직접 지나는 요금소
+            {"nod": "env/patches_museum/tolls_bd_1.nod.xml",
+             "edg": "env/patches_museum/tolls_bd_1.edg.xml",
+             "con": "env/patches_museum/tolls_bd_1.con.xml"},
+            {"nod": "env/patches_museum/tolls_bd_2.nod.xml",
+             "edg": "env/patches_museum/tolls_bd_2.edg.xml",
+             "con": "env/patches_museum/tolls_bd_2.con.xml"},
         ],
         "length": None,
         "num_lanes": None,
@@ -282,13 +313,10 @@ if SCENARIO == "museum":
     # 고속도로 흐름은 북수원 시나리오의 실측 보정값을 이 지도의 edge 번호로 옮김.
     # 일반도로 흐름(신협오거리·회전교차로·부곡IC)은 팀원 설정값(가정, 실측 아님).
     _hw = {
-        "east_through":          ("474882669#0", "50981265",  1450),
-        "east_to_exit":          ("474882669#0", "549032648", 220),
+        "east_through":          ("474882669#0", "50981265",  700),
         "east_to_bukwon":        ("474882669#0", "51066895",  185),
         "bukwon_to_east":        ("582107260",   "50981265",  580),
         "bukwon_to_east_b":      ("51066899",    "50981265",  580),
-        "bukwon_to_east_exit":   ("582107260",   "549032648", 185),
-        "bukwon_to_east_exit_b": ("51066899",    "549032648", 185),
         "west_through_a":        ("50981263",    "41948037",  1900),
         "west_through_b":        ("206488703",   "41948037",  1666),
         "west_to_bukwon":        ("50981263",    "1235185551", 690),
@@ -302,6 +330,18 @@ if SCENARIO == "museum":
         "circle_south_north":    ("496583281#0", "488779086#1", 90),
         "circle_east_south":     ("-496583283",  "462907008#1", 90),
         "bugok_to_citygoal":     ("51066582#0",  "667354425",  120),
+        # ── 부곡·동수원 영업소 (도로공사 2026-11-05, 영업소별·영업소간 교통량) ──
+        # 동수원 진출 08시 3,478대/h: 인천 쪽(우리 진행 방향)에서 59% ≈ 2,050, 강릉 쪽에서 41% ≈ 1,430
+        # 그대로 넣으면 북수원 합류 뒤 본선이 5,300대/h가 되어 VDS 실측(32.6 km 최대 3,167대/h, 일요일)과
+        # 안 맞고 엇갈림 정체·순간이동이 생김(2026-11-09 시험) → 본선이 약 3,600대/h가 되게 줄임:
+        #   본선 직진 1,450 → 700, 동수원행 상류 1,670 → 900, 강릉 쪽 동수원 진출 1,430 → 900(1차로 램프 용량)
+        "east_to_dongsuwon":     ("474882669#0", "468241513", 900),
+        "bukwon_to_dongsuwon":   ("582107260",   "468241513", 190),
+        "bukwon_to_dongsuwon_b": ("51066899",    "468241513", 190),
+        "west_to_dongsuwon":     ("27523870",    "50981089",  900),
+        # 부곡 진입 07시 960대/h 중 강릉 방향 47% ≈ 450 (진입로 2개 반반 가정). 대형 19.5%는 미반영
+        "bugok_to_east":         ("51066582#0",  "50981265",  225),
+        "bugok_to_east_b":       ("491135706",   "50981265",  225),
     }
     TRAFFIC = {**TRAFFIC,
                "routes": {k: {"from": a, "to": b, "vehs_per_hour": v}

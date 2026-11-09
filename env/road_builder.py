@@ -392,6 +392,29 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
            "--output.street-names",
            "--no-warnings"]
     cmd += list(road.get("netconvert_options", []))
+    # (팀14) OSM 태그 고치기: 차로 수 등이 실제(로드뷰)와 다른 way를 고친 사본으로 변환
+    #   ROAD["osm_tag_overrides"] = {way_id: {"lanes": "2", ...}}
+    if road.get("osm_tag_overrides"):
+        import xml.etree.ElementTree as _ET
+        _tree = _ET.parse(_resolve(road["osm_file"]))
+        _ov = {str(k): v for k, v in road["osm_tag_overrides"].items()}
+        for _w in _tree.getroot().iter("way"):
+            if _w.get("id") in _ov:
+                for _k, _v in _ov[_w.get("id")].items():
+                    _t = [x for x in _w.findall("tag") if x.get("k") == _k]
+                    if _t:
+                        _t[0].set("v", str(_v))
+                    else:
+                        _ET.SubElement(_w, "tag", k=_k, v=str(_v))
+        _patched = os.path.join(out_dir, "osm_patched.osm")
+        _tree.write(_patched, encoding="utf-8", xml_declaration=True)
+        cmd[cmd.index("--osm-files") + 1] = _patched
+    # (팀14) netconvert 옵션을 통째로 바꿀 때 (팀원 지도와 같은 설정으로 다시 만들기)
+    if road.get("netconvert_args"):
+        cmd = [netconvert, "--osm-files", cmd[cmd.index("--osm-files") + 1], "-o", net_path]
+        # "@경로1,경로2"는 프로젝트 기준 파일 경로로 바꾼다
+        cmd += [(",".join(_resolve(p) for p in a[1:].split(",")) if a.startswith("@") else a)
+                for a in road["netconvert_args"]]
     if road.get("net_file"):
         # 이미 만들어진 도로망(.net.xml)을 그대로 쓰는 경우 (예: 팀원이 만든
         # env/museum 지도). OSM 변환을 건너뛰고 아래 패치만 적용한다.
@@ -416,6 +439,22 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
 
     net = sumolib.net.readNet(net_path)
 
+    def repair(edges):
+        """(팀14) edge 목록에서 패치(분할·삭제)로 끊긴 곳을 최단경로로 다시 잇는다.
+        예: 영업소 패치로 51066582#1이 51066582#1 / .95 / .110으로 나뉘면 사이를 채운다."""
+        out = [edges[0]]
+        for b in edges[1:]:
+            a = out[-1]
+            ea, eb = net.getEdge(a), net.getEdge(b)
+            if eb in ea.getOutgoing():
+                out.append(b)
+                continue
+            mid, _ = net.getShortestPath(ea, eb)
+            if not mid:
+                raise RuntimeError(f"경로를 이을 수 없음: {a} → {b}")
+            out += [e.getID() for e in mid[1:]]
+        return out
+
     def path(frm: str, to: str):
         edges, _ = net.getShortestPath(net.getEdge(frm), net.getEdge(to))
         if not edges:
@@ -427,7 +466,7 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         # 경유지가 많은 경로는 edge 나열을 파일로 받는다 (JSON: {"route_edges": [...]})
         import json as _json
         with open(_resolve(road["ego_edges_file"]), encoding="utf-8") as _f:
-            ego_edges = list(_json.load(_f)["route_edges"])
+            ego_edges = repair(list(_json.load(_f)["route_edges"]))
     else:
         ego_edges = path(*road["ego_route"])
     road["length"] = sum(net.getEdge(e).getLength() for e in ego_edges)
@@ -446,6 +485,7 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         with open(_resolve(rc["file"]), encoding="utf-8") as _f:
             alts = _json.load(_f)
         for name, a in alts["alternatives"].items():
+            a = {**a, "edges": repair(list(a["edges"]))}
             route_lines.append(f'    <route id="r_alt_{name}" edges="{" ".join(a["edges"])}"/>')
             alt_meta[name] = {
                 "route_id": f"r_alt_{name}",
