@@ -1,0 +1,46 @@
+<!--
+  북수원 영업소 2단계: 부스 직후 차로 연결. 차로가 줄 때 오른쪽(화물차·현금, 교통량 적음)
+  차로부터 합치고, 하이패스 두 차로(교통량 96%)는 끝까지 따로 이어지게 한다.
+-->
+<connections>
+    <!-- 영업소 앞 부채꼴(2차로 → 5차로). 오른쪽 차로 → 화물차·현금·하이패스 한 개,
+         왼쪽 차로 → 하이패스 다른 한 개. 두 차로가 하이패스 차로를 하나씩 맡아야
+         (하이패스 96%) 한 차로로 몰리지 않는다(측정: 몰릴 때 한쪽 차로 931대 vs 270대) -->
+    <delete from="51066898#2" to="51066898#2.30"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="0"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="1"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="2"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="3"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="1" toLane="4"/>
+    <delete from="51066898#2.165" to="51066898#2.180"/>
+    <connection from="51066898#2.165" to="51066898#2.180" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.165" to="51066898#2.180" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.165" to="51066898#2.180" fromLane="2" toLane="1"/>
+    <connection from="51066898#2.165" to="51066898#2.180" fromLane="3" toLane="2"/>
+    <connection from="51066898#2.165" to="51066898#2.180" fromLane="4" toLane="3"/>
+    <delete from="493209385#1.50" to="493209385#1.65"/>
+    <connection from="493209385#1.50" to="493209385#1.65" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.50" to="493209385#1.65" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.50" to="493209385#1.65" fromLane="2" toLane="1"/>
+    <connection from="493209385#1.50" to="493209385#1.65" fromLane="3" toLane="2"/>
+    <connection from="493209385#1.50" to="493209385#1.65" fromLane="4" toLane="3"/>
+    <delete from="51066898#2.205" to="51066898#3-AddedOnRampEdge"/>
+    <connection from="51066898#2.205" to="51066898#3-AddedOnRampEdge" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.205" to="51066898#3-AddedOnRampEdge" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.205" to="51066898#3-AddedOnRampEdge" fromLane="2" toLane="1"/>
+    <!-- 차로 감소 구간 연결 (부스 뒤) -->
+    <delete from="51066898#2.180" to="51066898#2.205"/>
+    <connection from="51066898#2.180" to="51066898#2.205" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.180" to="51066898#2.205" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.180" to="51066898#2.205" fromLane="2" toLane="1"/>
+    <connection from="51066898#2.180" to="51066898#2.205" fromLane="3" toLane="2"/>
+    <delete from="493209385#1.65" to="493209385#1.110"/>
+    <connection from="493209385#1.65" to="493209385#1.110" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.65" to="493209385#1.110" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.65" to="493209385#1.110" fromLane="2" toLane="1"/>
+    <connection from="493209385#1.65" to="493209385#1.110" fromLane="3" toLane="2"/>
+    <delete from="493209385#1.110" to="493209385#1.150"/>
+    <connection from="493209385#1.110" to="493209385#1.150" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.110" to="493209385#1.150" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.110" to="493209385#1.150" fromLane="2" toLane="1"/>
+</connections>

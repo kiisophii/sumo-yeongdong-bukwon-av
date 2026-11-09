@@ -113,8 +113,13 @@ def _vtypes_block(traffic: dict):
                 # "추월할 이유"가 자연스럽게 만들어진다.
                 f'maxSpeed="{c.get("max_speed", traffic["max_speed"])}"',
                 f'color="{c.get("color", "1,1,0")}"',
-                'vClass="passenger"', 'guiShape="passenger/sedan"',
+                # vClass: passenger(하이패스 승용) / custom1(현금 TCS 승용) / truck(화물차).
+                # 영업소 부스 차로는 vClass로 이용 가능 차로를 나눈다 (env/patches 참고).
+                f'vClass="{c.get("v_class", "passenger")}"',
+                f'guiShape="{c.get("gui_shape", "passenger/sedan")}"',
             ]
+            if "length" in c:
+                attrs.append(f'length="{c["length"]}"')
             # sigma는 Krauss 계열에만 의미가 있으므로 지정된 경우에만 넣는다
             if "sigma" in c:
                 attrs.append(f'sigma="{c["sigma"]}"')
@@ -388,6 +393,20 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
            "--no-warnings"]
     cmd += list(road.get("netconvert_options", []))
     subprocess.run(cmd, check=True, capture_output=True)
+
+    # ── 1-1) 도로망 패치 (영업소 등 OSM만으로 부족한 부분) ──
+    #   ROAD["net_patches"]의 순서대로 netconvert에 "기존 net + 수정 파일"을 넣어
+    #   다시 만든다. nod = 교차점 종류, edg = 차로 수·속도·분할·삭제, con = 차로 연결.
+    #   edge를 나눈 뒤에 생긴 새 edge(예: "X.165")를 고치려면 다음 단계에서 지정.
+    for patch in road.get("net_patches", []):
+        pcmd = [netconvert, "-s", net_path, "-o", net_path, "--no-warnings"]
+        if patch.get("nod"):
+            pcmd += ["-n", _resolve(patch["nod"])]
+        if patch.get("edg"):
+            pcmd += ["-e", _resolve(patch["edg"])]
+        if patch.get("con"):
+            pcmd += ["-x", _resolve(patch["con"])]
+        subprocess.run(pcmd, check=True, capture_output=True)
 
     net = sumolib.net.readNet(net_path)
 

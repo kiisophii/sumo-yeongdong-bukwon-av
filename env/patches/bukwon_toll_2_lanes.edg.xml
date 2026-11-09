@@ -1,0 +1,32 @@
+<!--
+  북수원 영업소 부스 구간의 차로별 종류 (2단계 패치: 1단계에서 edge를 나눈 뒤 적용)
+
+  근거: 한국도로공사 OpenAPI 「영업소 차로 운영현황」(trafficOprgPrcd/tolofCrgwOpPrss),
+        북수원(212) 2026-11-09 조회. 차로 번호는 왼쪽(1차로)부터.
+    입구: 1·2 다차로하이패스(2차로형) | 3·4 미운영(토목차로) | 5 TCS유인수납
+          | 6 화물차-하이패스 | 7 화물차-TCS유인수납
+    출구: 1·2 다차로하이패스(2차로형) | 3 미운영 | 4·5 TCS유인수납 | 6 하이패스+TCS유인수납
+  미운영 차로는 넣지 않았다. SUMO 차로 번호(index)는 오른쪽이 0이므로 순서를 뒤집었다.
+
+  차량 구분(vClass): passenger = 하이패스 승용차, custom1 = 현금(TCS) 승용차, truck = 화물차
+  부스 통과 속도(근사): 다차로하이패스 50 km/h(현장 표지), 단차로 하이패스 20 km/h,
+                       TCS 유인수납 2 m/s(부스 15 m를 약 7초에 통과 = 정산 시간 근사)
+-->
+<edges>
+    <!-- 입구 부스 (경수대로 → 영동고속도로) -->
+    <edge id="51066898#2.165">
+        <lane index="0" allow="truck" speed="2.0"/>        <!-- 7 화물차-TCS -->
+        <lane index="1" allow="truck" speed="5.56"/>       <!-- 6 화물차-하이패스(축중) -->
+        <lane index="2" allow="custom1" speed="2.0"/>      <!-- 5 TCS 유인수납 -->
+        <lane index="3" allow="passenger" speed="13.89"/>  <!-- 2 다차로하이패스 -->
+        <lane index="4" allow="passenger" speed="13.89"/>  <!-- 1 다차로하이패스 -->
+    </edge>
+    <!-- 출구 부스 (영동고속도로 → 경수대로) -->
+    <edge id="493209385#1.50">
+        <lane index="0" allow="passenger custom1 truck" speed="4.0"/>  <!-- 6 하이패스+TCS -->
+        <lane index="1" allow="custom1 truck" speed="2.0"/>            <!-- 5 TCS -->
+        <lane index="2" allow="custom1 truck" speed="2.0"/>            <!-- 4 TCS -->
+        <lane index="3" allow="passenger truck" speed="13.89"/>        <!-- 2 다차로하이패스 -->
+        <lane index="4" allow="passenger truck" speed="13.89"/>        <!-- 1 다차로하이패스 -->
+    </edge>
+</edges>
