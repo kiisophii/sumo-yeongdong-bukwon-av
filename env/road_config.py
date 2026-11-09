@@ -160,46 +160,46 @@ TRAFFIC = {
         "krauss": {   # 산만한 인간 운전자 — 가장 느리고 들쑥날쑥
             "probability": 0.35,
             "carFollowModel": "Krauss",
-            "accel": 2.0, "decel": 4.5,
+            "accel": 2.0, "decel": 4.5, "emergency_decel": 9.0,
             "tau": 1.0, "min_gap": 2.5,
             "sigma": 0.3,
             "speed_factor": "normc(0.85,0.08,0.65,1.05)",
             "color": "1,1,0",    # 노랑
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.8,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.8,
                    "lcSpeedGain": 0.6, "lcKeepRight": 0.5},
         },
         "idm": {      # 부드러운 표준 인간 모델
             "probability": 0.30,
             "carFollowModel": "IDM",
-            "accel": 1.8, "decel": 3.5,
+            "accel": 1.8, "decel": 3.5, "emergency_decel": 9.0,
             "tau": 1.2, "min_gap": 2.0,
             "speed_factor": "normc(0.92,0.07,0.7,1.1)",
             "color": "0,1,1",    # 시안
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 1.0,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 1.0,
                    "lcSpeedGain": 0.8, "lcKeepRight": 0.8},
         },
         "eidm": {     # 반응지연·부주의가 있는 현실적 인간
             "probability": 0.20,
             "carFollowModel": "EIDM",
-            "accel": 2.0, "decel": 4.0,
+            "accel": 2.0, "decel": 4.0, "emergency_decel": 9.0,
             "tau": 1.1, "min_gap": 2.0,
             "speed_factor": "normc(0.95,0.08,0.7,1.15)",
             "color": "1,0.6,0",  # 주황
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.7,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.7,
                    "lcSpeedGain": 1.0, "lcKeepRight": 0.3},
         },
         "acc": {      # 크루즈 차량 — 제한속도 근처를 일정하게
             "probability": 0.15,
             "carFollowModel": "ACC",
-            "accel": 2.0, "decel": 4.0,
+            "accel": 2.0, "decel": 4.0, "emergency_decel": 9.0,
             "tau": 1.5, "min_gap": 2.0,
             "speed_factor": "normc(1.0,0.03,0.9,1.1)",
             "color": "1,0,1",    # 마젠타
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 1.0,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 1.0,
                    "lcSpeedGain": 0.3, "lcKeepRight": 1.0},
         },
         # ── 영업소 이용 방식·차종 (실측 비율) ──
@@ -209,20 +209,20 @@ TRAFFIC = {
         "tcs_car": {  # 현금 결제 승용차 — 영업소에서 TCS 부스만 쓸 수 있음
             "probability": 0.042,
             "carFollowModel": "Krauss",
-            "accel": 2.0, "decel": 4.5,
+            "accel": 2.0, "decel": 4.5, "emergency_decel": 9.0,
             "tau": 1.0, "min_gap": 2.5,
             "sigma": 0.3,
             "speed_factor": "normc(0.88,0.08,0.7,1.05)",
             "color": "0.6,0.6,1",   # 연보라
             "v_class": "custom1",
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.8,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.8,
                    "lcSpeedGain": 0.5, "lcKeepRight": 0.6},
         },
         "truck": {    # 화물차 — 영업소 입구는 화물차 전용 차로(축중)만 사용
             "probability": 0.097,
             "carFollowModel": "Krauss",
-            "accel": 1.0, "decel": 4.0,
+            "accel": 1.0, "decel": 4.0, "emergency_decel": 7.0,
             "tau": 1.5, "min_gap": 3.0,
             "sigma": 0.2,
             "max_speed": 25.0,      # 화물차 고속도로 제한 90 km/h
@@ -232,11 +232,15 @@ TRAFFIC = {
             "v_class": "truck",
             "gui_shape": "truck",
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.6,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.6,
                    "lcSpeedGain": 0.2, "lcKeepRight": 1.0},
         },
     },
 
+    # (팀14) 모든 배경차 lcAssertive 0.7: 끼어들 때 목표 차선 간격을 더 넉넉히 요구한다.
+    #   시험(1시간, 교차로 충돌 검사 켬): 1.0 → 시드 10개 중 4건 / 0.7 → 시드 12개 중 1건(북수원→인천 합류부) /
+    #   0.5 → 시드 12개 중 8건(끼어들기를 미루다 급하게 들어감). 그래서 0.7
+    #   기본값(1.0)에서는 ACC 차량이 끼어든 직후 뒤차에 받히는 추돌이 1시간에 0~1건 있었다.
     # 직선 도로용 프리필 — OSM 도로에서는 warm-up이 대신하므로 끈다.
     "prefill": {"enabled": False},
 }

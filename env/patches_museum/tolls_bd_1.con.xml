@@ -29,8 +29,10 @@
     <connection from="1250775757" to="1224608702" fromLane="3" toLane="3"/>
     <connection from="1250775757" to="1224608702" fromLane="4" toLane="4"/>
     <connection from="1250775757" to="1224608702" fromLane="5" toLane="5"/>
+    <!-- 영업소 뒤 갈림: 오른쪽 차로 = 50981089 방향, 왼쪽 차로 = 468241513(창룡대로) 방향.
+         한 차로가 두 방향으로 갈라지게 두면 교차점 안 차선변경 측면충돌이 났다(시드 7·10) -->
     <delete from="1235185544" to="468241513"/>
-    <connection from="1235185544" to="468241513" fromLane="0" toLane="0"/>
+    <connection from="1235185544" to="468241513" fromLane="1" toLane="0"/>
     <connection from="1235185544" to="468241513" fromLane="1" toLane="1"/>
     <delete from="1235185544" to="50981089"/>
     <connection from="1235185544" to="50981089" fromLane="0" toLane="0"/>

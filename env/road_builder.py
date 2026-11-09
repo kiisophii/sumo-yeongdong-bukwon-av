@@ -120,6 +120,10 @@ def _vtypes_block(traffic: dict):
             ]
             if "length" in c:
                 attrs.append(f'length="{c["length"]}"')
+            # (팀14) 비상 제동 한계 — 바로 앞에 끼어든 차를 피할 때 쓰는 최대 감속.
+            #   명시하지 않으면 SUMO가 decel 기준으로 정해 화물차(4.0)는 대응이 부족했다.
+            if "emergency_decel" in c:
+                attrs.append(f'emergencyDecel="{c["emergency_decel"]}"')
             # sigma는 Krauss 계열에만 의미가 있으므로 지정된 경우에만 넣는다
             if "sigma" in c:
                 attrs.append(f'sigma="{c["sigma"]}"')
