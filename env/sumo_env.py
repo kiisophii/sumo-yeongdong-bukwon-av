@@ -553,16 +553,21 @@ class SumoHighwayEnv(gym.Env):
         if edge.startswith(":"):
             return None
         pos = traci.vehicle.getLanePosition(self.ego_id)
-        to_route_end = self.road_length - traci.vehicle.getDistance(self.ego_id)
+        # 경로 끝 판정은 목적지 edge 기준 (김준희 님 수정 방식).
+        # 예전에는 road_length(일반 edge 합) - getDistance(교차로 내부 포함)로 비교해서
+        # 목적지 약 1 km 앞부터 끊기는 차선도 inf로 표시되는 버그가 있었음.
+        dest = traci.vehicle.getRoute(self.ego_id)[-1]
         out = {}
-        for lane_id, length, _occ, _off, _cont, _nxt in \
+        for lane_id, length, _occ, off, _cont, nxt in \
                 traci.vehicle.getBestLanes(self.ego_id):
             if not lane_id.startswith(edge + "_"):
                 continue
-            ahead = float(length) - pos
-            # 경로 끝까지 가는 차선은 "끊김 없음"으로 취급
+            reaches = edge == dest or any(
+                n.startswith(dest + "_") for n in nxt)
+            # 차선변경 없이 목적지 edge까지 이어지는 차선만 "끊김 없음"
             out[int(lane_id.rsplit("_", 1)[1])] = (
-                float("inf") if ahead >= to_route_end - 1.0 else ahead)
+                float("inf") if reaches and off == 0
+                else max(0.0, float(length) - pos))
         return out
 
     def _route_lane_connectivity(self, offset: int) -> float:
