@@ -1046,10 +1046,10 @@ class SumoHighwayEnv(gym.Env):
                 return False
             # ★ 경로 차선 보호: 경로를 따라 더 멀리 이어지는 차선에서
             #   곧 끊기는 차선(route_shield_m 이내)으로 옮기는 명령은 막는다.
-            #   기본 꺼짐(0). 환경변수 ROUTE_SHIELD_M=150 으로 켬 (효과 검증 중).
+            #   기본 150 m. 끄려면 환경변수 ROUTE_SHIELD_M=0. (v4 40회: 완주 4 → 12)
             #   (v4 평가: 목적지 앞 621656305에서 이어지는 차선에 있다가
             #    끝나기 3 m 전 끊기는 차선으로 옮겨 실패)
-            shield = float(__import__("os").environ.get("ROUTE_SHIELD_M", getattr(self, "route_shield_m", 0.0)))
+            shield = float(__import__("os").environ.get("ROUTE_SHIELD_M", getattr(self, "route_shield_m", 150.0)))
             if lane_change != 0 and shield > 0:
                 ahead = self._route_ahead()
                 if (ahead and current in ahead and target in ahead
