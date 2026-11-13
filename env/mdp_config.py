@@ -187,6 +187,8 @@ REWARD = {
     "close_gap_threshold": 6.0, # 앞차와 이 거리(m) 미만으로 붙으면 (좁게 따라붙기 허용:
                                  #  10→6m 완화. 추월 직전 대기 위치를 잡기 쉬워짐)
     "close_gap_penalty": 0.1,    #   → 스텝당 이만큼 감점
+    "ttc_penalty": 0.0,          # (팀14) 앞차 TTC < ttc_threshold초면 최대 이만큼 감점. 0 = 꺼짐
+    "ttc_threshold": 3.0,        #   TTC 기준(초). 가까울수록 감점이 커짐 (1 - TTC/기준)
     "collision_penalty": 5.0,    # 충돌 시 -5 를 받고 에피소드 즉시 종료
     "arrival_bonus": 2.0,        # 도로 끝까지 완주하면 +2 받고 종료
     # (팀14) 일반도로 규칙 — 교차로·신호 관측(junction_features)이 켜졌을 때만 발생

@@ -1044,6 +1044,19 @@ class SumoHighwayEnv(gym.Env):
             if target < 0 or target >= n_lanes:
                 self._lc_block_reason = "no_lane"
                 return False
+            # ★ 경로 차선 보호: 경로를 따라 더 멀리 이어지는 차선에서
+            #   곧 끊기는 차선(route_shield_m 이내)으로 옮기는 명령은 막는다.
+            #   기본 꺼짐(0). 환경변수 ROUTE_SHIELD_M=150 으로 켬 (효과 검증 중).
+            #   (v4 평가: 목적지 앞 621656305에서 이어지는 차선에 있다가
+            #    끝나기 3 m 전 끊기는 차선으로 옮겨 실패)
+            shield = float(__import__("os").environ.get("ROUTE_SHIELD_M", getattr(self, "route_shield_m", 0.0)))
+            if lane_change != 0 and shield > 0:
+                ahead = self._route_ahead()
+                if (ahead and current in ahead and target in ahead
+                        and ahead[target] < ahead[current]
+                        and ahead[target] < shield):
+                    self._lc_block_reason = "route"
+                    return False
             # ★ 측면충돌 방지: 실제 이동 명령(0이 아닌 변경)에만 안전 검사
             if (lane_change != 0 and self.lc_safety_enabled
                     and not self._lane_change_is_safe(lane_change)):
@@ -1218,6 +1231,20 @@ class SumoHighwayEnv(gym.Env):
             if (ego_gap is not None and
                     ego_gap < float(self.rw["close_gap_threshold"])):
                 reward -= float(self.rw["close_gap_penalty"])
+
+            # ---- (팀14) TTC 벌점: 앞차와 부딪히기까지 남은 시간이 짧으면 감점 ----
+            # 거리 기준(close_gap)만으로는 속도 차가 클 때 미리 감속하는 걸 못 배운다.
+            # TTC = 앞차 거리 / (내 속도 - 앞차 속도). ttc_threshold 초 미만이면
+            # ttc_penalty × (1 - TTC/threshold) 만큼 감점 (가까울수록 크게).
+            # 기본값 ttc_penalty=0 → 꺼짐. train.py --ttc-penalty 로 켠다.
+            tp = float(self.rw.get("ttc_penalty", 0.0))
+            if tp > 0.0 and same_lane_leader is not None:
+                closing = ego_speed - float(same_lane_leader[1])
+                if closing > 0.1:
+                    ttc = float(same_lane_leader[0]) / closing
+                    thr = float(self.rw.get("ttc_threshold", 3.0))
+                    if ttc < thr:
+                        reward -= tp * (1.0 - ttc / thr)
 
             # ---- 막힘 페널티: 느린 앞차 뒤에 갇혀 있는 동안 매 스텝 감점 ----
             # "차선을 유지한 채 막혀 있기"와 "변경으로 탈출하기" 사이에
