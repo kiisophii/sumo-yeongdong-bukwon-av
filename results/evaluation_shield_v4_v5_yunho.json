@@ -1,0 +1,47 @@
+{
+  "results/run_20261112_141623_city_v4_routeendfix/model.pt": {
+    "collision_rate": 0.45,
+    "lane_end_rate": 0.05,
+    "arrival_rate": 0.4,
+    "timeout_rate": 0.1,
+    "failure_rate": 0.5,
+    "episodes": 20,
+    "mean_speed_mps": 10.765479529780126,
+    "mean_return": 120.8106796692493,
+    "mean_length_steps": 2138.15,
+    "mean_travel_time_s": 1069.075,
+    "lane_changes_per_ep": 69.05,
+    "min_gap_median_m": 1.074381860519793,
+    "wall_time_s": 718.82262134552
+  },
+  "results/run_20261113_184054_city_v5_ttc0.1_part2/model.pt": {
+    "collision_rate": 0.2,
+    "lane_end_rate": 0.15,
+    "arrival_rate": 0.35,
+    "timeout_rate": 0.3,
+    "failure_rate": 0.35,
+    "episodes": 20,
+    "mean_speed_mps": 8.868489056903893,
+    "mean_return": 133.448656963242,
+    "mean_length_steps": 2705.3,
+    "mean_travel_time_s": 1352.65,
+    "lane_changes_per_ep": 11.4,
+    "min_gap_median_m": 0.7832981779386685,
+    "wall_time_s": 775.1315362453461
+  },
+  "results/run_20261113_213700_yunho_ttc/model.pt": {
+    "collision_rate": 0.15,
+    "lane_end_rate": 0.25,
+    "arrival_rate": 0.4,
+    "timeout_rate": 0.2,
+    "failure_rate": 0.4,
+    "episodes": 20,
+    "mean_speed_mps": 11.174611425445548,
+    "mean_return": 125.34876519111359,
+    "mean_length_steps": 2164.65,
+    "mean_travel_time_s": 1082.325,
+    "lane_changes_per_ep": 86.05,
+    "min_gap_median_m": 0.24631271520496512,
+    "wall_time_s": 620.3453760147095
+  }
+}

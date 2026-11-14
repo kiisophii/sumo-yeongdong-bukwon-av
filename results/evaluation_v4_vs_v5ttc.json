@@ -1,0 +1,32 @@
+{
+  "results/run_20261112_141623_city_v4_routeendfix/model.pt": {
+    "collision_rate": 0.3,
+    "lane_end_rate": 0.4,
+    "arrival_rate": 0.15,
+    "timeout_rate": 0.15,
+    "failure_rate": 0.7,
+    "episodes": 20,
+    "mean_speed_mps": 10.954442195594437,
+    "mean_return": 106.581597835199,
+    "mean_length_steps": 1839.0,
+    "mean_travel_time_s": 919.5,
+    "lane_changes_per_ep": 66.5,
+    "min_gap_median_m": 0.27059446331270465,
+    "wall_time_s": 640.2663428783417
+  },
+  "results/run_20261113_184054_city_v5_ttc0.1_part2/model.pt": {
+    "collision_rate": 0.25,
+    "lane_end_rate": 0.15,
+    "arrival_rate": 0.35,
+    "timeout_rate": 0.25,
+    "failure_rate": 0.4,
+    "episodes": 20,
+    "mean_speed_mps": 8.835885653446818,
+    "mean_return": 128.31037292487594,
+    "mean_length_steps": 2685.4,
+    "mean_travel_time_s": 1342.7,
+    "lane_changes_per_ep": 10.35,
+    "min_gap_median_m": 0.7299871174978989,
+    "wall_time_s": 986.4593350887299
+  }
+}
