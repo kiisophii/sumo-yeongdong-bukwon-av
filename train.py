@@ -159,6 +159,12 @@ if __name__ == "__main__":
     _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
     _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
     _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
+    _ap.add_argument("--ttc-penalty", type=float, default=None,
+                     help="(팀14) 앞차 TTC 벌점 크기. 예: 0.1 (기본 0 = 꺼짐)")
+    _ap.add_argument("--ttc-threshold", type=float, default=None,
+                     help="(팀14) TTC 기준 초 (기본 3.0)")
+    _ap.add_argument("--init-model", default=None,
+                     help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _args = _ap.parse_args()
     if _args.lr is not None:
         HPARAMS["lr"] = _args.lr
@@ -168,6 +174,11 @@ if __name__ == "__main__":
         HPARAMS["n_steps"] = _args.n_steps
     if _args.timesteps is not None:
         TOTAL_TIMESTEPS = _args.timesteps
+    if _args.ttc_penalty is not None:
+        REWARD["ttc_penalty"] = _args.ttc_penalty
+    if _args.ttc_threshold is not None:
+        REWARD["ttc_threshold"] = _args.ttc_threshold
+    print(f"TTC 벌점: {REWARD.get('ttc_penalty', 0.0)} (기준 {REWARD.get('ttc_threshold', 3.0)}초)")
 
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
     sumocfg = road_builder.build(ROAD, EGO, TRAFFIC,
@@ -184,7 +195,10 @@ if __name__ == "__main__":
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
-                   "total_timesteps": TOTAL_TIMESTEPS}, f, ensure_ascii=False, indent=2)
+                   "total_timesteps": TOTAL_TIMESTEPS,
+                   "ttc_penalty": REWARD.get("ttc_penalty", 0.0),
+                   "ttc_threshold": REWARD.get("ttc_threshold", 3.0),
+                   "init_model": _args.init_model}, f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 
@@ -209,6 +223,10 @@ if __name__ == "__main__":
         buffer=buffer,
         **HPARAMS,
     )
+    # (팀14) 기존 모델에서 이어서 학습
+    if globals().get("_args") is not None and getattr(_args, "init_model", None):
+        agent.load(_args.init_model)
+        print(f"이어서 학습: {_args.init_model}")
     print(f"obs_dim={env.observation_space.shape[0]}, "
           f"act_dim={env.action_space.shape[0]}, device={agent.device}")
 

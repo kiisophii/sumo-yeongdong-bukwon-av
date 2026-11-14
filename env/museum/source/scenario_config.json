@@ -1,0 +1,233 @@
+{
+  "step_length": 0.2,
+  "preview_depart_time": 240,
+  "preview_depart_position": 50,
+  "preview_depart_speed": 0,
+  "clock_zero_assumption": "09:00, relative simulation time",
+  "waypoints": [
+    {
+      "name": "철도박물관 주차장 내부",
+      "osm_way": "156791015",
+      "reverse": true
+    },
+    {
+      "name": "부곡초등길 진입",
+      "osm_way": "155790360",
+      "reverse": true,
+      "from_node": "1681535657"
+    },
+    {
+      "name": "부곡초등길 북쪽",
+      "osm_way": "155790360",
+      "reverse": true,
+      "to_node": "1681535716"
+    },
+    {
+      "name": "부곡중앙남1길 남쪽",
+      "osm_way": "472043938",
+      "reverse": true,
+      "from_node": "1681517317"
+    },
+    {
+      "name": "신협오거리 접근",
+      "osm_way": "472043938",
+      "reverse": true,
+      "to_node": "1681517542"
+    },
+    {
+      "name": "신협오거리 통과 후 부곡시장길",
+      "osm_way": "40839116",
+      "reverse": true,
+      "from_node": "1681517542"
+    },
+    {
+      "name": "의왕역회전교차로 남쪽 진입",
+      "osm_way": "496583281",
+      "to_node": "4582364294"
+    },
+    {
+      "name": "의왕역회전교차로 북쪽 진출",
+      "osm_way": "488779086",
+      "from_node": "4582364311"
+    },
+    {
+      "name": "오봉로",
+      "osm_way": "488644209",
+      "from_node": "4809436267"
+    },
+    {
+      "name": "부곡IC 강릉 방향 본선 합류",
+      "osm_way": "468211809",
+      "to_node": "4557953858"
+    },
+    {
+      "name": "북수원IC 합류 후 5차로",
+      "osm_way": "206488360"
+    },
+    {
+      "name": "차로 감소 후 3차로",
+      "osm_way": "833403522"
+    },
+    {
+      "name": "기존 도착점이 포함된 본선",
+      "osm_way": "50981265"
+    },
+    {
+      "name": "수원광교박물관 주차장 진입",
+      "osm_way": "611808765"
+    },
+    {
+      "name": "수원광교박물관 주차장 내부",
+      "osm_way": "611808767"
+    }
+  ],
+  "highway_flows": [
+    [
+      "east_through",
+      "474882669",
+      "50981265",
+      1500
+    ],
+    [
+      "east_to_exit",
+      "474882669",
+      "549032648",
+      350
+    ],
+    [
+      "east_to_bukwon",
+      "474882669",
+      "51066895",
+      250
+    ],
+    [
+      "bukwon_to_east",
+      "582107260",
+      "50981265",
+      450
+    ],
+    [
+      "bukwon_to_east_exit",
+      "582107260",
+      "549032648",
+      100
+    ],
+    [
+      "west_through_a",
+      "50981258",
+      "41948037",
+      900
+    ],
+    [
+      "west_through_b",
+      "50981259",
+      "41948037",
+      700
+    ],
+    [
+      "west_to_bukwon",
+      "50981258",
+      "1235185551",
+      200
+    ],
+    [
+      "bukwon_to_west",
+      "51066899",
+      "41948037",
+      350
+    ]
+  ],
+  "local_flows": [
+    [
+      "five_north_south",
+      {
+        "osm_way": "155809507",
+        "to_node": "1681517542"
+      },
+      {
+        "osm_way": "472043938",
+        "to_node": "1681517317"
+      },
+      90
+    ],
+    [
+      "five_east_northwest",
+      {
+        "osm_way": "155788504",
+        "reverse": true,
+        "to_node": "1681517542"
+      },
+      {
+        "osm_way": "40839116",
+        "reverse": true,
+        "to_node": "1681517531"
+      },
+      90
+    ],
+    [
+      "five_south_east",
+      {
+        "osm_way": "472043938",
+        "reverse": true,
+        "from_node": "1681517317"
+      },
+      {
+        "osm_way": "155788504"
+      },
+      90
+    ],
+    [
+      "five_market_south",
+      {
+        "osm_way": "461776049",
+        "to_node": "1681517542"
+      },
+      {
+        "osm_way": "472043938",
+        "to_node": "1681517317"
+      },
+      60
+    ],
+    [
+      "circle_north_east",
+      {
+        "osm_way": "682100872"
+      },
+      {
+        "osm_way": "452597718"
+      },
+      90
+    ],
+    [
+      "circle_south_north",
+      {
+        "osm_way": "496583281"
+      },
+      {
+        "osm_way": "488779086"
+      },
+      90
+    ],
+    [
+      "circle_east_south",
+      {
+        "osm_way": "496583283",
+        "reverse": true
+      },
+      {
+        "osm_way": "462907008"
+      },
+      90
+    ],
+    [
+      "bugok_to_citygoal",
+      {
+        "osm_way": "51066582"
+      },
+      {
+        "osm_way": "667354425"
+      },
+      120
+    ]
+  ]
+}

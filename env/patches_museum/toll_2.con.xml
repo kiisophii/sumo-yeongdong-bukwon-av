@@ -1,0 +1,59 @@
+<!--
+  북수원 영업소 — 팀원 지도(env/museum, 램프 자동 생성 없이 만든 net)용 패치.
+  내용·근거는 env/patches/bukwon_toll_*.xml과 같다(도로공사 차로 운영현황, 로드뷰 2024-04).
+  이 지도에서는 영업소 구간 edge가 다르게 잘려 있어서 위치만 다시 맞췄다
+  (입구 51066898#2 218 m 중 부스 160~175 m, 출구 493209385#1 216 m 중 부스 45~60 m).
+-->
+<connections>
+    <delete from="51066898#2" to="51066898#2.30"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="0"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="1"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="2"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="0" toLane="3"/>
+    <connection from="51066898#2" to="51066898#2.30" fromLane="1" toLane="4"/>
+    <delete from="51066898#2.30" to="51066898#2.160"/>
+    <connection from="51066898#2.30" to="51066898#2.160" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.30" to="51066898#2.160" fromLane="1" toLane="1"/>
+    <connection from="51066898#2.30" to="51066898#2.160" fromLane="2" toLane="2"/>
+    <connection from="51066898#2.30" to="51066898#2.160" fromLane="3" toLane="3"/>
+    <connection from="51066898#2.30" to="51066898#2.160" fromLane="4" toLane="4"/>
+    <delete from="51066898#2.160" to="51066898#2.175"/>
+    <connection from="51066898#2.160" to="51066898#2.175" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.160" to="51066898#2.175" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.160" to="51066898#2.175" fromLane="2" toLane="1"/>
+    <connection from="51066898#2.160" to="51066898#2.175" fromLane="3" toLane="2"/>
+    <connection from="51066898#2.160" to="51066898#2.175" fromLane="4" toLane="3"/>
+    <delete from="51066898#2.175" to="51066898#2.195"/>
+    <connection from="51066898#2.175" to="51066898#2.195" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.175" to="51066898#2.195" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.175" to="51066898#2.195" fromLane="2" toLane="1"/>
+    <connection from="51066898#2.175" to="51066898#2.195" fromLane="3" toLane="2"/>
+    <delete from="51066898#2.195" to="51066898#3"/>
+    <connection from="51066898#2.195" to="51066898#3" fromLane="0" toLane="0"/>
+    <connection from="51066898#2.195" to="51066898#3" fromLane="1" toLane="0"/>
+    <connection from="51066898#2.195" to="51066898#3" fromLane="2" toLane="1"/>
+    <delete from="493209385#1" to="493209385#1.45"/>
+    <connection from="493209385#1" to="493209385#1.45" fromLane="0" toLane="0"/>
+    <connection from="493209385#1" to="493209385#1.45" fromLane="1" toLane="1"/>
+    <connection from="493209385#1" to="493209385#1.45" fromLane="2" toLane="2"/>
+    <connection from="493209385#1" to="493209385#1.45" fromLane="3" toLane="3"/>
+    <connection from="493209385#1" to="493209385#1.45" fromLane="4" toLane="4"/>
+    <delete from="493209385#1.45" to="493209385#1.60"/>
+    <connection from="493209385#1.45" to="493209385#1.60" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.45" to="493209385#1.60" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.45" to="493209385#1.60" fromLane="2" toLane="1"/>
+    <connection from="493209385#1.45" to="493209385#1.60" fromLane="3" toLane="2"/>
+    <connection from="493209385#1.45" to="493209385#1.60" fromLane="4" toLane="3"/>
+    <delete from="493209385#1.60" to="493209385#1.105"/>
+    <connection from="493209385#1.60" to="493209385#1.105" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.60" to="493209385#1.105" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.60" to="493209385#1.105" fromLane="2" toLane="1"/>
+    <connection from="493209385#1.60" to="493209385#1.105" fromLane="3" toLane="2"/>
+    <delete from="493209385#1.105" to="493209385#1.145"/>
+    <connection from="493209385#1.105" to="493209385#1.145" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.105" to="493209385#1.145" fromLane="1" toLane="0"/>
+    <connection from="493209385#1.105" to="493209385#1.145" fromLane="2" toLane="1"/>
+    <delete from="493209385#1.145" to="493209385#2"/>
+    <connection from="493209385#1.145" to="493209385#2" fromLane="0" toLane="0"/>
+    <connection from="493209385#1.145" to="493209385#2" fromLane="1" toLane="1"/>
+</connections>

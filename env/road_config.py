@@ -160,46 +160,49 @@ TRAFFIC = {
         "krauss": {   # 산만한 인간 운전자 — 가장 느리고 들쑥날쑥
             "probability": 0.35,
             "carFollowModel": "Krauss",
-            "accel": 2.0, "decel": 4.5,
+            "accel": 2.0, "decel": 4.5, "emergency_decel": 9.0,
             "tau": 1.0, "min_gap": 2.5,
             "sigma": 0.3,
             "speed_factor": "normc(0.85,0.08,0.65,1.05)",
             "color": "1,1,0",    # 노랑
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.8,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.8,
                    "lcSpeedGain": 0.6, "lcKeepRight": 0.5},
         },
         "idm": {      # 부드러운 표준 인간 모델
             "probability": 0.30,
             "carFollowModel": "IDM",
-            "accel": 1.8, "decel": 3.5,
+            "accel": 1.8, "decel": 3.5, "emergency_decel": 9.0,
             "tau": 1.2, "min_gap": 2.0,
             "speed_factor": "normc(0.92,0.07,0.7,1.1)",
             "color": "0,1,1",    # 시안
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 1.0,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 1.0,
                    "lcSpeedGain": 0.8, "lcKeepRight": 0.8},
         },
         "eidm": {     # 반응지연·부주의가 있는 현실적 인간
             "probability": 0.20,
             "carFollowModel": "EIDM",
-            "accel": 2.0, "decel": 4.0,
+            "accel": 2.0, "decel": 4.0, "emergency_decel": 9.0,
             "tau": 1.1, "min_gap": 2.0,
             "speed_factor": "normc(0.95,0.08,0.7,1.15)",
             "color": "1,0.6,0",  # 주황
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.7,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.7,
                    "lcSpeedGain": 1.0, "lcKeepRight": 0.3},
         },
+        # (팀14) ACC 비율 0.15 → 0.05: SUMO의 ACC는 다른 차가 앞에 끼어들 때 대응이 늦어 추돌을 냈다
+        #   (평일 교통량, 1시간 시드 12개: ACC 15% 6~10건 / ACC 0% 시드 6개 0건).
+        #   수업 요구(4종 혼합)를 지키려고 빼지 않고 비율만 줄임. 다른 시도(차선변경 성향 조정)는 대기 증가·악화
         "acc": {      # 크루즈 차량 — 제한속도 근처를 일정하게
-            "probability": 0.15,
+            "probability": 0.05,
             "carFollowModel": "ACC",
-            "accel": 2.0, "decel": 4.0,
+            "accel": 2.0, "decel": 4.0, "emergency_decel": 9.0,
             "tau": 1.5, "min_gap": 2.0,
             "speed_factor": "normc(1.0,0.03,0.9,1.1)",
             "color": "1,0,1",    # 마젠타
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 1.0,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 1.0,
                    "lcSpeedGain": 0.3, "lcKeepRight": 1.0},
         },
         # ── 영업소 이용 방식·차종 (실측 비율) ──
@@ -209,20 +212,20 @@ TRAFFIC = {
         "tcs_car": {  # 현금 결제 승용차 — 영업소에서 TCS 부스만 쓸 수 있음
             "probability": 0.042,
             "carFollowModel": "Krauss",
-            "accel": 2.0, "decel": 4.5,
+            "accel": 2.0, "decel": 4.5, "emergency_decel": 9.0,
             "tau": 1.0, "min_gap": 2.5,
             "sigma": 0.3,
             "speed_factor": "normc(0.88,0.08,0.7,1.05)",
             "color": "0.6,0.6,1",   # 연보라
             "v_class": "custom1",
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.8,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.8,
                    "lcSpeedGain": 0.5, "lcKeepRight": 0.6},
         },
         "truck": {    # 화물차 — 영업소 입구는 화물차 전용 차로(축중)만 사용
             "probability": 0.097,
             "carFollowModel": "Krauss",
-            "accel": 1.0, "decel": 4.0,
+            "accel": 1.0, "decel": 4.0, "emergency_decel": 7.0,
             "tau": 1.5, "min_gap": 3.0,
             "sigma": 0.2,
             "max_speed": 25.0,      # 화물차 고속도로 제한 90 km/h
@@ -232,11 +235,145 @@ TRAFFIC = {
             "v_class": "truck",
             "gui_shape": "truck",
             "keep_lane": False,
-            "lc": {"lcStrategic": 1.0, "lcCooperative": 0.6,
+            "lc": {"lcAssertive": 0.7, "lcStrategic": 1.0, "lcCooperative": 0.6,
                    "lcSpeedGain": 0.2, "lcKeepRight": 1.0},
         },
     },
 
+    # (팀14) 모든 배경차 lcAssertive 0.7: 끼어들 때 목표 차선 간격을 더 넉넉히 요구한다.
+    #   시험(1시간, 교차로 충돌 검사 켬): 1.0 → 시드 10개 중 4건 / 0.7 → 시드 12개 중 1건(북수원→인천 합류부) /
+    #   0.5 → 시드 12개 중 8건(끼어들기를 미루다 급하게 들어감). 그래서 0.7
+    #   기본값(1.0)에서는 ACC 차량이 끼어든 직후 뒤차에 받히는 추돌이 1시간에 0~1건 있었다.
     # 직선 도로용 프리필 — OSM 도로에서는 warm-up이 대신하므로 끈다.
     "prefill": {"enabled": False},
 }
+
+
+# ══════════════════════════════════════════════════════════════════
+# ★ 시나리오 선택 (팀14)
+#   "bukwon" : 위의 영동고속도로 북수원IC 7.1 km (고속도로만)
+#   "museum" : 팀원(김준희)이 만든 철도박물관 주차장 → 수원광교박물관 주차장 14.4 km
+#              (신협오거리·의왕역회전교차로·부곡IC 진입·북수원 합류부·동수원IC 진출)
+#   환경변수 TEAM14_SCENARIO로도 바꿀 수 있다 (예: set TEAM14_SCENARIO=bukwon)
+# ══════════════════════════════════════════════════════════════════
+import os as _os
+SCENARIO = _os.environ.get("TEAM14_SCENARIO", "museum")
+
+if SCENARIO == "museum":
+    ROAD = {
+        "type": "osm",
+        "name": "철도박물관 → 수원광교박물관 (부곡IC·북수원IC·동수원IC)",
+        # 팀원 지도(단톡 공유 ZIP Museum_Parking_to_Gwanggyo_V2)의 원본 OSM과 같은 변환 설정으로
+        # 다시 만들되, 차로 수가 실제와 다른 길만 고친다 (osm_tag_overrides).
+        # 원래 만들어진 도로망은 env/museum/museum_to_gwanggyo.net.xml (비교용)
+        "osm_file": "env/museum/source/museum_corridor.osm",
+        "netconvert_args": [
+            "-t", "@env/museum/source/osmNetconvert_base.typ.xml,"
+                  + "env/museum/source/service_types.typ.xml",
+            "--geometry.remove", "true", "--ramps.guess", "false",
+            "--ramps.set", "474882669#1",
+            "--junctions.join", "false", "--no-turnarounds", "true",
+            "--keep-edges.by-vclass", "passenger", "--osm.sidewalks", "false",
+            "--osm.bike-access", "false", "--output.street-names", "true",
+            "--output.original-names", "true",
+            "--tls.yellow.time", "5", "--tls.allred.time", "1", "--no-warnings"],
+        # 카카오 로드뷰로 확인한 차로 수 (방향별). 근거: 메인 세션 표 D:/자유대화/박물관경로_차선확인.md
+        #   덕영대로 1 → 2 (37.33136,126.95649 2023-11 / 37.32513,126.95794 2026-06)
+        #   철도박물관로 북쪽(회전교차로 → 오봉로) 1 → 2 (37.32468,126.94849 2023-11)
+        #   창룡대로 2 → 4 (37.29597,127.04455 2026-08)
+        "osm_tag_overrides": {
+            **{w: {"lanes": "2"} for w in [
+                "377720051", "491135704", "491135708", "1417143032", "51066581", "51066587",
+                "472039936", "491135707", "494855746",
+                "955971705", "955971706", "955971707", "955971708"]},          # 덕영대로 (일방 way)
+            **{w: {"lanes": "2"} for w in ["488779086", "568664957", "496583277"]},  # 철도박물관로 북쪽 일방
+            "488779084": {"lanes": "3", "lanes:forward": "1", "lanes:backward": "2"},  # 양방향 way, AV는 역방향
+            "667354422": {"lanes": "4"},                       # 창룡대로 (OSM에 이미 60 km/h)
+            # ── 제한속도 (안전속도 5030, 2021-04 시행) ──
+            "155790360": {"maxspeed": "30"},   # 부곡초등길: 의왕부곡초 옆 어린이보호구역(로드뷰 빨간 노면)
+            "667234604": {"maxspeed": "50"},   # 광교로: 로드뷰 2025-08 37.29564,127.04927 '50' 표지판 (OSM 60)
+            "1500643091": {"maxspeed": "50"},  # 광교로
+            # 창룡대로: OSM 일부 구간 60. 표지판은 로드뷰(2026-08)에서 못 찾음 → 같은 길 나머지도 60 가정
+            **{w: {"lanes": "4", "maxspeed": "60"} for w in ["667354425", "621656305"]},  # 창룡대로 2→4차로
+            "375714602": {"maxspeed": "60"},
+            # 조원교(영동선 강릉 방향, 북수원~동수원 사이): OSM은 46 m만 3차로(bridge, lanes=3),
+            # 앞뒤는 4차로. 이 짧은 병목에서 평일 교통량(3,880대/h)일 때 배경차 추돌이 몰려
+            # (1시간 시드 12개 중 10건) 앞뒤와 같은 4차로로 가정. 로드뷰로 강릉 방향 차로는 미확인
+            "833403522": {"lanes": "4"},
+        },
+        # maxspeed가 없는 도시부 도로 기본값 (안전속도 5030): 일반도로 50, 이면·주거지 30.
+        # 고속도로·램프(motorway*)와 국도급 primary(경수대로 등)는 건드리지 않음
+        "osm_default_maxspeed": {
+            "tertiary": "50", "tertiary_link": "50", "secondary": "50", "secondary_link": "50",
+            "unclassified": "50", "residential": "30", "living_street": "30", "service": "30"},
+        "context_osm_file": None,
+        "ego_edges_file": "env/museum/route_check.json",       # 주황 경로(오봉로) 72개 edge
+        # 어떤 경로·배경 흐름도 지나지 않는 도로는 지도에서 뺌 (팀 회의 2026-11-09: 두 길만 남기기)
+        "prune_unused_edges": True,
+        # 갈림길 경로 선택: 의왕역회전교차로 → (주황) 오봉로 / (파랑) 부곡중앙로·덕영대로 → 다시 만남
+        #   mode "fastest" = 출발 직전 예상 통행시간이 짧은 길 (계산 방식 A)
+        #   disruption = 에피소드의 40%에서 한 길의 가운데 구간을 7 km/h로 (공사·사고 가정)
+        "route_choice": {"file": "env/museum/route_alternatives.json",
+                         "mode": "fastest",      # "learned" = 길 선택 AI (tools/train_route_policy.py)
+                         "decision_edge": "496583281#0",  # 회전교차로 직전 21 m 구간에서 고름(learned)
+                         "disruption": {"prob": 0.4, "speed": 2.0}},
+        "gui_focus_edge": "206488360",
+        "speed_limit": 27.78,
+        "net_patches": [
+            {"edg": "env/patches_museum/toll_1.edg.xml",
+             "con": "env/patches_museum/toll_1.con.xml"},
+            {"nod": "env/patches_museum/toll_2.nod.xml",
+             "edg": "env/patches_museum/toll_2.edg.xml",
+             "con": "env/patches_museum/toll_2.con.xml"},
+            # 부곡(진입)·동수원(진출) 영업소 — AV 경로가 직접 지나는 요금소
+            {"nod": "env/patches_museum/tolls_bd_1.nod.xml",
+             "edg": "env/patches_museum/tolls_bd_1.edg.xml",
+             "con": "env/patches_museum/tolls_bd_1.con.xml"},
+            {"nod": "env/patches_museum/tolls_bd_2.nod.xml",
+             "edg": "env/patches_museum/tolls_bd_2.edg.xml",
+             "con": "env/patches_museum/tolls_bd_2.con.xml"},
+        ],
+        "length": None,
+        "num_lanes": None,
+    }
+    # 고속도로 흐름은 북수원 시나리오의 실측 보정값을 이 지도의 edge 번호로 옮김.
+    # 일반도로 흐름(신협오거리·회전교차로·부곡IC)은 팀원 설정값(가정, 실측 아님).
+    # ★ 평일 아침 7시 기준 (VDS 2026-11-05 목, 영업소 자료와 같은 날):
+    #   강릉 방향 32.6 km(0500VDE02700) 07시 3,879대/h → 북수원 합류 뒤 합계 약 3,880이 되게 본선 직진 990
+    #   인천 방향 31.9 km(0500VDS02700) 07시 3,145대/h → 인천 방향 직진 1,310 + 1,145 + 북수원 진출 690
+    #   (예전에는 일요일 11/08 최대치 4,256대/h를 썼음)
+    _hw = {
+        "east_through":          ("474882669#0", "50981265",  990),
+        "east_to_bukwon":        ("474882669#0", "51066895",  185),
+        "bukwon_to_east":        ("582107260",   "50981265",  580),
+        "bukwon_to_east_b":      ("51066899",    "50981265",  580),
+        "west_through_a":        ("50981263",    "41948037",  1310),
+        "west_through_b":        ("206488703",   "41948037",  1145),
+        "west_to_bukwon":        ("50981263",    "1235185551", 690),
+        "bukwon_to_west":        ("51066899",    "41948037",  350),
+        "bukwon_to_west_b":      ("582107260",   "41948037",  350),
+        "five_north_south":      ("155809507#1", "472043938#7", 90),
+        "five_east_northwest":   ("-155788504#0", "-40839116#1", 90),
+        "five_south_east":       ("-472043938#7", "155788504#3", 90),
+        "five_market_south":     ("461776049#5", "472043938#7", 60),
+        "circle_north_east":     ("682100872#0", "452597718#1", 90),
+        "circle_south_north":    ("496583281#0", "488779086#1", 90),
+        "circle_east_south":     ("-496583283",  "462907008#1", 90),
+        "bugok_to_citygoal":     ("51066582#0",  "667354422#1", 120),   # 667354425는 속도 보정 후 667354422#1로 합쳐짐
+        # ── 부곡·동수원 영업소 (도로공사 2026-11-05, 영업소별·영업소간 교통량) ──
+        # 동수원 진출 08시 3,478대/h: 인천 쪽(우리 진행 방향)에서 59% ≈ 2,050, 강릉 쪽에서 41% ≈ 1,430
+        # 그대로 넣으면 북수원 합류 뒤 본선이 5,300대/h가 되어 VDS 실측(32.6 km 최대 3,167대/h, 일요일)과
+        # 안 맞고 엇갈림 정체·순간이동이 생김(2026-11-09 시험) → 본선이 약 3,600대/h가 되게 줄임:
+        #   본선 직진 1,450 → 700, 동수원행 상류 1,670 → 900, 강릉 쪽 동수원 진출 1,430 → 900(1차로 램프 용량)
+        "east_to_dongsuwon":     ("474882669#0", "468241513", 900),
+        "bukwon_to_dongsuwon":   ("582107260",   "468241513", 190),
+        "bukwon_to_dongsuwon_b": ("51066899",    "468241513", 190),
+        "west_to_dongsuwon":     ("27523870",    "50981089",  900),
+        # 부곡 진입 07시 960대/h 중 강릉 방향 47% ≈ 450 (진입로 2개 반반 가정). 대형 19.5%는 미반영
+        "bugok_to_east":         ("51066582#0",  "50981265",  225),
+        "bugok_to_east_b":       ("491135706",   "50981265",  225),
+    }
+    TRAFFIC = {**TRAFFIC,
+               "routes": {k: {"from": a, "to": b, "vehs_per_hour": v}
+                          for k, (a, b, v) in _hw.items()}}
+    EGO = {**EGO, "depart_speed": 0}   # 주차장 안에서 정지 상태로 출발
