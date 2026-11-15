@@ -23,7 +23,7 @@ from env.sumo_env import SumoHighwayEnv  # noqa: E402
 from train import REWARD  # noqa: E402
 from test import load_agent  # noqa: E402
 
-SEED, EPISODES = 2026, 20
+SEED, EPISODES = 2026, int(os.environ.get("FA_EPISODES", "20"))
 
 
 def run(policy, env):

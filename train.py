@@ -163,6 +163,12 @@ if __name__ == "__main__":
                      help="(팀14) 앞차 TTC 벌점 크기. 예: 0.1 (기본 0 = 꺼짐)")
     _ap.add_argument("--ttc-threshold", type=float, default=None,
                      help="(팀14) TTC 기준 초 (기본 3.0)")
+    _ap.add_argument("--invalid-penalty", type=float, default=None,
+                     help="(팀14) 실행 안 된 차선변경 명령 감점. 예: 0.03 (기본 0)")
+    _ap.add_argument("--lc-penalty", type=float, default=None,
+                     help="(팀14) 실행된 차선변경마다 감점. 예: 0.02 (기본 0)")
+    _ap.add_argument("--ckpt-every", type=int, default=0,
+                     help="(팀14) 이 스텝마다 중간 모델 저장 (run폴더/checkpoints). 0 = 안 함")
     _ap.add_argument("--init-model", default=None,
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _args = _ap.parse_args()
@@ -178,6 +184,12 @@ if __name__ == "__main__":
         REWARD["ttc_penalty"] = _args.ttc_penalty
     if _args.ttc_threshold is not None:
         REWARD["ttc_threshold"] = _args.ttc_threshold
+    if _args.invalid_penalty is not None:
+        REWARD["invalid_action_penalty"] = _args.invalid_penalty
+    if _args.lc_penalty is not None:
+        REWARD["lane_change_penalty"] = _args.lc_penalty
+    print(f"차선변경 실행 벌점: {REWARD.get('lane_change_penalty', 0.0)}")
+    print(f"막힌 차선변경 벌점: {REWARD.get('invalid_action_penalty', 0.0)}")
     print(f"TTC 벌점: {REWARD.get('ttc_penalty', 0.0)} (기준 {REWARD.get('ttc_threshold', 3.0)}초)")
 
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
@@ -198,6 +210,8 @@ if __name__ == "__main__":
                    "total_timesteps": TOTAL_TIMESTEPS,
                    "ttc_penalty": REWARD.get("ttc_penalty", 0.0),
                    "ttc_threshold": REWARD.get("ttc_threshold", 3.0),
+                   "lane_change_penalty": REWARD.get("lane_change_penalty", 0.0),
+                   "invalid_action_penalty": REWARD.get("invalid_action_penalty", 0.0),
                    "init_model": _args.init_model}, f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
@@ -238,7 +252,9 @@ if __name__ == "__main__":
                     logger=logger,
                     log_interval=LOG_INTERVAL,
                     eval_interval=EVAL_INTERVAL,
-                    eval_episodes=EVAL_EPISODES)
+                    eval_episodes=EVAL_EPISODES,
+                    ckpt_dir=os.path.join(run_dir, "checkpoints"),
+                    ckpt_every=_args.ckpt_every)
     finally:
         env.close()
         logger.close()
