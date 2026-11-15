@@ -1,4 +1,4 @@
-# v10 학습 (수아 보조 규칙 켠 환경, v9a에서 이어서 40만 스텝, 4만마다 중간 모델 저장)
+﻿# v10 학습 (수아 보조 규칙 켠 환경, v9a에서 이어서 40만 스텝, 4만마다 중간 모델 저장)
 # 실행: 저장소 폴더에서  powershell -ExecutionPolicy Bypass -File tools\run_v10_dongju.ps1
 $ErrorActionPreference = "Continue"
 $env:PYTHONIOENCODING = "utf-8"
