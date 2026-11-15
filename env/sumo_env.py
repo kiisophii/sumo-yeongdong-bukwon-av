@@ -140,7 +140,7 @@ class SumoHighwayEnv(gym.Env):
         self._outgoing = None   # 차선 → 나가는 차선 표
         self._edge_lanes = {}
         self._lane_change_targets = {}
-        self._route_lane_cost_cache = {}
+        self._route_lane_plan_cache = {}
         self.road_length = float(road["length"])
         # ---- (팀14) 갈림길 경로 선택 ----
         #   mode: "fastest" = 출발 직전 현재 교통으로 예상 통행시간이 짧은 길(계산 방식 A)
@@ -178,6 +178,9 @@ class SumoHighwayEnv(gym.Env):
         # 경로 기반 차선 연결성을 볼 거리 (합류/차로감소 예고용, 기본 = 시야 W)
         self.route_lookahead = float(mdp_obs.get("route_lookahead",
                                                  mdp_obs["visibility"]))
+        self.route_lane_change_time = float(mdp_obs.get("route_lane_change_time", 6.0))
+        if self.route_lane_change_time <= 0:
+            raise ValueError("route_lane_change_time must be positive")
         # 속도 보상/막힘 판정 기준: "global"=vmax, "lane"=현재 구간 제한속도
         self.speed_ref = str(reward.get("speed_reference", "global"))
         # 시뮬레이션 재사용 설정 (reset 참고)
@@ -589,36 +592,59 @@ class SumoHighwayEnv(gym.Env):
             }
         return self._lane_change_targets[key]
 
-    def _route_lane_costs(self, route_window, vehicle_class):
-        """예고 거리 안의 경로를 유지하는 데 필요한 최소 차로 변경 횟수."""
+    def _route_lane_plan(self, route_window, vehicle_class):
+        """차로별 (최소 변경 횟수, 첫 변경 마감까지의 거리)를 구한다."""
         key = (route_window, vehicle_class)
-        if key in self._route_lane_cost_cache:
-            return self._route_lane_cost_cache[key]
+        if key in self._route_lane_plan_cache:
+            return self._route_lane_plan_cache[key]
 
-        last_edge = route_window[-1]
-        costs = {lane.getIndex(): 0 for lane in self._edge_lanes[last_edge]
+        unreachable = (float("inf"), 0.0)
+
+        def rank(plan):
+            changes, deadline = plan
+            return changes, -deadline
+
+        plans = {lane.getID(): (0, float("inf"))
+                 for lane in self._edge_lanes[route_window[-1]]
                  if lane.allows(vehicle_class)}
-        for edge, next_edge in reversed(list(zip(route_window, route_window[1:]))):
-            next_costs = {lane.getID(): costs[lane.getIndex()]
-                          for lane in self._edge_lanes[next_edge]
-                          if lane.getIndex() in costs}
+        for edge in reversed(route_window[:-1]):
+            downstream = plans
             lanes = self._edge_lanes[edge]
             neighbors = self._lane_change_neighbors(edge, vehicle_class)
-            costs = {
-                index: min((next_costs[dest]
-                            for dest, _, _, _ in self._outgoing_lanes(lanes[index].getID())
-                            if dest in next_costs), default=float("inf"))
-                for index in neighbors
-            }
-            # 양방향으로 한 칸씩 이동 가능한 비용을 전파한다. 더 짧은
-            # 경로는 같은 차로를 두 번 지나지 않으므로 n-1번이면 충분하다.
-            for _ in range(len(costs) - 1):
-                costs = {index: min(cost, min((1 + costs[target] for target in neighbors[index]),
-                                             default=float("inf")))
-                         for index, cost in costs.items()}
+            lengths = {index: lanes[index].getLength() for index in neighbors}
+            plans = {}
+            for index in neighbors:
+                # 현재 차로로 계속 가면 다음 차로의 마감 거리에 이 차로와
+                # 교차로 내부 연결 길이를 더한다.
+                options = []
+                for dest, _, _, via_length in self._outgoing_lanes(lanes[index].getID()):
+                    changes, deadline = downstream.get(dest, unreachable)
+                    if changes < float("inf"):
+                        options.append((changes, lengths[index] + via_length + deadline))
+                plans[index] = min(options, key=rank, default=unreachable)
 
-        self._route_lane_cost_cache[key] = costs
-        return costs
+            # 인접 차로로 옮기는 선택지는 변경 횟수에 1을 더한다.
+            # 이 도로에서 첫 변경을 해야 하므로 마감은 현재 차로 끝이다.
+            for _ in range(len(plans) - 1):
+                plans = {
+                    index: min(
+                        [plan] + [(1 + plans[target][0], lengths[index])
+                                  for target in neighbors[index]
+                                  if plans[target][0] < float("inf")],
+                        key=rank,
+                    )
+                    for index, plan in plans.items()
+                }
+            # 다음 반복에서는 이 도로가 바로 다음 경로 구간이다.
+            plans = {lanes[index].getID(): plan for index, plan in plans.items()}
+
+        current_plans = {
+            lane.getIndex(): plans[lane.getID()]
+            for lane in self._edge_lanes[route_window[0]]
+            if lane.getID() in plans
+        }
+        self._route_lane_plan_cache[key] = current_plans
+        return current_plans
 
     def _route_lane_observation(self):
         """현재 선택한 경로와 SUMO 차로 연결로 5개 차로 점수를 계산."""
@@ -644,9 +670,24 @@ class SumoHighwayEnv(gym.Env):
             last += 1
             distance += self._edge_lanes[route[last]][0].getLength()
 
-        costs = self._route_lane_costs(tuple(route[index:last + 1]), vehicle_class)
-        return [1.0 / (1.0 + costs[lane + offset]) if lane + offset in costs else -1.0
-                for offset in self.obs_offsets]
+        plans = self._route_lane_plan(tuple(route[index:last + 1]), vehicle_class)
+        # 정차했을 때도 차로 끝으로 갈수록 관측이 낮아지도록 5 m/s를
+        # 시간 추정의 속도 하한으로 둔다 (차량 제어에는 적용하지 않음).
+        speed = max(traci.vehicle.getSpeed(ego), 5.0)
+        scores = []
+        for offset in self.obs_offsets:
+            plan = plans.get(lane + offset)
+            if plan is None:
+                scores.append(-1.0)
+                continue
+            changes, deadline = plan
+            if not np.isfinite(changes):
+                scores.append(0.0)
+                continue
+            time_left = max(0.0, deadline - pos) / speed
+            urgency_factor = min(1.0, time_left / self.route_lane_change_time)
+            scores.append(urgency_factor / (1.0 + changes))
+        return scores
 
     def _speed_ref(self) -> float:
         """속도 보상/막힘 판정의 기준 속도."""
