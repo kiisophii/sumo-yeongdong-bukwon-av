@@ -138,13 +138,20 @@ def main():
         env.close()
 
     print("\n─── 결과 요약 ───")
-    print(f"{'정책':<40}{'충돌':>7}{'경로이탈':>9}{'완주':>7}{'평균속도(km/h)':>15}{'통과시간(s)':>12}")
+    print(f"{'정책':<40}{'충돌':>7}{'경로이탈':>9}{'시간초과':>9}{'완주':>7}{'평균속도(km/h)':>15}{'통과시간(s)':>12}")
     for name, r in results.items():
-        print(f"{name:<40}{r['collision_rate']:>7.0%}{r['lane_end_rate']:>9.0%}"
+        print(f"{name:<40}{r['collision_rate']:>7.0%}{r['lane_end_rate']:>9.0%}{r.get('timeout_rate', 0.0):>9.0%}"
               f"{r['arrival_rate']:>7.0%}{r['mean_speed_mps'] * 3.6:>15.1f}"
               f"{r['mean_travel_time_s']:>12.1f}")
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
+        _flags = {k: v for k, v in os.environ.items() if k in (
+            "SIM_REUSE", "ROUTE_ASSIST_M", "MERGE_SUMO", "MERGE_COOP", "MERGE_SPEEDMATCH",
+            "MERGE_STOP", "LC_REVERSE_COOLDOWN", "LC_COOLDOWN_EXEMPT", "ROUNDABOUT_VMAX",
+            "JUNCTION_ROW", "JUNCTION_YIELD", "TEAM14_SCENARIO")}
+        for _r in results.values():
+            if isinstance(_r, dict):
+                _r["env_flags"], _r["seed"] = _flags, args.seed
         json.dump(results, f, ensure_ascii=False, indent=2)
     print(f"\n저장: {args.out}")
 

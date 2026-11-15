@@ -363,6 +363,8 @@ class SumoHighwayEnv(gym.Env):
         self._sumo_lc_on = False
         self._last_lc = (0, -1e9)
         self._merge_wait = -9
+        self._yield_wait = 0
+        self._yield_release = -1
 
         # ── 시뮬레이션 재사용 (OSM 도로 + headless) ──
         # 교통류가 이미 형성된 시뮬레이션을 끄지 않고, 이전 ego만 치운 뒤
@@ -1113,7 +1115,7 @@ class SumoHighwayEnv(gym.Env):
             return
         try:
             v = traci.vehicle.getSpeed(self.ego_id)
-            mode = 1 if direction > 0 else 0          # bit0: 1=왼쪽, bit1=0: 뒤차
+            mode = 0 if direction > 0 else 1          # bit0: 0=왼쪽 뒤차, 1=오른쪽 뒤차 (traci getLeftFollowers=0)
             for fid, gap in traci.vehicle.getNeighbors(self.ego_id, mode):
                 if gap < 60.0:
                     fv = traci.vehicle.getSpeed(fid)
@@ -1264,6 +1266,8 @@ class SumoHighwayEnv(gym.Env):
         accel_raw = float(np.clip(action_arr[self.accel_index], -1.0, 1.0))
         lane_raw = float(np.clip(action_arr[self.lane_change_index], -1.0, 1.0))
         lane_change = self._quantize_lane_change(lane_raw)
+        lane_change_policy = lane_change   # (팀14) 보조 규칙이 덮어쓰기 전 정책 명령
+        edge_before = None
         lane_change_applied = False
         lane_before = None
         self._lc_block_reason = None
@@ -1284,6 +1288,7 @@ class SumoHighwayEnv(gym.Env):
         if self.ego_id in traci.vehicle.getIDList():
             v = traci.vehicle.getSpeed(self.ego_id)
             lane_before = int(traci.vehicle.getLaneIndex(self.ego_id))
+            edge_before = traci.vehicle.getRoadID(self.ego_id)
 
             accel_cmd = (accel_raw * self.max_accel
                          if accel_raw >= 0.0 else accel_raw * self.max_decel)
@@ -1333,7 +1338,33 @@ class SumoHighwayEnv(gym.Env):
             #   있거나(SUMO 판정) 우선권이 같은데 먼저 도착하면, 충돌 지점 앞에 멈출 수 있게 감속.
             #   speedMode 비트3(JUNCTION_ROW)은 setSpeed로 속도를 직접 줄 때 효과가 없었음.
             #   원인: 차로 합류(zipper, 3→1차로) 51066582#1.110에서 트럭과 동시에 진입해 충돌
-            if __import__("os").environ.get("JUNCTION_YIELD", "0") == "1":
+            jy = __import__("os").environ.get("JUNCTION_YIELD", "0")
+            # JUNCTION_YIELD=2: SUMO가 "ego가 양보해야 함"(egoResponse)이라고 판정한 상대가
+            #   실제로 움직이며 4초 안에 오면 멈출 수 있게 감속. 6초 넘게 서서 기다리면 3초간 양보 해제
+            #   (교착 방지). 원인: 우선순위 없는 교차로(right_before_left) 1681517542에서 오른쪽 차에
+            #   양보 안 하고 진입해 충돌 — v4·v9a 공통 초반(170~280스텝) 충돌의 대부분
+            if jy == "2":
+                try:
+                    if v < 0.5:
+                        self._yield_wait = getattr(self, "_yield_wait", 0) + 1
+                    else:
+                        self._yield_wait = 0
+                    if self._yield_wait * self.step_length > 6.0:
+                        self._yield_release = self.step_count + int(3.0 / self.step_length)
+                        self._yield_wait = 0
+                    if self.step_count >= getattr(self, "_yield_release", -1):
+                        for f in traci.vehicle.getJunctionFoes(self.ego_id, 60.0):
+                            fid, e_in, f_in, f_out = f[0], f[1], f[2], f[4]
+                            if not bool(f[7]) or e_in <= 0.5 or f_out <= 0.0:
+                                continue
+                            vf = traci.vehicle.getSpeed(fid)
+                            if vf < 0.5 or max(f_in, 0.0) / vf > 4.0:
+                                continue
+                            v_y = float(np.sqrt(2.0 * 0.7 * self.max_decel * max(e_in - 2.0, 0.0)))
+                            v_new = min(v_new, max(v_y, v - self.max_decel * self.step_length))
+                except (traci.TraCIException, IndexError, TypeError):
+                    pass
+            if jy == "1":
                 try:
                     for f in traci.vehicle.getJunctionFoes(self.ego_id, 60.0):
                         fid, e_in, f_in, e_out, f_out = f[0], f[1], f[2], f[3], f[4]
@@ -1388,6 +1419,20 @@ class SumoHighwayEnv(gym.Env):
             except traci.TraCIException:
                 pass
         lane_after = int(traci.vehicle.getLaneIndex(self.ego_id)) if alive else None
+        # (팀14) 실제로 차로가 바뀌었는지 (같은 edge 안에서). MERGE_SUMO처럼 SUMO가 옮긴 경우도
+        #   잡아서 핑퐁 쿨다운(_last_lc)이 알게 한다 (Fable 검토 H4)
+        lane_change_executed = 0
+        try:
+            if (alive and lane_before is not None and lane_after is not None
+                    and edge_before is not None and not edge_before.startswith(":")
+                    and traci.vehicle.getRoadID(self.ego_id) == edge_before and lane_after != lane_before):
+                lane_change_executed = 1 if lane_after > lane_before else -1
+                # 쿨다운(_last_lc)에 반영하는 것은 환경변수로만 (켰을 때 4회 시험에서 충돌 2회 → 기본 끔)
+                if __import__("os").environ.get("LC_TRACK_SUMO", "0") == "1" and (
+                        self._last_lc[1] != self.step_count - 1 or self._last_lc[0] != lane_change_executed):
+                    self._last_lc = (lane_change_executed, self.step_count - 1)
+        except (traci.TraCIException, AttributeError):
+            pass
 
         # (팀14) 신호 위반: 빨간불이던 정지선을 이번 스텝에 지나갔는가
         #   = 앞 신호가 빨강이었고, 지금은 그 신호가 더 이상 "앞"에 없음(통과)
@@ -1503,6 +1548,9 @@ class SumoHighwayEnv(gym.Env):
             "lane_change_raw": lane_raw,
             "lane_change": lane_change,
             "lane_change_applied": lane_change_applied,
+            "lane_change_policy": lane_change_policy,
+            "lane_change_executed": lane_change_executed,
+            "assist_active": int(getattr(self, "_lc_mandatory", 0) != 0),
             "lane_change_blocked": getattr(self, "_lc_block_reason", None),
             "lane_before": lane_before,
             "lane_after": lane_after,

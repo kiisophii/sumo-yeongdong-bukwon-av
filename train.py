@@ -212,7 +212,12 @@ if __name__ == "__main__":
                    "ttc_threshold": REWARD.get("ttc_threshold", 3.0),
                    "lane_change_penalty": REWARD.get("lane_change_penalty", 0.0),
                    "invalid_action_penalty": REWARD.get("invalid_action_penalty", 0.0),
-                   "init_model": _args.init_model}, f, ensure_ascii=False, indent=2)
+                   "init_model": _args.init_model,
+                   # (팀14) 켠 보조 규칙 환경변수 기록 (Fable 검토 M3)
+                   "env_flags": {k: v for k, v in os.environ.items() if k in (
+                       "SIM_REUSE", "ROUTE_ASSIST_M", "MERGE_SUMO", "MERGE_COOP", "MERGE_SPEEDMATCH",
+                       "MERGE_STOP", "LC_REVERSE_COOLDOWN", "LC_COOLDOWN_EXEMPT", "ROUNDABOUT_VMAX",
+                       "JUNCTION_ROW", "JUNCTION_YIELD", "TEAM14_SCENARIO")}}, f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 
