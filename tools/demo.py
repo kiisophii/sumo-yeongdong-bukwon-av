@@ -21,6 +21,16 @@ import env.sumo_env as sumo_env  # noqa: E402
 from train import REWARD  # noqa: E402
 from test import load_agent  # noqa: E402
 
+RESULT_LABELS = {
+    "collision": "차량 충돌",
+    "teleport": "순간이동",
+    "lane_end": "경로 이탈",
+    "red_light": "신호 위반",
+    "vehicle_removed": "차량 제거",
+    "arrival": "완주",
+    "timeout": "시간 초과",
+}
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -49,9 +59,9 @@ def main():
                 steps += 1
                 if term or trunc:
                     break
-            result = ("경로 이탈" if info.get("lane_end") else "충돌" if info["collided"]
-                      else "완주" if info["arrived"] else "시간 초과")
-            print(f"주행 {ep + 1}: {result}, {steps * 0.5:.0f}초", flush=True)
+            result = RESULT_LABELS[info["end_reason"]]
+            lane = f", lane={info['end_lane']}" if info["end_lane"] else ""
+            print(f"주행 {ep + 1}: {result}, {steps * env.step_length:.1f}초{lane}", flush=True)
     finally:
         env.close()
 
