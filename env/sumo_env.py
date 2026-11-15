@@ -141,6 +141,7 @@ class SumoHighwayEnv(gym.Env):
         self._edge_lanes = {}
         self._lane_change_targets = {}
         self._route_lane_plan_cache = {}
+        self._merge_target_cache = {}
         self.road_length = float(road["length"])
         # ---- (팀14) 갈림길 경로 선택 ----
         #   mode: "fastest" = 출발 직전 현재 교통으로 예상 통행시간이 짧은 길(계산 방식 A)
@@ -171,6 +172,8 @@ class SumoHighwayEnv(gym.Env):
         # ---- 실제 지도(OSM) 도로 모드 ----
         #   경로(r0)가 여러 edge로 이루어지고, 구간마다 차선 수/제한속도가 다르다.
         self.osm_mode = road.get("type", "straight") == "osm"
+        self.merge_gap_observation = self.osm_mode and bool(
+            mdp_obs.get("merge_gap_observation", False))
         wu = self.traffic.get("warmup_seconds")
         if isinstance(wu, (int, float)):
             wu = (float(wu), float(wu))
@@ -689,6 +692,53 @@ class SumoHighwayEnv(gym.Env):
             scores.append(urgency_factor / (1.0 + changes))
         return scores
 
+    def _merge_target_offsets(self):
+        """진입 차로가 끝나고 다른 진입로에서 온 차로로 합류하는 상황."""
+        ego = self.ego_id
+        edge = traci.vehicle.getRoadID(ego)
+        if edge.startswith(":"):
+            return ()
+        route = traci.vehicle.getRoute(ego)
+        index = traci.vehicle.getRouteIndex(ego)
+        if not 0 <= index < len(route) - 1 or route[index] != edge:
+            return ()
+
+        lane_index = traci.vehicle.getLaneIndex(ego)
+        vehicle_class = traci.vehicle.getVehicleClass(ego)
+        next_edge = route[index + 1]
+        key = (edge, next_edge, lane_index, vehicle_class)
+        if key in self._merge_target_cache:
+            return self._merge_target_cache[key]
+        if self._outgoing is None:
+            self._build_lane_tables()
+
+        lanes = self._edge_lanes[edge]
+        lane = lanes[lane_index].getID()
+        targets = []
+        if not self._outgoing_lanes(lane):
+            incoming_edges = {
+                source.rsplit("_", 1)[0] for source, _, _, _ in self._incoming_lanes(lane)
+            }
+            if incoming_edges:
+                legal = self._lane_change_neighbors(edge, vehicle_class)
+                next_lanes = {item.getID() for item in self._edge_lanes[next_edge]
+                              if item.allows(vehicle_class)}
+                for target_index in legal.get(lane_index, ()):
+                    target = lanes[target_index].getID()
+                    joins_other_approach = any(
+                        source.rsplit("_", 1)[0] not in incoming_edges
+                        for source, _, _, _ in self._incoming_lanes(target)
+                    )
+                    reaches_next = any(
+                        dest in next_lanes for dest, _, _, _ in self._outgoing_lanes(target)
+                    )
+                    if joins_other_approach and reaches_next:
+                        targets.append(target_index - lane_index)
+
+        offsets = tuple(targets)
+        self._merge_target_cache[key] = offsets
+        return offsets
+
     def _speed_ref(self) -> float:
         """속도 보상/막힘 판정의 기준 속도."""
         if self.speed_ref == "lane":
@@ -799,10 +849,20 @@ class SumoHighwayEnv(gym.Env):
 
         v = traci.vehicle.getSpeed(self.ego_id)
         obs = [v / self.vmax]                      # [0] 내 절대속도
+        merge_offsets = self._merge_target_offsets() if self.merge_gap_observation else ()
 
         # ----- 5개 차선(좌2→좌1→현재→우1→우2)의 선행/후행 상대거리·상대속도 -----
         for offset in self.obs_offsets:
             lead = self._neighbor(offset, leader=True)
+            foll = self._neighbor(offset, leader=False)
+            if offset in merge_offsets and (lead is None or foll is None):
+                scan_front, scan_rear = self._scan_lane_neighbors(offset)
+                # 음수 실간격은 차량 길이가 겹치는 상태이므로 0으로 인코딩.
+                # 기본 조회에서 놓친 차량만 기존 관측 거리 안에서 보완한다.
+                if lead is None and scan_front is not None and scan_front[0] <= self.visibility:
+                    lead = (max(0.0, scan_front[0]), scan_front[1])
+                if foll is None and scan_rear is not None and scan_rear[0] <= self.visibility:
+                    foll = (max(0.0, scan_rear[0]), scan_rear[1])
             if lead is None:
                 obs += [1.0, 1.0]                  # 없음: 멀고 + 위협 없음
             else:
@@ -810,7 +870,6 @@ class SumoHighwayEnv(gym.Env):
                 obs += [gap / self.visibility,
                         float(np.clip((lv - v) / self.vmax, -1.0, 1.0))]
 
-            foll = self._neighbor(offset, leader=False)
             if foll is None:
                 obs += [-1.0, -1.0]                # 없음: 멀고 + 위협 없음
             else:

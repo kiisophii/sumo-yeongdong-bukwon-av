@@ -186,7 +186,9 @@ if __name__ == "__main__":
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
-                   "total_timesteps": TOTAL_TIMESTEPS}, f, ensure_ascii=False, indent=2)
+                   "total_timesteps": TOTAL_TIMESTEPS,
+                   "merge_gap_observation": OBSERVATION["merge_gap_observation"]},
+                  f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 

@@ -85,6 +85,9 @@ OBSERVATION = {
     # 출구 차로로 미리 옮길 수 있도록 600 m를 사용한다.
     "route_lookahead": 600.0 if __import__("os").environ.get("TEAM14_SCENARIO", "museum") == "museum" else 200.0,
     "route_lane_change_time": 6.0,  # 첫 변경 마감 전 관측값을 낮추기 시작하는 시간 [초]
+    # 합류 차로에서 끝나는 차로를 벗어날 때, 목표 차로의 교차점 너머
+    # 차량까지 관측한다. 기존 모델 평가에서는 기본값(OFF)을 쓴다.
+    "merge_gap_observation": __import__("os").environ.get("TEAM14_MERGE_GAP_OBS") == "1",
     "privileged_radius": 150.0,
     # (팀14) 일반도로용 교차로·신호 관측 6개를 붙일지. 바꾸면 관측 차원(31↔37)이
     # 바뀌므로 기존 모델과 호환되지 않는다 → 새로 학습해야 함.
