@@ -17,8 +17,14 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--seeds", type=int, nargs="+", default=[106, 107, 108, 109, 110])
 ap.add_argument("--episodes", type=int, default=60)
 ap.add_argument("--model", default=os.path.join("results", "sua_v9a", "model_401408.pt"))
-ap.add_argument("--out-dir", default=os.path.join("results", "final_eval"))
+ap.add_argument("--out-dir", default=None)
+ap.add_argument("--rules", choices=["all", "base"], default="all",
+                help="all: 보조 규칙 전부 켬 / base: 보조 규칙 끔 (팀 원래 환경: 안전 게이트·경로 차선 보호만)")
 args = ap.parse_args()
+if args.rules == "base":
+    FLAGS = {k: v for k, v in FLAGS.items() if k in ("PYTHONIOENCODING", "TEAM14_SCENARIO", "SIM_REUSE")}
+if args.out_dir is None:
+    args.out_dir = os.path.join("results", "final_eval" if args.rules == "all" else "final_eval_base")
 os.chdir(BASE)
 os.makedirs(args.out_dir, exist_ok=True)
 env = dict(os.environ, **FLAGS)
@@ -50,7 +56,7 @@ for sd, p, log in procs:
     tot["timeout"] += c["시간초과"]
 n = max(tot["episodes"], 1)
 summary = {**tot, "arrival_rate": tot["arrival"] / n, "collision_rate": tot["collision"] / n,
-           "red_light_rate": tot["red_light"] / n, "seeds": args.seeds, "model": args.model, "env": FLAGS}
+           "red_light_rate": tot["red_light"] / n, "seeds": args.seeds, "model": args.model, "rules": args.rules, "env": FLAGS}
 json.dump(summary, open(os.path.join(args.out_dir, "summary.json"), "w", encoding="utf-8"),
           ensure_ascii=False, indent=2)
 print(f"\n합계 {n}회: 완주 {summary['arrival_rate']:.1%}, 충돌 {summary['collision_rate']:.1%}, "
