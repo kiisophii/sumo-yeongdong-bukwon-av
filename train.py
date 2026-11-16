@@ -159,9 +159,23 @@ if __name__ == "__main__":
     _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
     _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
     _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
+    _ap.add_argument("--ckpt-every", type=int, default=0,
+                     help="(팀14) 이 스텝마다 중간 모델 저장 (run폴더/checkpoints). 0 = 안 함")
+    _ap.add_argument("--collision-penalty", type=float, default=None,
+                     help="(팀14) 충돌·경로이탈 벌점 (기본 5)")
+    _ap.add_argument("--arrival-bonus", type=float, default=None,
+                     help="(팀14) 완주 보너스 (기본 2)")
+    _ap.add_argument("--blocked-penalty", type=float, default=None,
+                     help="(팀14) 느린 앞차에 막힘 스텝당 감점 (기본 0.05)")
     _ap.add_argument("--init-model", default=None,
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _args = _ap.parse_args()
+    for _k, _v in (("collision_penalty", _args.collision_penalty), ("arrival_bonus", _args.arrival_bonus),
+                   ("blocked_penalty", _args.blocked_penalty)):
+        if _v is not None:
+            REWARD[_k] = _v
+    print(f"보상: 충돌 -{REWARD['collision_penalty']}, 완주 +{REWARD['arrival_bonus']}, "
+          f"막힘 -{REWARD.get('blocked_penalty', 0.0)}")
     if _args.lr is not None:
         HPARAMS["lr"] = _args.lr
     if _args.gamma is not None:
@@ -226,7 +240,9 @@ if __name__ == "__main__":
                     logger=logger,
                     log_interval=LOG_INTERVAL,
                     eval_interval=EVAL_INTERVAL,
-                    eval_episodes=EVAL_EPISODES)
+                    eval_episodes=EVAL_EPISODES,
+                    ckpt_dir=os.path.join(run_dir, "checkpoints"),
+                    ckpt_every=_args.ckpt_every)
     finally:
         env.close()
         logger.close()

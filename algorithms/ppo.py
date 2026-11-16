@@ -329,13 +329,17 @@ class PPO:
     # ==================================================================
     def learn(self, env, total_timesteps: int, logger=None,
               log_interval: int = 1, eval_interval: int = 0,
-              eval_episodes: int = 5):
+              eval_episodes: int = 5,
+              ckpt_dir: str = None, ckpt_every: int = 0):
         """학습 실행.
 
         Args:
             logger: utils.logger.RunLogger (없으면 콘솔 출력만)
             eval_interval: 몇 번의 업데이트마다 평가할지 (0이면 평가 안 함)
+            ckpt_dir, ckpt_every: (팀14) ckpt_every 스텝마다 ckpt_dir/model_<스텝>.pt 저장
+                (0이면 저장 안 함). 학습이 오래가면 성능이 오르내리므로 중간 모델을 골라 쓰기 위함
         """
+        next_ckpt = ckpt_every if ckpt_every > 0 else None
         obs, _ = env.reset()
         ep_stats = [0.0, 0]                    # [현재 에피소드 보상, 길이]
         recent_returns = deque(maxlen=20)
@@ -366,6 +370,13 @@ class PPO:
             if logger is not None:
                 logger.log_train(self.num_timesteps, metrics,
                                  verbose=(n_updates % log_interval == 0))
+
+            if next_ckpt is not None and ckpt_dir and self.num_timesteps >= next_ckpt:
+                import os as _os
+                _os.makedirs(ckpt_dir, exist_ok=True)
+                self.save(_os.path.join(ckpt_dir, f"model_{self.num_timesteps}.pt"))
+                while next_ckpt <= self.num_timesteps:
+                    next_ckpt += ckpt_every
 
             # 4) 주기적 평가 (utils/evaluator.py 사용)
             if eval_interval > 0 and n_updates % eval_interval == 0:
