@@ -1450,7 +1450,17 @@ class SumoHighwayEnv(gym.Env):
                     nxt = traci.vehicle.getNextTLS(self.ego_id)
                     if nxt:
                         _tid, _idx, dist, st = nxt[0]
-                        if dist < 80.0 and (st in "rRu" or (st in "yY" and dist > v * 1.0 + 2.0)):
+                        # 노란불: 남은 노란불 시간 안에 정지선을 지날 수 있을 때만 통과, 아니면 정지
+                        #   (예전엔 "1초 안에 닿는가"로만 판단 → 노란불이 끝나기 직전에 들어가 빨간불 통과,
+                        #    새 시드 300회 중 신호위반 4회가 모두 이 경우)
+                        y_left = 0.0
+                        if st in "yY":
+                            try:
+                                y_left = traci.trafficlight.getNextSwitch(_tid) - traci.simulation.getTime()
+                            except traci.TraCIException:
+                                y_left = 0.0
+                        can_pass = st in "yY" and dist <= max(v, 0.1) * max(y_left - 0.5, 0.0)
+                        if dist < 80.0 and (st in "rRu" or (st in "yY" and not can_pass)):
                             v_r = float(np.sqrt(2.0 * 0.7 * self.max_decel * max(dist - 2.0, 0.0)))
                             v_new = min(v_new, max(v_r, v - self.max_decel * self.step_length))
                 except traci.TraCIException:
