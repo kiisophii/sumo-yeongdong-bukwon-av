@@ -1,0 +1,17 @@
+{
+  "results/run_20261113_213700_yunho_ttc/model.pt": {
+    "collision_rate": 0.66,
+    "lane_end_rate": 0.0,
+    "arrival_rate": 0.34,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.66,
+    "episodes": 100,
+    "mean_speed_mps": 11.339763120519828,
+    "mean_return": 118.76190957733019,
+    "mean_length_steps": 2036.55,
+    "mean_travel_time_s": 1018.275,
+    "lane_changes_per_ep": 61.55,
+    "min_gap_median_m": 0.5154870959597702,
+    "wall_time_s": 3916.4578251838684
+  }
+}
