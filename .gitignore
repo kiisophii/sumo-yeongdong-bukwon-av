@@ -9,3 +9,7 @@ env/sumo_*/
 # (팀14) 도로 생성 중간 파일
 env/sumo/osm_patched.osm
 env/sumo/kept_edges.txt
+# (팀14) road_builder.build()의 시나리오별 생성 폴더·빌드 임시 폴더·잠금
+env/sumo/*/
+env/sumo/.build_*/
+env/sumo/*.lock

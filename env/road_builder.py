@@ -22,7 +22,166 @@ except ImportError:      # 구버전 설정 하위호환
     SCENERY = {"trees": False}
 
 
+# ══════════════════════════════════════════════════════════════════
+# (팀14) 여러 프로세스가 동시에 build()를 불러도 안전하게
+#
+# 예전 문제 (2026-11-16 재현): build()가 매번 env/sumo/highway.net.xml을 제자리에서
+#   netconvert로 6번 다시 썼다 (최초 생성 → 요금소 패치 4번 → 안 쓰는 도로 정리).
+#   그 7초 동안 다른 프로세스가 SUMO를 켜면(SIM_REUSE=1이면 매 에피소드) 596회 중 100회가
+#     · XML 깨짐 (netconvert가 쓰는 중인 파일)            → 프로세스 종료
+#     · 경로 edge 없음 (요금소 패치 1~3 이전 상태의 net)   → 프로세스 종료
+#     · 조용한 오염 (패치 4~정리 전, 정리 안 된 8,9xx edge 도로망, 신호 순서도 다름)
+#       → 오류 없이 다른 도로망으로 주행
+#
+# 해결:
+#   1) 시나리오별 폴더   env/sumo/<시나리오>/   — 시나리오가 다른 실행끼리 서로 덮어쓰지 않는다
+#   2) 입력이 같으면 건너뜀 — 입력(설정 dict + env/ 아래 원본 파일 내용)의 해시를
+#      build.stamp에 남기고, 같으면 다시 만들지 않는다 (매번 7초 절약)
+#   3) 잠금 파일          — 동시에 여러 프로세스가 빌드하지 않게 한 번에 하나만
+#   4) 임시 폴더에서 빌드한 뒤 파일별 os.replace로 교체 — 읽는 쪽은 "완성된 이전 파일"이나
+#      "완성된 새 파일"만 본다. Windows에서 다른 프로세스가 파일을 열고 있으면 교체가
+#      PermissionError로 실패하므로 잠깐 뒤 다시 시도한다.
+# ══════════════════════════════════════════════════════════════════
+_MUTATED_KEYS = {"length", "num_lanes", "vehs_per_hour"}   # 빌드가 채워 넣는 키 (해시에서 제외)
+
+
+def scenario_dir(road: dict, out_dir: str) -> str:
+    """build()가 실제로 파일을 두는 폴더 (out_dir/<시나리오>)."""
+    if road.get("type", "straight") == "osm":
+        try:
+            from env.road_config import SCENARIO as _sc
+        except ImportError:
+            _sc = os.environ.get("TEAM14_SCENARIO", "museum")
+    else:
+        _sc = "straight"
+    return os.path.join(out_dir, str(_sc))
+
+
+def _input_key(road, ego, traffic) -> str:
+    import hashlib
+    import json
+    h = hashlib.sha256()
+    cfg = {"road": {k: v for k, v in road.items() if k not in _MUTATED_KEYS},
+           "ego": ego,
+           "traffic": {k: v for k, v in traffic.items() if k not in _MUTATED_KEYS},
+           "simulation": {k: v for k, v in SIMULATION.items() if k.startswith("gui")},
+           "scenery": SCENERY}
+    h.update(json.dumps(cfg, sort_keys=True, default=str).encode())
+    # env/ 아래 원본 파일(osm, 패치, road_builder.py 자신 등)의 내용. 생성물(env/sumo*)은 제외
+    env_dir = os.path.dirname(os.path.abspath(__file__))
+    for root, dirs, files in os.walk(env_dir):
+        dirs[:] = sorted(d for d in dirs if not d.startswith("sumo") and d != "__pycache__")
+        for name in sorted(files):
+            p = os.path.join(root, name)
+            h.update(os.path.relpath(p, env_dir).replace("\\", "/").encode())
+            with open(p, "rb") as f:
+                h.update(hashlib.sha256(f.read()).digest())
+    return h.hexdigest()
+
+
+def _read_text(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return None
+
+
+def _apply_meta(final_dir, road, traffic):
+    """빌드를 건너뛸 때도 build()가 채워 주던 값(road length 등)을 meta.json에서 채운다."""
+    import json
+    meta = os.path.join(final_dir, "meta.json")
+    if not os.path.exists(meta):
+        return
+    with open(meta, encoding="utf-8") as f:
+        m = json.load(f)
+    for k in ("length", "num_lanes"):
+        if k in m:
+            road[k] = m[k]
+    if "vehs_per_hour" in m:
+        traffic["vehs_per_hour"] = m["vehs_per_hour"]
+
+
+def _replace_retry(src, dst, timeout=30.0):
+    import time
+    t0 = time.time()
+    while True:
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            # Windows: 다른 프로세스(SUMO)가 dst를 읽는 중 → 잠깐 뒤 다시
+            if time.time() - t0 > timeout:
+                raise
+            time.sleep(0.05)
+
+
+class _BuildLock:
+    """O_EXCL 잠금 파일. 빌드가 죽어서 남은 잠금은 stale_s초 뒤 무시한다."""
+
+    def __init__(self, path, stale_s=600.0):
+        self.path, self.stale_s = path, stale_s
+
+    def __enter__(self):
+        import time
+        while True:
+            try:
+                fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                os.write(fd, str(os.getpid()).encode())
+                os.close(fd)
+                return self
+            except FileExistsError:
+                try:
+                    if time.time() - os.path.getmtime(self.path) > self.stale_s:
+                        os.remove(self.path)
+                        continue
+                except OSError:
+                    continue
+                time.sleep(0.2)
+
+    def __exit__(self, *exc):
+        try:
+            os.remove(self.path)
+        except OSError:
+            pass
+
+
 def build(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
+    """SUMO 파일들을 out_dir/<시나리오>/에 (필요할 때만) 만들고 sumocfg 경로를 반환한다.
+
+    여러 프로세스가 동시에 불러도 안전하다 (위 설명). 실제 생성은 _build_files().
+    """
+    import shutil
+    import tempfile
+    final = scenario_dir(road, out_dir)
+    cfg_path = os.path.join(final, "highway.sumocfg")
+    stamp = os.path.join(final, "build.stamp")
+    key = _input_key(road, ego, traffic)
+    if _read_text(stamp) == key and os.path.exists(cfg_path):
+        _apply_meta(final, road, traffic)
+        return cfg_path
+    os.makedirs(out_dir, exist_ok=True)
+    with _BuildLock(final + ".lock"):
+        if _read_text(stamp) == key and os.path.exists(cfg_path):   # 기다리는 동안 남이 만듦
+            _apply_meta(final, road, traffic)
+            return cfg_path
+        tmp = tempfile.mkdtemp(prefix=".build_", dir=out_dir)
+        try:
+            _build_files(road, ego, traffic, tmp)
+            os.makedirs(final, exist_ok=True)
+            # 큰 net.xml을 맨 마지막에 바꾼다 (rou/cfg가 먼저 새 것이 되도록)
+            names = sorted(os.listdir(tmp), key=lambda n: n == "highway.net.xml")
+            for name in names:
+                _replace_retry(os.path.join(tmp, name), os.path.join(final, name))
+            with open(stamp + ".tmp", "w", encoding="utf-8") as f:
+                f.write(key)
+            _replace_retry(stamp + ".tmp", stamp)   # stamp는 모든 파일을 바꾼 뒤에
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    return cfg_path
+
+
+def _build_files(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     """SUMO 파일들을 out_dir에 생성하고, sumocfg 파일 경로를 반환한다.
 
     Args:

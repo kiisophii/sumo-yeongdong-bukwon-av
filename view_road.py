@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     # 1) road_config 기준으로 SUMO 파일 (재)생성 — 수정사항이 즉시 반영된다
     sumocfg = road_builder.build(ROAD, EGO, TRAFFIC, os.path.join(BASE, "env", "sumo"))
-    net_file = os.path.join(BASE, "env", "sumo", "highway.net.xml")
+    net_file = os.path.join(os.path.dirname(sumocfg), "highway.net.xml")
     print(f"도로 생성 완료: {sumocfg}")
     print_summary()
 
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         cmd = [checkBinary("sumo-gui"), "-c", sumocfg,
                "--step-length", str(SIMULATION["step_length"]),
                "--delay", str(SIMULATION["gui_delay"])]
-        scenery = os.path.join(BASE, "env", "sumo", "highway.scenery.xml")
+        scenery = os.path.join(os.path.dirname(sumocfg), "highway.scenery.xml")
         if ROAD.get("type") == "osm" and os.path.exists(scenery):
             cmd += ["--additional-files", scenery]   # 주변 지형(GUI 전용)
         subprocess.run(cmd)

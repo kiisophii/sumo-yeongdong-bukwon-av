@@ -22,6 +22,8 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE)
 from env.sumo_env import SumoHighwayEnv  # noqa: F401,E402  (SUMO_HOME 자동 설정)
 import sumolib  # noqa: E402
+from env.road_config import ROAD, EGO, TRAFFIC  # noqa: E402
+from env import road_builder  # noqa: E402
 
 # 한글 폰트 (Windows: 맑은 고딕, macOS: AppleGothic, 그 외: 기본)
 for _name in ("Malgun Gothic", "AppleGothic", "NanumGothic"):
@@ -55,7 +57,7 @@ def main():
     ap.add_argument("--dpi", type=int, default=160)
     args = ap.parse_args()
 
-    sumo_dir = os.path.join(BASE, "env", "sumo")
+    sumo_dir = os.path.dirname(road_builder.build(ROAD, EGO, TRAFFIC, os.path.join(BASE, "env", "sumo")))
     net = sumolib.net.readNet(os.path.join(sumo_dir, "highway.net.xml"))
     ego_edges = set()
     for r in sumolib.xml.parse(os.path.join(sumo_dir, "highway.rou.xml"), "route"):
