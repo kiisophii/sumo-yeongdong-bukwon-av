@@ -54,7 +54,8 @@ import numpy as np
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ENV_KEYS = ["SIM_REUSE", "ROUTE_ASSIST_M", "MERGE_SUMO", "MERGE_STOP",
-            "LC_REVERSE_COOLDOWN", "TEAM14_SCENARIO", "MERGE_SPEEDMATCH"]
+            "LC_REVERSE_COOLDOWN", "TEAM14_SCENARIO", "MERGE_SPEEDMATCH",
+            "RED_STOP", "JUNCTION_YIELD", "LC_COOLDOWN_EXEMPT", "ROUNDABOUT_VMAX", "MERGE_COOP"]
 EPISODE_STRIDE = 1_000_000   # 전역 에피소드 번호 = worker_id * STRIDE + 워커 내 번호
 
 
