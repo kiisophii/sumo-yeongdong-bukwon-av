@@ -1,0 +1,24 @@
+<!--
+  부곡 영업소(부곡IC 진입) · 동수원 영업소(동수원IC 진출) — AV 경로가 실제로 지나는 요금소.
+  근거: 한국도로공사 「영업소 차로 운영현황」(tolofCrgwOpPrss), 카카오 로드뷰 2024-04 (메인 세션 확인)
+    부곡 입구:   1 하이패스 | 2 미운영 | 3 화물차-하이패스+TCS | 4 화물차-TCS            → 운영 3
+    동수원 출구: 1·2 다차로하이패스 | 3 미운영 | 4 TCS | 5 통행료정산기 | 6·7 하이패스 | 8·9 미운영 → 운영 6
+  차로 번호는 왼쪽부터, SUMO index는 오른쪽이 0이라 뒤집었다. 미운영 차로는 뺐다.
+  북수원 패치와 같은 원칙: 부채꼴(차로 고르기) 구간 확보, 진입 차로마다 다른 부스로 연결,
+  부스 뒤에는 교통량이 적은 차로부터 합치고 지퍼 합류, 분할로 생긴 edge 연결은 2단계에서 지정.
+-->
+<edges>
+    <edge id="51066582#1.95">
+        <lane index="0" allow="truck custom1" speed="2.0"/>   <!-- 4 화물차-TCS -->
+        <lane index="1" allow="truck custom1" speed="4.0"/>   <!-- 3 화물차-하이패스+TCS -->
+        <lane index="2" allow="passenger" speed="8.33"/>      <!-- 1 하이패스 (승용차는 이 차로만) -->
+    </edge>
+    <edge id="1224608702.60">
+        <lane index="0" allow="passenger truck" speed="8.33"/>   <!-- 7 하이패스 -->
+        <lane index="1" allow="passenger truck" speed="8.33"/>   <!-- 6 하이패스 -->
+        <lane index="2" allow="custom1 truck" speed="2.0"/>      <!-- 5 통행료정산기 -->
+        <lane index="3" allow="custom1 truck" speed="2.0"/>      <!-- 4 TCS 유인수납 -->
+        <lane index="4" allow="passenger truck" speed="13.89"/>  <!-- 2 다차로하이패스 -->
+        <lane index="5" allow="passenger truck" speed="13.89"/>  <!-- 1 다차로하이패스 -->
+    </edge>
+</edges>

@@ -1,0 +1,3606 @@
+{
+ "results/run_20261113_213700_yunho_ttc/model.pt": [
+  {
+   "ep": 1,
+   "steps": 1775,
+   "last": {
+    "t": 1775,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 34.3,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1770,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 13.3,
+     "speed": 8.42,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1771,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 17.5,
+     "speed": 8.42,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1772,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 21.7,
+     "speed": 8.42,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1773,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 25.9,
+     "speed": 8.42,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1774,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 30.1,
+     "speed": 8.42,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1775,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 34.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 2,
+   "steps": 1896,
+   "last": {
+    "t": 1896,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1891,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.6,
+     "speed": 7.76,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1892,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 16.4,
+     "speed": 7.76,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1893,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 20.3,
+     "speed": 7.76,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1894,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 24.2,
+     "speed": 7.76,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1895,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.1,
+     "speed": 7.76,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1896,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 3,
+   "steps": 2054,
+   "last": {
+    "t": 2054,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.8,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2049,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 15.0,
+     "speed": 7.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2050,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 18.5,
+     "speed": 7.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2051,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 22.1,
+     "speed": 7.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2052,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 25.7,
+     "speed": 7.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2053,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 29.2,
+     "speed": 7.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2054,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.8,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 4,
+   "steps": 2573,
+   "last": {
+    "t": 2573,
+    "road": "667354422#1",
+    "lane": 3,
+    "pos": 161.9,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 0,
+    "lc_applied": true,
+    "lc_blocked": null
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 20,
+   "lc_cmd_last10s": 0,
+   "applied_lc_steps_before_end": [
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1,
+    0
+   ],
+   "tail": [
+    {
+     "t": 2568,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 2569,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 2570,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 2571,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 2572,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 2573,
+     "road": "667354422#1",
+     "lane": 3,
+     "pos": 161.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    }
+   ]
+  },
+  {
+   "ep": 5,
+   "steps": 1752,
+   "last": {
+    "t": 1752,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 31.5,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1747,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 5.9,
+     "speed": 9.53,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1748,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 10.7,
+     "speed": 10.41,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1749,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 15.9,
+     "speed": 10.41,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1750,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 21.1,
+     "speed": 10.41,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1751,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 26.3,
+     "speed": 10.41,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1752,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 31.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 6,
+   "steps": 2017,
+   "last": {
+    "t": 2017,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 35.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2012,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 15.9,
+     "speed": 7.62,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2013,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 19.7,
+     "speed": 7.62,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2014,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 23.5,
+     "speed": 7.62,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2015,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 27.3,
+     "speed": 7.62,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2016,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 31.2,
+     "speed": 7.62,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2017,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 35.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 7,
+   "steps": 2042,
+   "last": {
+    "t": 2042,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.4,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2037,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 9.6,
+     "speed": 9.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2038,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 14.1,
+     "speed": 9.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2039,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 18.7,
+     "speed": 9.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2040,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 23.3,
+     "speed": 9.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2041,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 27.8,
+     "speed": 9.13,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2042,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 8,
+   "steps": 1996,
+   "last": {
+    "t": 1996,
+    "road": "1235185544",
+    "lane": 0,
+    "pos": 84.6,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1991,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 45.6,
+     "speed": 10.59,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1992,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 50.9,
+     "speed": 13.22,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1993,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 57.5,
+     "speed": 15.84,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1994,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 65.4,
+     "speed": 18.22,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1995,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 74.5,
+     "speed": 20.14,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1996,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 84.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 9,
+   "steps": 589,
+   "last": {
+    "t": 589,
+    "road": "474882669#1-AddedOnRampEdge",
+    "lane": 0,
+    "pos": 87.2,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 584,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 43.9,
+     "speed": 18.15,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 585,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 53.0,
+     "speed": 17.64,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 586,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 61.8,
+     "speed": 17.22,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 587,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 70.4,
+     "speed": 16.66,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 588,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 78.7,
+     "speed": 16.91,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 589,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 87.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 10,
+   "steps": 1220,
+   "last": {
+    "t": 1220,
+    "road": "1307152438",
+    "lane": 3,
+    "pos": 1674.3,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [
+    {
+     "ego_role": "collider",
+     "other": "f_bukwon_to_dongsuwon_b.480",
+     "other_type": "car_idm",
+     "type": "collision",
+     "lane": "1307152438_3",
+     "pos": 1678.9,
+     "collider_speed": 9.16,
+     "victim_speed": 2.84
+    }
+   ],
+   "teleport": false,
+   "lc_applied_last10s": 9,
+   "lc_cmd_last10s": 11,
+   "applied_lc_steps_before_end": [
+    19,
+    18,
+    14,
+    13,
+    11,
+    9,
+    7,
+    3,
+    2
+   ],
+   "tail": [
+    {
+     "t": 1215,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1631.6,
+     "speed": 22.41,
+     "gap": 25.41,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1216,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1642.9,
+     "speed": 19.74,
+     "gap": 17.81,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1217,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1652.7,
+     "speed": 17.07,
+     "gap": 11.06,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 1218,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1661.3,
+     "speed": 14.39,
+     "gap": 5.74,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 1219,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1668.5,
+     "speed": 11.75,
+     "gap": 1.27,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1220,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1674.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 11,
+   "steps": 2049,
+   "last": {
+    "t": 2049,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 34.9,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2044,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 15.6,
+     "speed": 7.7,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2045,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 19.5,
+     "speed": 7.7,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2046,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 23.3,
+     "speed": 7.7,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2047,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 27.2,
+     "speed": 7.7,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2048,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 31.0,
+     "speed": 7.7,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2049,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 34.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 12,
+   "steps": 1873,
+   "last": {
+    "t": 1873,
+    "road": "1235185544",
+    "lane": 0,
+    "pos": 93.1,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1868,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 48.9,
+     "speed": 13.8,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1869,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 55.8,
+     "speed": 16.1,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1870,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 63.8,
+     "speed": 18.33,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1871,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 73.0,
+     "speed": 20.07,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1872,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 83.0,
+     "speed": 20.07,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1873,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 93.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 13,
+   "steps": 1824,
+   "last": {
+    "t": 1824,
+    "road": "1235185544",
+    "lane": 0,
+    "pos": 83.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1819,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 38.0,
+     "speed": 13.28,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1820,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 44.6,
+     "speed": 15.89,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1821,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 52.6,
+     "speed": 18.25,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1822,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 61.7,
+     "speed": 20.78,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1823,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 72.1,
+     "speed": 21.91,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1824,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 83.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 14,
+   "steps": 1289,
+   "last": {
+    "t": 1289,
+    "road": "1307152438",
+    "lane": 3,
+    "pos": 1683.8,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [
+    {
+     "ego_role": "collider",
+     "other": "f_east_to_dongsuwon.3151",
+     "other_type": "car_eidm",
+     "type": "collision",
+     "lane": "1307152438_3",
+     "pos": 1685.0,
+     "collider_speed": 2.22,
+     "victim_speed": 0.0
+    }
+   ],
+   "teleport": false,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1284,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1679.6,
+     "speed": 0.63,
+     "gap": 4.24,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1285,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1680.0,
+     "speed": 1.47,
+     "gap": 3.51,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1286,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1680.7,
+     "speed": 1.91,
+     "gap": 2.55,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1287,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1681.6,
+     "speed": 2.15,
+     "gap": 1.47,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1288,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1682.7,
+     "speed": 2.24,
+     "gap": 0.35,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1289,
+     "road": "1307152438",
+     "lane": 3,
+     "pos": 1683.8,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 15,
+   "steps": 2161,
+   "last": {
+    "t": 2161,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.4,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2156,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.7,
+     "speed": 7.87,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2157,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 16.6,
+     "speed": 7.87,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2158,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 20.6,
+     "speed": 7.87,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2159,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 24.5,
+     "speed": 7.87,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2160,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.4,
+     "speed": 7.87,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2161,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 16,
+   "steps": 1783,
+   "last": {
+    "t": 1783,
+    "road": "1235185544",
+    "lane": 0,
+    "pos": 91.7,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1778,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 49.8,
+     "speed": 11.91,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1779,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 55.8,
+     "speed": 14.33,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1780,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 62.9,
+     "speed": 16.95,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1781,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 71.4,
+     "speed": 19.49,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1782,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 81.1,
+     "speed": 21.06,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 1783,
+     "road": "1235185544",
+     "lane": 0,
+     "pos": 91.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 17,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "377057231",
+    "lane": 2,
+    "pos": 27.5,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3596,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3597,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3598,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3599,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3600,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 27.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 18,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "377057231",
+    "lane": 2,
+    "pos": 23.1,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3596,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3597,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3598,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3599,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3600,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 23.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 19,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "377057231",
+    "lane": 3,
+    "pos": 25.6,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 0,
+    "lc_applied": true,
+    "lc_blocked": null
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 20,
+   "lc_cmd_last10s": 7,
+   "applied_lc_steps_before_end": [
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1,
+    0
+   ],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "377057231",
+     "lane": 3,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 3596,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 3597,
+     "road": "377057231",
+     "lane": 3,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 3598,
+     "road": "377057231",
+     "lane": 3,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 3599,
+     "road": "377057231",
+     "lane": 3,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    },
+    {
+     "t": 3600,
+     "road": "377057231",
+     "lane": 3,
+     "pos": 25.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 0,
+     "lc_applied": true,
+     "lc_blocked": null
+    }
+   ]
+  },
+  {
+   "ep": 20,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "377057231",
+    "lane": 2,
+    "pos": 19.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3596,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3597,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3598,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3599,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3600,
+     "road": "377057231",
+     "lane": 2,
+     "pos": 19.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  }
+ ],
+ "results/run_20261112_141623_city_v4_routeendfix/model.pt": [
+  {
+   "ep": 1,
+   "steps": 1979,
+   "last": {
+    "t": 1979,
+    "road": "206488704",
+    "lane": 3,
+    "pos": 205.2,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1974,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1975,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1976,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1977,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1978,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1979,
+     "road": "206488704",
+     "lane": 3,
+     "pos": 205.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 2,
+   "steps": 1753,
+   "last": {
+    "t": 1753,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 35.1,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1748,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 14.0,
+     "speed": 8.47,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1749,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 18.2,
+     "speed": 8.47,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1750,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 22.4,
+     "speed": 8.47,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1751,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 26.7,
+     "speed": 8.47,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1752,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 30.9,
+     "speed": 8.47,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1753,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 35.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 3,
+   "steps": 597,
+   "last": {
+    "t": 597,
+    "road": "474882669#1-AddedOnRampEdge",
+    "lane": 0,
+    "pos": 84.6,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "lane_end",
+   "lc_applied_last10s": 10,
+   "lc_cmd_last10s": 10,
+   "applied_lc_steps_before_end": [
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    10,
+    9
+   ],
+   "tail": [
+    {
+     "t": 592,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 28.1,
+     "speed": 22.61,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 593,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 39.4,
+     "speed": 22.44,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 594,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 50.6,
+     "speed": 22.07,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 595,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 61.7,
+     "speed": 22.74,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 596,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 73.0,
+     "speed": 23.04,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 597,
+     "road": "474882669#1-AddedOnRampEdge",
+     "lane": 0,
+     "pos": 84.6,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 4,
+   "steps": 2002,
+   "last": {
+    "t": 2002,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 33.9,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1997,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.9,
+     "speed": 8.4,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1998,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 17.1,
+     "speed": 8.4,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1999,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 21.3,
+     "speed": 8.4,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2000,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 25.5,
+     "speed": 8.4,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2001,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 29.7,
+     "speed": 8.4,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2002,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 33.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 5,
+   "steps": 2104,
+   "last": {
+    "t": 2104,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.1,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2099,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.3,
+     "speed": 7.91,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2100,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 16.3,
+     "speed": 7.91,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2101,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 20.2,
+     "speed": 7.91,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2102,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 24.2,
+     "speed": 7.91,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2103,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.1,
+     "speed": 7.91,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2104,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 6,
+   "steps": 1915,
+   "last": {
+    "t": 1915,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 35.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1910,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 13.5,
+     "speed": 8.6,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1911,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 17.8,
+     "speed": 8.6,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1912,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 22.1,
+     "speed": 8.6,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1913,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 26.4,
+     "speed": 8.6,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1914,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 30.7,
+     "speed": 8.6,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1915,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 35.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 7,
+   "steps": 1832,
+   "last": {
+    "t": 1832,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 33.1,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 1827,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 9.7,
+     "speed": 9.36,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1828,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 14.4,
+     "speed": 9.36,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1829,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 19.1,
+     "speed": 9.36,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1830,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 23.8,
+     "speed": 9.36,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1831,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.5,
+     "speed": 9.36,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 1832,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 33.1,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 8,
+   "steps": 2375,
+   "last": {
+    "t": 2375,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.4,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2370,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.3,
+     "speed": 8.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2371,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 16.3,
+     "speed": 8.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2372,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 20.3,
+     "speed": 8.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2373,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 24.4,
+     "speed": 8.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2374,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.4,
+     "speed": 8.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2375,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 9,
+   "steps": 2122,
+   "last": {
+    "t": 2122,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 32.5,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2117,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 12.3,
+     "speed": 8.08,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2118,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 16.3,
+     "speed": 8.08,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2119,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 20.4,
+     "speed": 8.08,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2120,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 24.4,
+     "speed": 8.08,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2121,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 28.4,
+     "speed": 8.08,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2122,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 32.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 10,
+   "steps": 2112,
+   "last": {
+    "t": 2112,
+    "road": "611808767",
+    "lane": 0,
+    "pos": 34.2,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "arrival",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2107,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 13.6,
+     "speed": 8.24,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2108,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 17.7,
+     "speed": 8.24,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2109,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 21.8,
+     "speed": 8.24,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2110,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 25.9,
+     "speed": 8.24,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2111,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 30.0,
+     "speed": 8.24,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2112,
+     "road": "611808767",
+     "lane": 0,
+     "pos": 34.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 11,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "206488704",
+    "lane": 2,
+    "pos": 168.4,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3596,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3597,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3598,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3599,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 3600,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 168.4,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 12,
+   "steps": 3600,
+   "last": {
+    "t": 3600,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 14.7,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "timeout",
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 3595,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 3596,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 3597,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 3598,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 3599,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 3600,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 14.7,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 13,
+   "steps": 2449,
+   "last": {
+    "t": 2449,
+    "road": "206488704",
+    "lane": 2,
+    "pos": 198.5,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2444,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2445,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2446,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2447,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2448,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2449,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 198.5,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 14,
+   "steps": 2312,
+   "last": {
+    "t": 2312,
+    "road": "206488704",
+    "lane": 2,
+    "pos": 208.3,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": -1,
+    "lc_applied": false,
+    "lc_blocked": "unsafe"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2307,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2308,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2309,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.04,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2310,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2311,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    },
+    {
+     "t": 2312,
+     "road": "206488704",
+     "lane": 2,
+     "pos": 208.3,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "unsafe"
+    }
+   ]
+  },
+  {
+   "ep": 15,
+   "steps": 2505,
+   "last": {
+    "t": 2505,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 19.2,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2500,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2501,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2502,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2503,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2504,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2505,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 19.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 16,
+   "steps": 2806,
+   "last": {
+    "t": 2806,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 20.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2801,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2802,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2803,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2804,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2805,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2806,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 20.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 17,
+   "steps": 2139,
+   "last": {
+    "t": 2139,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 15.9,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2134,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2135,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2136,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2137,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2138,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2139,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 15.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 18,
+   "steps": 192,
+   "last": {
+    "t": 192,
+    "road": ":1681517542_4",
+    "lane": 0,
+    "pos": 2.0,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "junction"
+   },
+   "outcome": "collision",
+   "collisions": [
+    {
+     "ego_role": "collider",
+     "other": "f_five_market_south.329",
+     "other_type": "car_krauss",
+     "type": "junction",
+     "lane": ":1681517542_4_0",
+     "pos": 6.2,
+     "collider_speed": 8.52,
+     "victim_speed": 5.75
+    }
+   ],
+   "teleport": false,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 187,
+     "road": "-472043938#1",
+     "lane": 0,
+     "pos": 49.4,
+     "speed": 8.52,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 188,
+     "road": "-472043938#1",
+     "lane": 0,
+     "pos": 53.7,
+     "speed": 8.52,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 189,
+     "road": "-472043938#1",
+     "lane": 0,
+     "pos": 57.9,
+     "speed": 8.52,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 190,
+     "road": "-472043938#1",
+     "lane": 0,
+     "pos": 62.2,
+     "speed": 8.52,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 191,
+     "road": "-472043938#1",
+     "lane": 0,
+     "pos": 66.5,
+     "speed": 8.52,
+     "gap": null,
+     "lc_cmd": -1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 192,
+     "road": ":1681517542_4",
+     "lane": 0,
+     "pos": 2.0,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "junction"
+    }
+   ]
+  },
+  {
+   "ep": 19,
+   "steps": 2168,
+   "last": {
+    "t": 2168,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 41.9,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2163,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2164,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2165,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2166,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2167,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2168,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 41.9,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  },
+  {
+   "ep": 20,
+   "steps": 2201,
+   "last": {
+    "t": 2201,
+    "road": "377057231",
+    "lane": 4,
+    "pos": 24.2,
+    "speed": 0.0,
+    "gap": null,
+    "lc_cmd": 1,
+    "lc_applied": false,
+    "lc_blocked": "no_lane"
+   },
+   "outcome": "collision",
+   "collisions": [],
+   "teleport": true,
+   "lc_applied_last10s": 0,
+   "lc_cmd_last10s": 20,
+   "applied_lc_steps_before_end": [],
+   "tail": [
+    {
+     "t": 2196,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2197,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2198,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2199,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2200,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    },
+    {
+     "t": 2201,
+     "road": "377057231",
+     "lane": 4,
+     "pos": 24.2,
+     "speed": 0.0,
+     "gap": null,
+     "lc_cmd": 1,
+     "lc_applied": false,
+     "lc_blocked": "no_lane"
+    }
+   ]
+  }
+ ]
+}

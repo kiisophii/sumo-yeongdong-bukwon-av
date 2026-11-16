@@ -1,0 +1,31 @@
+<!--
+  북수원 영업소 — 팀원 지도(env/museum, 램프 자동 생성 없이 만든 net)용 패치.
+  내용·근거는 env/patches/bukwon_toll_*.xml과 같다(도로공사 차로 운영현황, 로드뷰 2024-04).
+  이 지도에서는 영업소 구간 edge가 다르게 잘려 있어서 위치만 다시 맞췄다
+  (입구 51066898#2 218 m 중 부스 160~175 m, 출구 493209385#1 216 m 중 부스 45~60 m).
+-->
+<connections>
+    <delete from="51066899" to="51066898#1"/>
+    <connection from="51066899" to="51066898#1" fromLane="0" toLane="0"/>
+    <delete from="582107260" to="51066898#1"/>
+    <connection from="582107260" to="51066898#1" fromLane="0" toLane="1"/>
+    <delete from="51066898#1" to="51066898#2"/>
+    <connection from="51066898#1" to="51066898#2" fromLane="0" toLane="0"/>
+    <connection from="51066898#1" to="51066898#2" fromLane="1" toLane="1"/>
+    <delete from="51066898#3" to="124023057"/>
+    <connection from="51066898#3" to="124023057" fromLane="0" toLane="0"/>
+    <delete from="51066898#3" to="51066897"/>
+    <connection from="51066898#3" to="51066897" fromLane="0" toLane="0"/>
+    <connection from="51066898#3" to="51066897" fromLane="1" toLane="1"/>
+    <delete from="1235185547" to="493209385#1"/>
+    <connection from="1235185547" to="493209385#1" fromLane="0" toLane="0"/>
+    <connection from="1235185547" to="493209385#1" fromLane="0" toLane="1"/>
+    <connection from="1235185547" to="493209385#1" fromLane="0" toLane="2"/>
+    <connection from="1235185547" to="493209385#1" fromLane="1" toLane="2"/>
+    <connection from="1235185547" to="493209385#1" fromLane="1" toLane="3"/>
+    <connection from="1235185547" to="493209385#1" fromLane="1" toLane="4"/>
+    <delete from="493209385#2" to="51066895"/>
+    <connection from="493209385#2" to="51066895" fromLane="0" toLane="0"/>
+    <delete from="493209385#2" to="1235185551"/>
+    <connection from="493209385#2" to="1235185551" fromLane="1" toLane="0"/>
+</connections>

@@ -120,6 +120,10 @@ def _vtypes_block(traffic: dict):
             ]
             if "length" in c:
                 attrs.append(f'length="{c["length"]}"')
+            # (팀14) 비상 제동 한계 — 바로 앞에 끼어든 차를 피할 때 쓰는 최대 감속.
+            #   명시하지 않으면 SUMO가 decel 기준으로 정해 화물차(4.0)는 대응이 부족했다.
+            if "emergency_decel" in c:
+                attrs.append(f'emergencyDecel="{c["emergency_decel"]}"')
             # sigma는 Krauss 계열에만 의미가 있으므로 지정된 경우에만 넣는다
             if "sigma" in c:
                 attrs.append(f'sigma="{c["sigma"]}"')
@@ -392,7 +396,43 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
            "--output.street-names",
            "--no-warnings"]
     cmd += list(road.get("netconvert_options", []))
-    subprocess.run(cmd, check=True, capture_output=True)
+    # (팀14) OSM 태그 고치기: 차로 수 등이 실제(로드뷰)와 다른 way를 고친 사본으로 변환
+    #   ROAD["osm_tag_overrides"] = {way_id: {"lanes": "2", ...}}
+    #   ROAD["osm_default_maxspeed"] = {highway 종류: "50", ...} — maxspeed 태그가 없는 way에만
+    #   넣는다 (OSM에 없으면 netconvert가 도로 종류별 기본값 80~100 km/h를 넣기 때문)
+    if road.get("osm_tag_overrides") or road.get("osm_default_maxspeed"):
+        import xml.etree.ElementTree as _ET
+        _tree = _ET.parse(_resolve(road["osm_file"]))
+        _ov = {str(k): v for k, v in (road.get("osm_tag_overrides") or {}).items()}
+        _dm = road.get("osm_default_maxspeed") or {}
+        for _w in _tree.getroot().iter("way"):
+            _tags = {x.get("k"): x for x in _w.findall("tag")}
+            _hw = _tags["highway"].get("v") if "highway" in _tags else None
+            if _hw in _dm and "maxspeed" not in _tags:
+                _ET.SubElement(_w, "tag", k="maxspeed", v=str(_dm[_hw]))
+            if _w.get("id") in _ov:
+                for _k, _v in _ov[_w.get("id")].items():
+                    _t = [x for x in _w.findall("tag") if x.get("k") == _k]
+                    if _t:
+                        _t[0].set("v", str(_v))
+                    else:
+                        _ET.SubElement(_w, "tag", k=_k, v=str(_v))
+        _patched = os.path.join(out_dir, "osm_patched.osm")
+        _tree.write(_patched, encoding="utf-8", xml_declaration=True)
+        cmd[cmd.index("--osm-files") + 1] = _patched
+    # (팀14) netconvert 옵션을 통째로 바꿀 때 (팀원 지도와 같은 설정으로 다시 만들기)
+    if road.get("netconvert_args"):
+        cmd = [netconvert, "--osm-files", cmd[cmd.index("--osm-files") + 1], "-o", net_path]
+        # "@경로1,경로2"는 프로젝트 기준 파일 경로로 바꾼다
+        cmd += [(",".join(_resolve(p) for p in a[1:].split(",")) if a.startswith("@") else a)
+                for a in road["netconvert_args"]]
+    if road.get("net_file"):
+        # 이미 만들어진 도로망(.net.xml)을 그대로 쓰는 경우 (예: 팀원이 만든
+        # env/museum 지도). OSM 변환을 건너뛰고 아래 패치만 적용한다.
+        import shutil
+        shutil.copy(_resolve(road["net_file"]), net_path)
+    else:
+        subprocess.run(cmd, check=True, capture_output=True)
 
     # ── 1-1) 도로망 패치 (영업소 등 OSM만으로 부족한 부분) ──
     #   ROAD["net_patches"]의 순서대로 netconvert에 "기존 net + 수정 파일"을 넣어
@@ -410,6 +450,24 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
 
     net = sumolib.net.readNet(net_path)
 
+    def repair(edges):
+        """(팀14) edge 목록에서 패치(분할·삭제)로 끊긴 곳을 최단경로로 다시 잇는다.
+        예: 영업소 패치로 51066582#1이 51066582#1 / .95 / .110으로 나뉘면 사이를 채운다."""
+        # 도로망을 다시 만들 때 같은 속성의 이웃 구간이 하나로 합쳐져 사라진 edge는 빼고 잇는다
+        edges = [e for e in edges if net.hasEdge(e)]
+        out = [edges[0]]
+        for b in edges[1:]:
+            a = out[-1]
+            ea, eb = net.getEdge(a), net.getEdge(b)
+            if eb in ea.getOutgoing():
+                out.append(b)
+                continue
+            mid, _ = net.getShortestPath(ea, eb)
+            if not mid:
+                raise RuntimeError(f"경로를 이을 수 없음: {a} → {b}")
+            out += [e.getID() for e in mid[1:]]
+        return out
+
     def path(frm: str, to: str):
         edges, _ = net.getShortestPath(net.getEdge(frm), net.getEdge(to))
         if not edges:
@@ -417,7 +475,13 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         return [e.getID() for e in edges]
 
     # ── 2) 경로 ──
-    ego_edges = path(*road["ego_route"])
+    if road.get("ego_edges_file"):
+        # 경유지가 많은 경로는 edge 나열을 파일로 받는다 (JSON: {"route_edges": [...]})
+        import json as _json
+        with open(_resolve(road["ego_edges_file"]), encoding="utf-8") as _f:
+            ego_edges = repair(list(_json.load(_f)["route_edges"]))
+    else:
+        ego_edges = path(*road["ego_route"])
     road["length"] = sum(net.getEdge(e).getLength() for e in ego_edges)
     road["num_lanes"] = max(net.getEdge(e).getLaneNumber() for e in ego_edges)
 
@@ -425,13 +489,31 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     # 콘솔 요약용 총 교통량 (train.py 등이 출력)
     traffic["vehs_per_hour"] = sum(float(r["vehs_per_hour"]) for r in routes.values())
     route_lines = [f'    <route id="r0" edges="{" ".join(ego_edges)}"/>']
+    # (팀14) ego 대안 경로 — 갈림길에서 어느 길로 갈지 고르는 실험용
+    #   ROAD["route_choice"]["file"]의 alternatives마다 route "r_alt_<이름>"을 만든다.
+    alt_meta = {}
+    rc = road.get("route_choice")
+    if rc:
+        import json as _json
+        with open(_resolve(rc["file"]), encoding="utf-8") as _f:
+            alts = _json.load(_f)
+        for name, a in alts["alternatives"].items():
+            a = {**a, "edges": repair(list(a["edges"]))}
+            route_lines.append(f'    <route id="r_alt_{name}" edges="{" ".join(a["edges"])}"/>')
+            alt_meta[name] = {
+                "route_id": f"r_alt_{name}",
+                "length": sum(net.getEdge(e).getLength() for e in a["edges"]),
+                "branch": list(a["branch"]),
+                "join_edge": alts.get("join_edge"),
+            }
     flow_lines = []
     # 계산값을 파일로도 남긴다 — build()를 거치지 않는 프로세스(병렬 수집
     # 워커 등)에서도 sumo_env가 읽어 쓸 수 있도록.
     import json
     with open(os.path.join(out_dir, "meta.json"), "w", encoding="utf-8") as f:
         json.dump({"length": road["length"], "num_lanes": road["num_lanes"],
-                   "vehs_per_hour": traffic["vehs_per_hour"]}, f)
+                   "vehs_per_hour": traffic["vehs_per_hour"],
+                   "route_alternatives": alt_meta}, f, ensure_ascii=False)
     vtypes_block, flow_type = _vtypes_block(traffic)
     for name, r in routes.items():
         edges = path(r["from"], r["to"])
@@ -450,6 +532,25 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
 {chr(10).join(flow_lines)}
 </routes>
 """)
+
+    # ── 3-1) (팀14) 쓰지 않는 도로 지우기 ──
+    #   ROAD["prune_unused_edges"]가 True면 ego 경로·대안 경로·배경 흐름 어디에도 없는
+    #   도로를 도로망에서 뺀다 (시뮬레이션이 가볍고 화면이 깔끔해진다).
+    #   교차로에 붙은 안 쓰는 도로가 빠지면 그 교차로의 신호 순서도 다시 계산된다.
+    if road.get("prune_unused_edges"):
+        used = set()
+        for line in route_lines:
+            used.update(line.split('edges="', 1)[1].split('"', 1)[0].split())
+        keep_file = os.path.join(out_dir, "kept_edges.txt")
+        with open(keep_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(sorted(used)))
+        subprocess.run([netconvert, "-s", net_path, "-o", net_path,
+                        "--keep-edges.input-file", keep_file, "--no-warnings"],
+                       check=True, capture_output=True)
+        pruned = sumolib.net.readNet(net_path)
+        missing = [e for e in used if not pruned.hasEdge(e)]
+        if missing:
+            raise RuntimeError(f"도로 정리 뒤 경로 edge가 없음: {missing[:5]}")
 
     # ── 4) 주변 지형 폴리곤 (순수 시각 요소) ──
     scenery = os.path.join(out_dir, "highway.scenery.xml")

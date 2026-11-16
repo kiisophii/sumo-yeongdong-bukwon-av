@@ -1,0 +1,22 @@
+<!--
+  북수원 영업소 — 팀원 지도(env/museum, 램프 자동 생성 없이 만든 net)용 패치.
+  내용·근거는 env/patches/bukwon_toll_*.xml과 같다(도로공사 차로 운영현황, 로드뷰 2024-04).
+  이 지도에서는 영업소 구간 edge가 다르게 잘려 있어서 위치만 다시 맞췄다
+  (입구 51066898#2 218 m 중 부스 160~175 m, 출구 493209385#1 216 m 중 부스 45~60 m).
+-->
+<edges>
+    <edge id="51066898#2.160">
+        <lane index="0" allow="truck" speed="2.0"/>
+        <lane index="1" allow="truck" speed="5.56"/>
+        <lane index="2" allow="custom1" speed="2.0"/>
+        <lane index="3" allow="passenger" speed="13.89"/>
+        <lane index="4" allow="passenger" speed="13.89"/>
+    </edge>
+    <edge id="493209385#1.45">
+        <lane index="0" allow="passenger custom1 truck" speed="4.0"/>
+        <lane index="1" allow="custom1 truck" speed="2.0"/>
+        <lane index="2" allow="custom1 truck" speed="2.0"/>
+        <lane index="3" allow="passenger truck" speed="13.89"/>
+        <lane index="4" allow="passenger truck" speed="13.89"/>
+    </edge>
+</edges>

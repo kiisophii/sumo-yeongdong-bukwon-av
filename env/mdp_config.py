@@ -17,7 +17,9 @@ SIMULATION = {
     "step_length": 0.5,   # SUMO 1스텝 = 0.5초. RL의 1 timestep과 동일.
                           # 작게 하면(0.1) 제어가 정밀해지지만 에피소드가 길어지고,
                           # 크게 하면(1.0) 학습이 빨라지지만 제어가 거칠어진다.
-    "max_steps": 1000,    # 에피소드 최대 스텝 수. 1000 * 0.5초 = 500초.
+    # 에피소드 최대 스텝 수. 1000 * 0.5초 = 500초.
+    # (팀14) museum 경로(14.4 km, 신호·교차로 포함)는 1800초까지 허용
+    "max_steps": 3600 if __import__("os").environ.get("TEAM14_SCENARIO", "museum") == "museum" else 1000,
                           # 도로 12km를 평균 24 m/s로 달리면 약 1000스텝.
                           # 이 시간 안에 완주 못하면 truncation(시간 초과) 처리.
     "warmup_steps": 4,    # ego 투입 전 프리필 차량들이 자리잡는 정착 스텝.
@@ -78,12 +80,19 @@ SIMULATION = {
 OBSERVATION = {
     "visibility": 50.0,          # 관측 가능 거리 W (m). 앞뒤 차량 감지와
                                  # 상대거리/연결성/밀도 정규화의 기준.
-    "route_lookahead": 200.0,    # (OSM 도로) 차선 연결성 [21..25]을 판단하는 거리.
+    # (팀14) museum: 600 m. 200 m(100 km/h에서 7초)면 동수원 출구처럼 붐비는 출구 차로로 옮기기에
+    #   너무 늦어서, city_v1이 출구 직전에 멈춰 서다 순간이동으로 실패(10회 중 8회)
+    "route_lookahead": 600.0 if __import__("os").environ.get("TEAM14_SCENARIO", "museum") == "museum" else 200.0,    # (OSM 도로) 차선 연결성 [21..25]을 판단하는 거리.
                                  # 경로 기준으로 "이 차선을 따라 얼마나 더 갈 수
                                  # 있는지"를 이 거리로 정규화한다. 고속도로에서
                                  # 차로 감소/진출 전용 차로를 미리 알아채려면
                                  # 시야 W(50m)보다 길어야 한다 (100km/h ≈ 7초).
-    "privileged_radius": 150.0,  # 데이터셋 privileged state에 저장할 ego 주변
+    "privileged_radius": 150.0,
+    # (팀14) 일반도로용 교차로·신호 관측 6개를 붙일지. 바꾸면 관측 차원(31↔37)이
+    # 바뀌므로 기존 모델과 호환되지 않는다 → 새로 학습해야 함.
+    #   기본: 일반도로가 있는 museum 시나리오에서만 켬 (road_config.SCENARIO와 같은 환경변수)
+    "junction_features": __import__("os").environ.get("TEAM14_SCENARIO", "museum") == "museum",
+    "junction_lookahead": 150.0,   # 이 거리 안의 신호·교차로만 본다 (m)  # 데이터셋 privileged state에 저장할 ego 주변
                                  # 차량 반경(m). None이면 시뮬레이션 전체 차량.
     "density_veh_length": 7.5,   # 밀도 계산 시 차량 1대의 점유 길이 (m)
                                  # = 차체(~5m) + 최소 안전간격(~2.5m).
@@ -138,6 +147,10 @@ ACTION = {
         # 피할 수 없는 추돌이 났다. 감속도는 최대치보다 낮게 잡아 여유를 둔다.
         "brake_check_decel": 4.0,     # m/s^2 — ego 최대 감속 5.4보다 여유
         "follower_brake_decel": 3.0,  # m/s^2 — 일반 차량이 무리 없이 내는 감속
+        # 교차점 너머 뒤차 확인 (팀14 추가): 목표 차선 뒤차가 아직 교차점 안이나
+        # 그 앞 구간에 있으면 보이지 않던 사각지대를 이 거리(m)까지 뒤쪽으로 찾는다.
+        # 두 진입로가 합쳐진 직후 측면충돌(합류 경로 60회 중 9건) 때문에 추가. 0이면 끔.
+        "upstream_scan": 80.0,
         "approach_horizon": 0.6,  # s. 접근 여유 판정 시간 — "이 시간 안에
                                   # 상대와 만나면 위험". 짧을수록 공격적.
         "spawn_protect": 60.0,  # m. 도로 시작 이 구간 안에서는 변경 금지.
@@ -174,8 +187,14 @@ REWARD = {
     "close_gap_threshold": 6.0, # 앞차와 이 거리(m) 미만으로 붙으면 (좁게 따라붙기 허용:
                                  #  10→6m 완화. 추월 직전 대기 위치를 잡기 쉬워짐)
     "close_gap_penalty": 0.1,    #   → 스텝당 이만큼 감점
+    "ttc_penalty": 0.0,          # (팀14) 앞차 TTC < ttc_threshold초면 최대 이만큼 감점. 0 = 꺼짐
+    "ttc_threshold": 3.0,        #   TTC 기준(초). 가까울수록 감점이 커짐 (1 - TTC/기준)
     "collision_penalty": 5.0,    # 충돌 시 -5 를 받고 에피소드 즉시 종료
     "arrival_bonus": 2.0,        # 도로 끝까지 완주하면 +2 받고 종료
+    # (팀14) 일반도로 규칙 — 교차로·신호 관측(junction_features)이 켜졌을 때만 발생
+    "red_light_penalty": 5.0,    # 빨간불 정지선 통과: -5
+    "red_light_terminate": True, #   그리고 충돌처럼 실패로 종료 (실제로는 사고 위험·법규 위반)
+    "yield_penalty": 1.0,        # 양보해야 하는 교차로에 다가오는 차가 있는데 진입: -1 (종료 안 함)
 
     # ---- 막힘(blocked) 페널티: 추월 학습의 핵심 신호 ----
     # "느린 앞차에 막혀 있는 상태"에 매 스텝 감점을 준다.
