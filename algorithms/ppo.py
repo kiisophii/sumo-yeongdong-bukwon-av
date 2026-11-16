@@ -42,6 +42,7 @@ advantage는 GAE(λ)로 추정:
 """
 from collections import deque
 
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -212,7 +213,19 @@ class PPO:
 
         for _ in range(self.n_steps):
             action, log_prob, value = self.act(obs)
-            next_obs, reward, terminated, truncated, _ = env.step(action)
+            next_obs, reward, terminated, truncated, _info = env.step(action)
+            # (팀14 실험) EXEC_ACTION_BUFFER=1: 보조 규칙이 행동을 바꿨으면, 버퍼에는 실제로 실행된
+            #   행동과 그 행동의 현재 정책 log-prob을 넣는다. 그래야 보상과 행동이 맞아서
+            #   정책이 "규칙이 한 일"을 배운다 (안 하면 정책 행동과 보상이 어긋남).
+            if (os.environ.get("EXEC_ACTION_BUFFER", "0") == "1" and isinstance(_info, dict)
+                    and _info.get("assist_intervened") and _info.get("action_executed") is not None
+                    and hasattr(self.policy, "evaluate_actions")):
+                _ex = np.asarray(_info["action_executed"], dtype=np.float32)
+                if True:
+                    _ot = torch.as_tensor(obs, dtype=torch.float32, device=self.device).unsqueeze(0)
+                    _at = torch.as_tensor(_ex, dtype=torch.float32, device=self.device).unsqueeze(0)
+                    _lp, _, _ = self.policy.evaluate_actions(_ot, _at)
+                    action, log_prob = _ex, float(_lp.item())
 
             self.num_timesteps += 1
             ep_stats[0] += reward

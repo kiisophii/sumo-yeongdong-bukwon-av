@@ -363,8 +363,24 @@ class SumoHighwayEnv(gym.Env):
                 pos += max(step, 10.0)
         return count
 
+    _ASSIST_KEYS = ("ROUTE_ASSIST_M", "MERGE_SUMO", "MERGE_STOP", "LC_REVERSE_COOLDOWN", "RED_STOP",
+                    "JUNCTION_YIELD", "ZIPPER_FOLLOW", "ROUTE_SHIELD_M")
+
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        # (팀14 실험) ASSIST_PROB=p: 판마다 확률 p로만 보조 규칙을 켠다 (보조 바퀴 학습).
+        #   규칙이 꺼진 판에서는 정책이 직접 하다 실패하며 배운다. 설정 안 하면 기존과 같음.
+        ap = os.environ.get("ASSIST_PROB")
+        if ap is not None:
+            if not hasattr(self, "_assist_saved"):
+                self._assist_saved = {k: os.environ.get(k) for k in self._ASSIST_KEYS}
+            on = float(np.random.random()) < float(ap)
+            for k, v in self._assist_saved.items():
+                if on and v is not None:
+                    os.environ[k] = v
+                else:
+                    os.environ.pop(k, None)
+            self.assist_on = on
         self._merge_speed = None
         self._sumo_lc_on = False
         self._last_lc = (0, -1e9)
@@ -1403,6 +1419,7 @@ class SumoHighwayEnv(gym.Env):
             v_cap = (min(self.vmax, traci.vehicle.getAllowedSpeed(self.ego_id))
                      if self.osm_mode else self.vmax)
             v_new = float(np.clip(v + dv, 0.0, v_cap))
+            _v_policy = v_new   # (팀14) 보조 규칙이 속도를 바꾸기 전 값
             # (팀14 실험) MERGE_SPEEDMATCH=1: 직전 스텝에 꼭 필요한 차선변경이 안전 게이트에
             #   막혔으면, 옆 차로 흐름 속도에 맞춰 가속/감속한다 (멈춘 채로는 뒤차와의
             #   속도차 때문에 필요한 간격이 너무 커서 영원히 못 끼어듦 — v4 관찰).
@@ -1634,6 +1651,12 @@ class SumoHighwayEnv(gym.Env):
             traci.vehicle.setSpeed(self.ego_id, v_new)
 
             lane_change = self._route_assist(lane_change)
+            # (팀14) 실제로 실행되는 행동 (보조 규칙이 바꾼 가감속·차선 명령 포함) — PPO 버퍼용
+            _dv = v_new - v
+            _acc_exec = (_dv / (self.max_accel * self.step_length) if _dv >= 0
+                         else _dv / (self.max_decel * self.step_length))
+            self._action_executed = (float(np.clip(_acc_exec, -1.0, 1.0)), float(lane_change))
+            self._assist_intervened = (abs(v_new - _v_policy) > 1e-6) or (lane_change != lane_change_policy)
             lane_change_applied = self._apply_lane_change(lane_change)
 
         # ----- (2) 시뮬레이션 1스텝 -----
@@ -1797,6 +1820,8 @@ class SumoHighwayEnv(gym.Env):
             "lane_change": lane_change,
             "lane_change_applied": lane_change_applied,
             "lane_change_policy": lane_change_policy,
+            "action_executed": getattr(self, "_action_executed", None),
+            "assist_intervened": bool(getattr(self, "_assist_intervened", False)),
             "lane_change_executed": lane_change_executed,
             "assist_active": int(getattr(self, "_lc_mandatory", 0) != 0),
             "lane_change_blocked": getattr(self, "_lc_block_reason", None),
