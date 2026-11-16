@@ -1,12 +1,12 @@
 ﻿# 14조 주행 데이터 10^7 나눠서 수집 (사람마다 워커 번호가 겹치지 않게 나눔)
 # 실행: 저장소 폴더에서
 #   powershell -ExecutionPolicy Bypass -File tools\run_collect_team.ps1 <이름>
-#   <이름> = dongju / yunho / junhee / sua
+#   <이름> = dongju / yunho / junhee / sua / extra1 / extra2 (extra: 대신 돌릴 때 쓰는 예비 번호, 누구와도 안 겹침)
 # 끊기면 같은 명령을 다시 실행하면 이어서 모읍니다.
-param([Parameter(Mandatory = $true)][ValidateSet("dongju", "yunho", "junhee", "sua")][string]$who)
+param([Parameter(Mandatory = $true)][ValidateSet("dongju", "yunho", "junhee", "sua", "extra1", "extra2")][string]$who)
 
 $ErrorActionPreference = "Continue"
-$offset = @{ dongju = 0; yunho = 16; junhee = 32; sua = 48 }[$who]
+$offset = @{ dongju = 0; yunho = 16; junhee = 32; sua = 48; extra1 = 64; extra2 = 80 }[$who]
 $steps = 2600000                       # 4명 x 260만 = 1,040만 (10^7 + 여유)
 $cores = [Environment]::ProcessorCount
 $n = [Math]::Max(2, [Math]::Min(12, $cores - 2))
