@@ -1455,6 +1455,57 @@ class SumoHighwayEnv(gym.Env):
                             v_new = min(v_new, max(v_r, v - self.max_decel * self.step_length))
                 except traci.TraCIException:
                     pass
+            # (팀14 실험) ZIPPER_FOLLOW=1: 지퍼 합류(여러 차로 → 한 차로) 교차로 안이나 바로 앞에서,
+            #   같은 합류점으로 먼저 들어간 다른 차로 차량을 "앞차"로 보고 간격을 유지.
+            #   원인: 51066582#1.110 (3→1차로)에서 오른쪽 차로의 느린 트럭이 먼저 합류했는데,
+            #   ego 관측에는 다른 차로라 앞차로 안 잡혀 가속하다 추돌 (남은 충돌 10회 중 4회)
+            if __import__("os").environ.get("ZIPPER_FOLLOW", "0") == "1":
+                try:
+                    if getattr(self, "_zip_info", None) is None:
+                        import sumolib
+                        net = sumolib.net.readNet(os.path.join(os.path.dirname(self.cfg_path),
+                                                               "highway.net.xml"), withInternal=True)
+                        zi = {}
+                        for nd in net.getNodes():
+                            if nd.getType() != "zipper":
+                                continue
+                            ints = list(nd.getInternal())
+                            outs = [l.getID() for e in nd.getOutgoing() if not e.getID().startswith(":")
+                                    for l in e.getLanes()]
+                            L = max([net.getLane(i).getLength() for i in ints] or [0.0])
+                            for i in ints:
+                                zi[i] = (ints, outs, L)
+                        self._zip_info = zi
+                    lane_id = traci.vehicle.getLaneID(self.ego_id)
+                    info_z, ego_prog = None, None
+                    if lane_id in self._zip_info:
+                        info_z = self._zip_info[lane_id]
+                        ego_prog = traci.vehicle.getLanePosition(self.ego_id)
+                    else:
+                        links = traci.vehicle.getNextLinks(self.ego_id)
+                        if links and links[0][4] in self._zip_info:
+                            d = traci.lane.getLength(lane_id) - traci.vehicle.getLanePosition(self.ego_id)
+                            if d < 25.0:
+                                info_z = self._zip_info[links[0][4]]
+                                ego_prog = -d
+                    if info_z is not None:
+                        ints, outs, L = info_z
+                        gap_min = 1e9
+                        for ln in ints + outs:
+                            for vid in traci.lane.getLastStepVehicleIDs(ln):
+                                if vid == self.ego_id:
+                                    continue
+                                pos = traci.vehicle.getLanePosition(vid)
+                                prog = pos if ln in ints else L + pos
+                                if ln in outs and pos > 40.0:
+                                    continue
+                                if prog > ego_prog:
+                                    gap_min = min(gap_min, prog - ego_prog - traci.vehicle.getLength(vid))
+                        if gap_min < 1e9:
+                            v_z = max(0.0, (gap_min - 2.0) / 1.0)
+                            v_new = min(v_new, max(v_z, v - self.max_decel * self.step_length))
+                except (traci.TraCIException, IndexError, TypeError):
+                    pass
             vr = float(__import__("os").environ.get("ROUNDABOUT_VMAX", "0") or 0)
             if vr > 0:
                 try:
