@@ -1364,6 +1364,69 @@ class SumoHighwayEnv(gym.Env):
                             v_new = min(v_new, max(v_y, v - self.max_decel * self.step_length))
                 except (traci.TraCIException, IndexError, TypeError):
                     pass
+            # JUNCTION_YIELD=3: getJunctionFoes가 이 교차로에서 빈 목록을 돌려줘 2번이 작동 안 함 (11/16 기록).
+            #   대신 도로망 연결로 직접 판정: ego가 들어갈 교차로 내부 차로의 "충돌 차로"
+            #   (lane.getInternalFoes)에 차가 있거나, 그 차로로 들어올 차가 정지선 30 m 안에서
+            #   ego보다 먼저/비슷하게 도착하면, ego가 우선(M)이 아닌 경우 정지선 앞에 설 수 있게 감속.
+            #   원인: 1681517542(오른쪽 우선 교차로)에서 ego가 좌회전(우선권 '=')하며 시속 31 km로 진입,
+            #   우선(M) 방향 차와 충돌 — v4·v9a 초반 충돌 대부분
+            if jy == "3":
+                try:
+                    if v < 0.5:
+                        self._yield_wait = getattr(self, "_yield_wait", 0) + 1
+                    else:
+                        self._yield_wait = 0
+                    if self._yield_wait * self.step_length > 6.0:
+                        self._yield_release = self.step_count + int(3.0 / self.step_length)
+                        self._yield_wait = 0
+                    edge = traci.vehicle.getRoadID(self.ego_id)
+                    if (self.step_count >= getattr(self, "_yield_release", -1)
+                            and not edge.startswith(":")):
+                        lane_id = traci.vehicle.getLaneID(self.ego_id)
+                        d = traci.lane.getLength(lane_id) - traci.vehicle.getLanePosition(self.ego_id)
+                        links = traci.vehicle.getNextLinks(self.ego_id)
+                        if d < 40.0 and links:
+                            ln = links[0]
+                            internal, state = ln[4], str(ln[5])
+                            if internal and state not in ("M", "O", "G", "g"):
+                                if getattr(self, "_via_from", None) is None:
+                                    import sumolib
+                                    net = sumolib.net.readNet(os.path.join(os.path.dirname(self.cfg_path),
+                                                                           "highway.net.xml"), withInternal=True)
+                                    vf_map = {}
+                                    for e2 in net.getEdges(withInternal=False):
+                                        for l2 in e2.getLanes():
+                                            for c in l2.getOutgoing():
+                                                if c.getViaLaneID():
+                                                    vf_map[c.getViaLaneID()] = l2.getID()
+                                    self._via_from = vf_map
+                                te = d / max(v, 0.5)
+                                # ego가 교차로를 빠져나갈 때까지 걸리는 시간 (내부 차로 길이까지)
+                                t_clear = te + float(ln[7]) / max(v, 0.5)
+                                block = False
+                                for fl in traci.lane.getInternalFoes(internal):
+                                    if traci.lane.getLastStepVehicleNumber(fl) > 0:
+                                        block = True
+                                        break
+                                    src = self._via_from.get(fl)
+                                    if not src:
+                                        continue
+                                    L = traci.lane.getLength(src)
+                                    for vid in traci.lane.getLastStepVehicleIDs(src):
+                                        if vid == self.ego_id:
+                                            continue
+                                        df = L - traci.vehicle.getLanePosition(vid)
+                                        sv = traci.vehicle.getSpeed(vid)
+                                        if df < 30.0 and sv > 1.0 and df / sv < te + 2.0:
+                                            block = True
+                                            break
+                                    if block:
+                                        break
+                                if block:
+                                    v_y = float(np.sqrt(2.0 * 0.7 * self.max_decel * max(d - 1.0, 0.0)))
+                                    v_new = min(v_new, max(v_y, v - self.max_decel * self.step_length))
+                except (traci.TraCIException, IndexError, TypeError):
+                    pass
             if jy == "1":
                 try:
                     for f in traci.vehicle.getJunctionFoes(self.ego_id, 60.0):
@@ -1379,6 +1442,18 @@ class SumoHighwayEnv(gym.Env):
                             v_y = float(np.sqrt(2.0 * 0.7 * self.max_decel * max(e_in - 2.0, 0.0)))
                             v_new = min(v_new, max(v_y, v - self.max_decel * self.step_length))
                 except (traci.TraCIException, IndexError):
+                    pass
+            # (팀14 실험) RED_STOP=1: 앞 신호가 빨강(또는 노랑인데 못 지나감)이면 정지선 앞에 설 수 있게 감속.
+            #   원인: 출발 직후 "충돌"로 집계되던 것 중 일부가 실제로는 신호 위반(red_light → collided)
+            if __import__("os").environ.get("RED_STOP", "0") == "1":
+                try:
+                    nxt = traci.vehicle.getNextTLS(self.ego_id)
+                    if nxt:
+                        _tid, _idx, dist, st = nxt[0]
+                        if dist < 80.0 and (st in "rRu" or (st in "yY" and dist > v * 1.0 + 2.0)):
+                            v_r = float(np.sqrt(2.0 * 0.7 * self.max_decel * max(dist - 2.0, 0.0)))
+                            v_new = min(v_new, max(v_r, v - self.max_decel * self.step_length))
+                except traci.TraCIException:
                     pass
             vr = float(__import__("os").environ.get("ROUNDABOUT_VMAX", "0") or 0)
             if vr > 0:

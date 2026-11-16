@@ -8,6 +8,7 @@ $env:ROUTE_ASSIST_M = "600"       # 경로 차로가 끊기기 600 m 전부터 �
 $env:MERGE_SUMO = "1"             # 꼭 필요한 합류가 막히면 SUMO 차선변경(이웃 양보) 사용
 $env:MERGE_STOP = "1"             # 합류가 막힌 채 차로 끝이 다가오면 멈춰서 기다림
 $env:LC_REVERSE_COOLDOWN = "3"    # 방금 바꾼 방향의 반대로 3초 안엔 못 바꿈 (핑퐁 방지)
+$env:RED_STOP = "1"               # 앞 신호가 빨간불이면 정지선 앞에 섬 (신호위반 4→1회/180회)
 python train.py --lr 3e-5 --timesteps 400000 --ckpt-every 40000 --tag v10_dongju --init-model results/sua_v9a/model_401408.pt 2>&1 | Tee-Object -FilePath train_v10_dongju.log
 # 끝나면 결과를 별도 브랜치로 올림 (city-route·sua-assist는 건드리지 않음)
 $run = Get-ChildItem results -Directory -Filter "run_*v10_dongju" | Sort-Object Name | Select-Object -Last 1

@@ -86,7 +86,7 @@ def run(policy, env, episodes):
         if mg < float("inf"):
             min_gaps.append(mg)
         print(f"  ep {ep + 1:3d}/{episodes}: steps={n:4d} return={ret:7.2f} "
-              f"{'충돌' if info.get('collided') and not info.get('lane_end') else '경로이탈' if info.get('lane_end') else '완주' if info.get('arrived') else '시간초과'}",
+              f"{'신호위반' if info.get('red_light') else '충돌' if info.get('collided') and not info.get('lane_end') else '경로이탈' if info.get('lane_end') else '완주' if info.get('arrived') else '시간초과'}",
               flush=True)
     res = {k + "_rate": v / episodes for k, v in out.items()}
     res.update({
