@@ -169,6 +169,8 @@ if __name__ == "__main__":
                      help="(팀14) 느린 앞차에 막힘 스텝당 감점 (기본 0.05)")
     _ap.add_argument("--init-model", default=None,
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
+    _ap.add_argument("--seed", type=int, default=None,
+                     help="(팀14) 난수 시드 (기본: HPARAMS['seed']=0). 같은 설정 반복 실험용")
     _args = _ap.parse_args()
     for _k, _v in (("collision_penalty", _args.collision_penalty), ("arrival_bonus", _args.arrival_bonus),
                    ("blocked_penalty", _args.blocked_penalty)):
@@ -184,6 +186,8 @@ if __name__ == "__main__":
         HPARAMS["n_steps"] = _args.n_steps
     if _args.timesteps is not None:
         TOTAL_TIMESTEPS = _args.timesteps
+    if _args.seed is not None:
+        HPARAMS["seed"] = _args.seed
 
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
     sumocfg = road_builder.build(ROAD, EGO, TRAFFIC,
