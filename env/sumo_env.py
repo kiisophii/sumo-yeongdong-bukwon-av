@@ -438,25 +438,18 @@ class SumoHighwayEnv(gym.Env):
         route_id = "r0"
         if self.route_alts:
             route_id = self._choose_route()
-        traci.vehicle.add(self.ego_id, route_id, typeID="ego_type",
-                          departLane=depart_lane,
-                          departPos="0",
-                          departSpeed=self.ego_depart_speed)
-
-        # ★ 중요: speedMode=0 → SUMO의 내장 안전장치(자동 안전제동 등)를 전부 끔.
-        #   이걸 꺼야 RL이 속도를 온전히 제어하고, 잘못 배우면 실제로 충돌한다.
-        #   (켜두면 SUMO가 알아서 브레이크를 밟아줘서 충돌이 거의 안 나고,
-        #    그러면 "충돌 회피"라는 학습 신호 자체가 사라진다)
-        traci.vehicle.setSpeedMode(self.ego_id, 0)
-        # (팀14 실험) JUNCTION_ROW=1: 교차로·회전교차로 통행 우선권만은 SUMO가 지키게 함
-        #   (speedMode 비트3). 차간 안전제동은 여전히 꺼져 있어 추돌 학습 신호는 남는다.
-        #   원인: 회전교차로 :4582364294 진입 시 회전 중인 차에 양보 안 하고 측면충돌 (60회 중 1회)
-        if __import__("os").environ.get("JUNCTION_ROW", "0") == "1":
-            traci.vehicle.setSpeedMode(self.ego_id, 0b01000)
-        # SUMO의 자율 차선변경은 끄고, RL이 내리는 TraCI 차선변경 명령만 사용한다.
-        traci.vehicle.setLaneChangeMode(self.ego_id, 0)
-
-        traci.simulationStep()  # ego가 실제로 도로에 나타나도록 1스텝 진행
+        # (팀14 실험) HARD_START_PROB=p: 판마다 확률 p로 어려운 구간(부곡 합류·차로 합류·출구) 몇백 m 앞에서
+        #   출발시킨다 (학습용 커리큘럼, 주행 보조 아님). 평가 때는 설정하지 않는다 → 항상 0 m에서 출발.
+        self.hard_start = None
+        depart_speed = self.ego_depart_speed
+        normal_add = (route_id, depart_lane, depart_speed)
+        hs = float(os.environ.get("HARD_START_PROB", "0") or 0)
+        if hs > 0 and float(np.random.random()) < hs:
+            picked = self._hard_start_route(route_id)
+            if picked is not None:
+                route_id, self.hard_start = picked
+                depart_lane, depart_speed = "best", "max"
+        self._add_ego(route_id, depart_lane, depart_speed)
 
         # ── ego 삽입 보증 ──
         # 도로 입구는 flow가 차를 스폰하는 자리라, 시작 차선 입구가 잠시
@@ -467,6 +460,18 @@ class SumoHighwayEnv(gym.Env):
         while self.ego_id not in traci.vehicle.getIDList() and _wait < 30:
             traci.simulationStep()
             _wait += 1
+        if self.ego_id not in traci.vehicle.getIDList() and self.hard_start is not None:
+            # 어려운 구간 출발 자리가 꽉 막혀 있으면 원래 출발점으로 되돌린다
+            try:
+                traci.vehicle.remove(self.ego_id)
+            except traci.TraCIException:
+                pass
+            self.hard_start = None
+            self._add_ego(*normal_add)
+            _wait = 0
+            while self.ego_id not in traci.vehicle.getIDList() and _wait < 30:
+                traci.simulationStep()
+                _wait += 1
         if self.ego_id not in traci.vehicle.getIDList():
             raise RuntimeError(
                 "ego 삽입 실패: 도로 입구가 30스텝 이상 막혀 있습니다. "
@@ -863,6 +868,72 @@ class SumoHighwayEnv(gym.Env):
             obs += self._junction_features()
 
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
+
+    def _add_ego(self, route_id, depart_lane, depart_speed):
+        """ego를 넣고 SUMO 자동 제어를 끈 뒤 1스텝 진행한다."""
+        traci.vehicle.add(self.ego_id, route_id, typeID="ego_type",
+                          departLane=depart_lane,
+                          departPos="0",
+                          departSpeed=depart_speed)
+        # ★ 중요: speedMode=0 → SUMO의 내장 안전장치(자동 안전제동 등)를 전부 끔.
+        #   이걸 꺼야 RL이 속도를 온전히 제어하고, 잘못 배우면 실제로 충돌한다.
+        #   (켜두면 SUMO가 알아서 브레이크를 밟아줘서 충돌이 거의 안 나고,
+        #    그러면 "충돌 회피"라는 학습 신호 자체가 사라진다)
+        traci.vehicle.setSpeedMode(self.ego_id, 0)
+        # (팀14 실험) JUNCTION_ROW=1: 교차로·회전교차로 통행 우선권만은 SUMO가 지키게 함
+        #   (speedMode 비트3). 차간 안전제동은 여전히 꺼져 있어 추돌 학습 신호는 남는다.
+        if os.environ.get("JUNCTION_ROW", "0") == "1":
+            traci.vehicle.setSpeedMode(self.ego_id, 0b01000)
+        # SUMO의 자율 차선변경은 끄고, RL이 내리는 TraCI 차선변경 명령만 사용한다.
+        traci.vehicle.setLaneChangeMode(self.ego_id, 0)
+        traci.simulationStep()  # ego가 실제로 도로에 나타나도록 1스텝 진행
+
+    _HARD_START_TARGETS = "474882669#1-AddedOnRampEdge,1307152438,1235185544"
+
+    def _hard_start_route(self, route_id):
+        """(팀14 실험) 어려운 구간 하나를 골라, 그 HARD_START_BACK_M(기본 500 m) 앞 edge부터
+        시작하는 경로를 만든다. 반환: (새 route id, 고른 구간) 또는 None."""
+        targets = [t for t in os.environ.get("HARD_START_TARGETS",
+                                             self._HARD_START_TARGETS).split(",") if t]
+        back = float(os.environ.get("HARD_START_BACK_M", "500") or 500)
+        edges = list(traci.route.getEdges(route_id))
+        cand = [t for t in targets if t in edges]
+        if not cand:
+            return None
+        target = str(np.random.choice(cand))
+        k, acc = edges.index(target), 0.0
+        while k > 0 and acc < back:
+            k -= 1
+            acc += traci.lane.getLength(edges[k] + "_0")
+        if k == 0:
+            return None
+        rid = f"hs_{route_id}_{k}"
+        if rid not in traci.route.getIDList():
+            traci.route.add(rid, edges[k:])
+        return rid, target
+
+    def _stop_shaping_term(self, v: float) -> float:
+        """(팀14 실험) "지금 속도로 멈출 수 있나" 감점 크기 (0~1).
+        멈추는 데 필요한 거리 = 반응 HEADWAY초 동안 간 거리 + v^2/(2*DECEL) + 5 m.
+        이 거리가 (a) 경로상 끊기는 지금 차로의 남은 거리, (b) 빨간불 정지선까지 거리보다 길면
+        넘친 만큼(20 m당 1) 감점. 차를 직접 세우지 않고 점수로만 알려 준다."""
+        b = float(os.environ.get("STOP_SHAPING_DECEL", "3.0") or 3.0)
+        hw = float(os.environ.get("STOP_SHAPING_HEADWAY", "1.0") or 0.0)
+        need = v * hw + v * v / (2.0 * b) + 5.0
+        worst = 0.0
+        try:
+            ahead = self._route_ahead()
+            if ahead:
+                cur = traci.vehicle.getLaneIndex(self.ego_id)
+                d = ahead.get(cur)
+                if d is not None and d != float("inf") and d < max(ahead.values()):
+                    worst = max(worst, (need - d) / 20.0)
+            nxt = traci.vehicle.getNextTLS(self.ego_id)
+            if nxt and nxt[0][3] in "rR":
+                worst = max(worst, (need - float(nxt[0][2])) / 20.0)
+        except traci.TraCIException:
+            pass
+        return float(min(max(worst, 0.0), 1.0))
 
     def _choose_route(self) -> str:
         """(팀14) 이번 에피소드의 ego 경로를 고르고 route id를 반환한다."""
@@ -1725,6 +1796,7 @@ class SumoHighwayEnv(gym.Env):
         ego_speed, ego_gap = None, None
 
         # ----- (4) 기존 보상 유지 -----
+        self._stop_pen = 0.0
         if collided:
             reward = -float(self.rw["collision_penalty"])
             if red_light:
@@ -1744,6 +1816,11 @@ class SumoHighwayEnv(gym.Env):
                 ego_gap = same_lane_leader[0]
             v_ref = self._speed_ref()
             reward = float(self.rw["speed_weight"]) * min(ego_speed / v_ref, 1.0)
+            # (팀14 실험) STOP_SHAPING=w: 끊기는 차로 끝·빨간불 앞에서 "못 멈출 속도"면 매 스텝 최대 w 감점
+            _sw = float(os.environ.get("STOP_SHAPING", "0") or 0)
+            if _sw > 0:
+                self._stop_pen = _sw * self._stop_shaping_term(ego_speed)
+                reward -= self._stop_pen
             if (ego_gap is not None and
                     ego_gap < float(self.rw["close_gap_threshold"])):
                 reward -= float(self.rw["close_gap_penalty"])
@@ -1808,6 +1885,8 @@ class SumoHighwayEnv(gym.Env):
             "lane_end": lane_end,
             "red_light": red_light,
             "route": self.route_name,
+            "hard_start": getattr(self, "hard_start", None),
+            "stop_penalty": float(getattr(self, "_stop_pen", 0.0)),
             "route_estimates": dict(self.route_estimates),
             "disrupted_route": (self.disrupted or {}).get("route"),
             "branch_time": self.branch_time,
