@@ -1,0 +1,309 @@
+﻿평가 알고리즘: PPO
+
+=== results\norule_B\model.pt (300 episodes) ===
+  ep   1/300: steps=1799 return= 144.60 경로 이탈 lane=468241513_1
+  ep   2/300: steps=1813 return= 152.08 완주 lane=611808767_0
+  ep   3/300: steps=1907 return= 172.08 완주 lane=611808767_0
+  ep   4/300: steps=1720 return= 152.89 완주 lane=611808767_0
+  ep   5/300: steps=1825 return= 142.14 완주 lane=611808767_0
+  ep   6/300: steps=1769 return= 147.01 완주 lane=611808767_0
+  ep   7/300: steps=1774 return= 142.91 완주 lane=611808767_0
+  ep   8/300: steps=1817 return= 168.45 완주 lane=611808767_0
+  ep   9/300: steps=1716 return= 129.87 완주 lane=611808767_0
+  ep  10/300: steps=1883 return= 166.76 완주 lane=611808767_0
+  ep  11/300: steps=1708 return= 152.06 완주 lane=611808767_0
+  ep  12/300: steps=1827 return= 163.09 완주 lane=611808767_0
+  ep  13/300: steps=1765 return= 147.63 완주 lane=611808767_0
+  ep  14/300: steps=1688 return= 112.61 경로 이탈 lane=468241513_1
+  ep  15/300: steps=1769 return= 149.20 완주 lane=611808767_0
+  ep  16/300: steps=1752 return= 139.07 완주 lane=611808767_0
+  ep  17/300: steps= 187 return=  12.33 차량 충돌 lane=:1681517542_4_0
+  ep  18/300: steps=1756 return= 119.28 완주 lane=611808767_0
+  ep  19/300: steps=1783 return= 145.70 경로 이탈 lane=468241513_1
+  ep  20/300: steps=1905 return= 175.20 완주 lane=611808767_0
+  ep  21/300: steps=1700 return= 139.53 완주 lane=611808767_0
+  ep  22/300: steps=1681 return= 136.85 완주 lane=611808767_0
+  ep  23/300: steps=1921 return= 158.89 완주 lane=611808767_0
+  ep  24/300: steps=1768 return= 150.82 완주 lane=611808767_0
+  ep  25/300: steps=1812 return= 141.31 완주 lane=611808767_0
+  ep  26/300: steps=1850 return= 159.55 완주 lane=611808767_0
+  ep  27/300: steps=1676 return= 129.43 완주 lane=611808767_0
+  ep  28/300: steps=1783 return= 162.59 완주 lane=611808767_0
+  ep  29/300: steps=1805 return= 152.04 완주 lane=611808767_0
+  ep  30/300: steps=1976 return= 175.72 완주 lane=611808767_0
+  ep  31/300: steps=1881 return= 171.74 완주 lane=611808767_0
+  ep  32/300: steps= 355 return=  28.25 신호 위반 lane=452597718#1_0
+  ep  33/300: steps=1810 return= 134.65 완주 lane=611808767_0
+  ep  34/300: steps=1914 return= 171.51 완주 lane=611808767_0
+  ep  35/300: steps=1903 return= 162.64 완주 lane=611808767_0
+  ep  36/300: steps=1999 return= 181.34 완주 lane=611808767_0
+  ep  37/300: steps=1782 return= 149.71 완주 lane=611808767_0
+  ep  38/300: steps=1707 return= 137.16 완주 lane=611808767_0
+  ep  39/300: steps=1641 return= 127.44 경로 이탈 lane=468241513_1
+  ep  40/300: steps=1837 return= 163.19 완주 lane=611808767_0
+  ep  41/300: steps=1845 return= 174.15 완주 lane=611808767_0
+  ep  42/300: steps=1815 return= 148.79 완주 lane=611808767_0
+  ep  43/300: steps=1902 return= 176.47 완주 lane=611808767_0
+  ep  44/300: steps=1706 return= 137.19 완주 lane=611808767_0
+  ep  45/300: steps=1819 return= 147.50 완주 lane=611808767_0
+  ep  46/300: steps=1732 return= 140.76 완주 lane=611808767_0
+  ep  47/300: steps=1879 return= 149.33 완주 lane=611808767_0
+  ep  48/300: steps=1820 return= 175.04 완주 lane=611808767_0
+  ep  49/300: steps=1835 return= 156.69 완주 lane=611808767_0
+  ep  50/300: steps=1922 return= 141.78 완주 lane=611808767_0
+  ep  51/300: steps=1775 return= 143.98 완주 lane=611808767_0
+  ep  52/300: steps= 208 return=  13.93 차량 충돌 lane=:1681517542_4_0
+  ep  53/300: steps=1964 return= 151.60 완주 lane=611808767_0
+  ep  54/300: steps=1748 return= 142.18 완주 lane=611808767_0
+  ep  55/300: steps=1808 return= 140.71 완주 lane=611808767_0
+  ep  56/300: steps=1239 return=  91.97 차량 충돌 lane=1307152438_3
+  ep  57/300: steps= 595 return=  49.52 차량 충돌 lane=:51066582#1.110_0_2
+  ep  58/300: steps=1731 return= 144.99 경로 이탈 lane=468241513_1
+  ep  59/300: steps=1849 return= 148.71 완주 lane=611808767_0
+  ep  60/300: steps=1717 return= 150.54 완주 lane=611808767_0
+  ep  61/300: steps=1859 return= 169.34 완주 lane=611808767_0
+  ep  62/300: steps= 180 return=  11.62 차량 충돌 lane=:1681517542_4_0
+  ep  63/300: steps= 188 return=  12.12 차량 충돌 lane=:1681517542_4_0
+  ep  64/300: steps=1789 return= 138.42 완주 lane=611808767_0
+  ep  65/300: steps=1838 return= 138.48 완주 lane=611808767_0
+  ep  66/300: steps=1872 return= 153.76 완주 lane=611808767_0
+  ep  67/300: steps= 562 return=  49.03 차량 충돌 lane=51066582#0_0
+  ep  68/300: steps=1798 return= 150.28 완주 lane=611808767_0
+  ep  69/300: steps=1851 return= 157.97 완주 lane=611808767_0
+  ep  70/300: steps= 514 return=  43.51 차량 충돌 lane=:51066582#1.110_0_2
+  ep  71/300: steps=1804 return= 150.75 완주 lane=611808767_0
+  ep  72/300: steps=1701 return= 126.74 경로 이탈 lane=468241513_1
+  ep  73/300: steps=1734 return= 138.72 완주 lane=611808767_0
+  ep  74/300: steps=1833 return= 163.62 완주 lane=611808767_0
+  ep  75/300: steps=1701 return= 123.34 완주 lane=611808767_0
+  ep  76/300: steps=1781 return= 154.50 완주 lane=611808767_0
+  ep  77/300: steps=1692 return= 128.33 완주 lane=611808767_0
+  ep  78/300: steps=1822 return= 141.56 완주 lane=611808767_0
+  ep  79/300: steps=1826 return= 136.65 완주 lane=611808767_0
+  ep  80/300: steps=1746 return= 151.80 완주 lane=611808767_0
+  ep  81/300: steps=1809 return= 140.86 완주 lane=611808767_0
+  ep  82/300: steps=1757 return= 144.01 완주 lane=611808767_0
+  ep  83/300: steps=2060 return= 179.16 완주 lane=611808767_0
+  ep  84/300: steps= 210 return=  12.86 차량 충돌 lane=:4582364294_0_0
+  ep  85/300: steps=1793 return= 153.51 완주 lane=611808767_0
+  ep  86/300: steps=1802 return= 151.34 완주 lane=611808767_0
+  ep  87/300: steps=1902 return= 160.14 완주 lane=611808767_0
+  ep  88/300: steps= 217 return=  13.60 차량 충돌 lane=:4582364294_0_0
+  ep  89/300: steps=1758 return= 152.23 완주 lane=611808767_0
+  ep  90/300: steps=1625 return= 122.10 경로 이탈 lane=468241513_1
+  ep  91/300: steps=1747 return= 155.28 완주 lane=611808767_0
+  ep  92/300: steps=1724 return= 153.61 완주 lane=611808767_0
+  ep  93/300: steps=1755 return= 133.20 완주 lane=611808767_0
+  ep  94/300: steps=1753 return= 160.36 완주 lane=611808767_0
+  ep  95/300: steps= 198 return=  13.15 차량 충돌 lane=:1681517542_4_0
+  ep  96/300: steps=1760 return= 146.73 완주 lane=611808767_0
+  ep  97/300: steps=1666 return= 122.98 경로 이탈 lane=468241513_1
+  ep  98/300: steps=1953 return= 178.60 완주 lane=611808767_0
+  ep  99/300: steps=1914 return= 165.19 완주 lane=611808767_0
+  ep 100/300: steps=1780 return= 152.44 완주 lane=611808767_0
+  ep 101/300: steps=1680 return= 130.49 완주 lane=611808767_0
+  ep 102/300: steps=1792 return= 132.47 완주 lane=611808767_0
+  ep 103/300: steps=1927 return= 172.54 완주 lane=611808767_0
+  ep 104/300: steps=1827 return= 151.59 완주 lane=611808767_0
+  ep 105/300: steps=1774 return= 148.32 완주 lane=611808767_0
+  ep 106/300: steps=1763 return= 149.33 완주 lane=611808767_0
+  ep 107/300: steps=1940 return= 171.97 완주 lane=611808767_0
+  ep 108/300: steps=1787 return= 145.24 완주 lane=611808767_0
+  ep 109/300: steps=1745 return= 137.31 완주 lane=611808767_0
+  ep 110/300: steps=1781 return= 141.67 완주 lane=611808767_0
+  ep 111/300: steps= 206 return=  13.96 차량 충돌 lane=:1681517542_4_0
+  ep 112/300: steps=1805 return= 151.14 완주 lane=611808767_0
+  ep 113/300: steps=1803 return= 160.37 완주 lane=611808767_0
+  ep 114/300: steps=1766 return= 150.04 완주 lane=611808767_0
+  ep 115/300: steps= 479 return=  38.10 차량 충돌 lane=:51066582#1.110_0_2
+  ep 116/300: steps=1963 return= 176.43 완주 lane=611808767_0
+  ep 117/300: steps=1926 return= 172.24 완주 lane=611808767_0
+  ep 118/300: steps=1779 return= 148.44 완주 lane=611808767_0
+  ep 119/300: steps=1870 return= 168.36 완주 lane=611808767_0
+  ep 120/300: steps=2040 return= 172.43 완주 lane=611808767_0
+  ep 121/300: steps=1661 return= 131.25 완주 lane=611808767_0
+  ep 122/300: steps=1911 return= 154.27 완주 lane=611808767_0
+  ep 123/300: steps=1798 return= 150.91 완주 lane=611808767_0
+  ep 124/300: steps=1754 return= 148.31 완주 lane=611808767_0
+  ep 125/300: steps=1910 return= 166.09 완주 lane=611808767_0
+  ep 126/300: steps=1878 return= 155.57 완주 lane=611808767_0
+  ep 127/300: steps=1908 return= 135.86 완주 lane=611808767_0
+  ep 128/300: steps=1863 return= 172.07 완주 lane=611808767_0
+  ep 129/300: steps=1769 return= 153.34 완주 lane=611808767_0
+  ep 130/300: steps=1762 return= 131.77 완주 lane=611808767_0
+  ep 131/300: steps=1558 return= 111.48 경로 이탈 lane=468241513_1
+  ep 132/300: steps=1872 return= 176.59 완주 lane=611808767_0
+  ep 133/300: steps=1785 return= 156.18 완주 lane=611808767_0
+  ep 134/300: steps=1779 return= 137.49 완주 lane=611808767_0
+  ep 135/300: steps=1940 return= 184.64 완주 lane=611808767_0
+  ep 136/300: steps=1681 return= 141.16 완주 lane=611808767_0
+  ep 137/300: steps=1685 return= 140.94 완주 lane=611808767_0
+  ep 138/300: steps= 194 return=  12.96 차량 충돌 lane=:1681517542_4_0
+  ep 139/300: steps=2115 return= 204.46 완주 lane=611808767_0
+  ep 140/300: steps=2201 return= 203.32 완주 lane=611808767_0
+  ep 141/300: steps= 428 return=  34.78 차량 충돌 lane=51066582#0_0
+  ep 142/300: steps=1920 return= 157.75 완주 lane=611808767_0
+  ep 143/300: steps=1802 return= 145.48 완주 lane=611808767_0
+  ep 144/300: steps=1901 return= 175.71 완주 lane=611808767_0
+  ep 145/300: steps=1863 return= 166.92 완주 lane=611808767_0
+  ep 146/300: steps= 205 return=  14.05 차량 충돌 lane=:1681517542_4_0
+  ep 147/300: steps=1763 return= 143.34 완주 lane=611808767_0
+  ep 148/300: steps=1857 return= 153.25 완주 lane=611808767_0
+  ep 149/300: steps=1987 return= 167.59 완주 lane=611808767_0
+  ep 150/300: steps=1736 return= 132.00 완주 lane=611808767_0
+  ep 151/300: steps=1831 return= 132.98 완주 lane=611808767_0
+  ep 152/300: steps=1964 return= 175.81 완주 lane=611808767_0
+  ep 153/300: steps=1953 return= 178.25 완주 lane=611808767_0
+  ep 154/300: steps=1817 return= 162.06 완주 lane=611808767_0
+  ep 155/300: steps=1827 return= 128.07 완주 lane=611808767_0
+  ep 156/300: steps=1797 return= 153.21 완주 lane=611808767_0
+  ep 157/300: steps=1642 return= 146.84 완주 lane=611808767_0
+  ep 158/300: steps=1781 return= 125.46 경로 이탈 lane=468241513_1
+  ep 159/300: steps=1833 return= 141.57 경로 이탈 lane=468241513_1
+  ep 160/300: steps=1698 return= 131.75 완주 lane=611808767_0
+  ep 161/300: steps=1857 return= 147.35 완주 lane=611808767_0
+  ep 162/300: steps=1806 return= 158.47 완주 lane=611808767_0
+  ep 163/300: steps=1813 return= 153.83 완주 lane=611808767_0
+  ep 164/300: steps=1914 return= 153.63 완주 lane=611808767_0
+  ep 165/300: steps=2032 return= 162.82 완주 lane=611808767_0
+  ep 166/300: steps=1790 return= 150.54 완주 lane=611808767_0
+  ep 167/300: steps=1819 return= 141.44 완주 lane=611808767_0
+  ep 168/300: steps=2034 return= 152.83 완주 lane=611808767_0
+  ep 169/300: steps=1835 return= 163.11 완주 lane=611808767_0
+  ep 170/300: steps=2145 return= 190.40 경로 이탈 lane=468241513_1
+  ep 171/300: steps=1775 return= 146.93 완주 lane=611808767_0
+  ep 172/300: steps=1766 return= 152.95 완주 lane=611808767_0
+  ep 173/300: steps=1906 return= 163.17 완주 lane=611808767_0
+  ep 174/300: steps=1790 return= 155.55 완주 lane=611808767_0
+  ep 175/300: steps=1894 return= 156.58 완주 lane=611808767_0
+  ep 176/300: steps=1792 return= 140.57 완주 lane=611808767_0
+  ep 177/300: steps=1821 return= 146.95 완주 lane=611808767_0
+  ep 178/300: steps=1800 return= 138.48 완주 lane=611808767_0
+  ep 179/300: steps=1785 return= 154.80 완주 lane=611808767_0
+  ep 180/300: steps=1788 return= 135.75 완주 lane=611808767_0
+  ep 181/300: steps=1993 return= 171.07 완주 lane=611808767_0
+  ep 182/300: steps=1792 return= 144.93 완주 lane=611808767_0
+  ep 183/300: steps=1897 return= 173.26 완주 lane=611808767_0
+  ep 184/300: steps=2237 return= 205.99 완주 lane=611808767_0
+  ep 185/300: steps=1716 return= 147.79 완주 lane=611808767_0
+  ep 186/300: steps= 277 return=  20.03 차량 충돌 lane=:4582364294_0_0
+  ep 187/300: steps=1736 return= 151.39 완주 lane=611808767_0
+  ep 188/300: steps=1809 return= 158.64 완주 lane=611808767_0
+  ep 189/300: steps=1681 return= 133.31 완주 lane=611808767_0
+  ep 190/300: steps=1599 return= 128.18 완주 lane=611808767_0
+  ep 191/300: steps=1878 return= 160.02 완주 lane=611808767_0
+  ep 192/300: steps=1822 return= 159.59 완주 lane=611808767_0
+  ep 193/300: steps=1953 return= 167.16 완주 lane=611808767_0
+  ep 194/300: steps=1763 return= 139.50 완주 lane=611808767_0
+  ep 195/300: steps=1816 return= 144.99 완주 lane=611808767_0
+  ep 196/300: steps=1729 return= 153.04 완주 lane=611808767_0
+  ep 197/300: steps= 209 return=  12.52 차량 충돌 lane=:1681517542_4_0
+  ep 198/300: steps=1636 return= 129.04 완주 lane=611808767_0
+  ep 199/300: steps=2057 return= 194.97 완주 lane=611808767_0
+  ep 200/300: steps=2027 return= 189.45 완주 lane=611808767_0
+  ep 201/300: steps=1793 return= 152.04 완주 lane=611808767_0
+  ep 202/300: steps= 205 return=  13.94 차량 충돌 lane=:1681517542_4_0
+  ep 203/300: steps=2013 return= 162.35 완주 lane=611808767_0
+  ep 204/300: steps=1845 return= 152.92 완주 lane=611808767_0
+  ep 205/300: steps=1764 return= 148.79 완주 lane=611808767_0
+  ep 206/300: steps=1078 return=  77.68 차량 충돌 lane=1307152438_3
+  ep 207/300: steps=1755 return= 151.48 완주 lane=611808767_0
+  ep 208/300: steps=1752 return= 161.05 완주 lane=611808767_0
+  ep 209/300: steps=1805 return= 161.12 완주 lane=611808767_0
+  ep 210/300: steps=1802 return= 155.04 완주 lane=611808767_0
+  ep 211/300: steps=1737 return= 130.75 경로 이탈 lane=468241513_1
+  ep 212/300: steps=1850 return= 161.05 완주 lane=611808767_0
+  ep 213/300: steps=1996 return= 186.59 완주 lane=611808767_0
+  ep 214/300: steps=1797 return= 169.95 완주 lane=611808767_0
+  ep 215/300: steps=1773 return= 144.91 완주 lane=611808767_0
+  ep 216/300: steps= 213 return=  14.00 차량 충돌 lane=:1681517542_4_0
+  ep 217/300: steps=1988 return= 167.59 완주 lane=611808767_0
+  ep 218/300: steps= 544 return=  46.83 차량 충돌 lane=:51066582#1.110_0_2
+  ep 219/300: steps= 254 return=  19.87 신호 위반 lane=496583281#1_0
+  ep 220/300: steps=1840 return= 165.28 완주 lane=611808767_0
+  ep 221/300: steps=1763 return= 147.90 완주 lane=611808767_0
+  ep 222/300: steps=1694 return= 132.58 완주 lane=611808767_0
+  ep 223/300: steps=1745 return= 150.33 완주 lane=611808767_0
+  ep 224/300: steps=1634 return= 141.60 완주 lane=611808767_0
+  ep 225/300: steps=2017 return= 178.19 완주 lane=611808767_0
+  ep 226/300: steps=1723 return= 148.79 완주 lane=611808767_0
+  ep 227/300: steps=1717 return= 144.86 완주 lane=611808767_0
+  ep 228/300: steps=1794 return= 142.13 완주 lane=611808767_0
+  ep 229/300: steps=1902 return= 146.96 완주 lane=611808767_0
+  ep 230/300: steps=1823 return= 166.22 완주 lane=611808767_0
+  ep 231/300: steps=1999 return= 155.60 완주 lane=611808767_0
+  ep 232/300: steps=1796 return= 165.64 완주 lane=611808767_0
+  ep 233/300: steps= 171 return=   9.17 차량 충돌 lane=:4582364294_0_0
+  ep 234/300: steps=1953 return= 173.52 완주 lane=611808767_0
+  ep 235/300: steps=1811 return= 149.40 완주 lane=611808767_0
+  ep 236/300: steps=1882 return= 164.23 완주 lane=611808767_0
+  ep 237/300: steps=1649 return= 130.87 완주 lane=611808767_0
+  ep 238/300: steps=2050 return= 195.58 완주 lane=611808767_0
+  ep 239/300: steps=1706 return= 129.57 완주 lane=611808767_0
+  ep 240/300: steps=1720 return= 140.25 완주 lane=611808767_0
+  ep 241/300: steps=1900 return= 150.79 완주 lane=611808767_0
+  ep 242/300: steps=1876 return= 154.17 완주 lane=611808767_0
+  ep 243/300: steps=1865 return= 164.61 완주 lane=611808767_0
+  ep 244/300: steps=1899 return= 167.71 완주 lane=611808767_0
+  ep 245/300: steps=1749 return= 135.05 완주 lane=611808767_0
+  ep 246/300: steps=1849 return= 176.22 완주 lane=611808767_0
+  ep 247/300: steps=2023 return= 185.61 완주 lane=611808767_0
+  ep 248/300: steps=1767 return= 145.68 완주 lane=611808767_0
+  ep 249/300: steps= 237 return=  15.02 차량 충돌 lane=:4582364294_0_0
+  ep 250/300: steps=1775 return= 152.48 완주 lane=611808767_0
+  ep 251/300: steps=1921 return= 178.54 완주 lane=611808767_0
+  ep 252/300: steps=1910 return= 157.80 완주 lane=611808767_0
+  ep 253/300: steps=1902 return= 160.91 완주 lane=611808767_0
+  ep 254/300: steps=1703 return= 137.01 완주 lane=611808767_0
+  ep 255/300: steps=1773 return= 142.14 완주 lane=611808767_0
+  ep 256/300: steps=1779 return= 156.90 완주 lane=611808767_0
+  ep 257/300: steps=1835 return= 153.68 완주 lane=611808767_0
+  ep 258/300: steps=1841 return= 153.11 완주 lane=611808767_0
+  ep 259/300: steps=1865 return= 147.30 완주 lane=611808767_0
+  ep 260/300: steps=1965 return= 143.72 완주 lane=611808767_0
+  ep 261/300: steps=1737 return= 143.02 완주 lane=611808767_0
+  ep 262/300: steps= 218 return=  15.85 차량 충돌 lane=496583281#1_0
+  ep 263/300: steps=1826 return= 160.56 완주 lane=611808767_0
+  ep 264/300: steps= 190 return=  12.33 차량 충돌 lane=:1681517542_4_0
+  ep 265/300: steps=1593 return= 123.11 경로 이탈 lane=468241513_1
+  ep 266/300: steps= 163 return=   9.76 차량 충돌 lane=:1681517542_4_0
+  ep 267/300: steps= 630 return=  50.23 차량 충돌 lane=474882669#1-AddedOnRampEdge_3
+  ep 268/300: steps=1823 return= 156.42 완주 lane=611808767_0
+  ep 269/300: steps=1821 return= 136.38 완주 lane=611808767_0
+  ep 270/300: steps=1928 return= 132.51 완주 lane=611808767_0
+  ep 271/300: steps=1724 return= 158.53 완주 lane=611808767_0
+  ep 272/300: steps=1827 return= 159.02 완주 lane=611808767_0
+  ep 273/300: steps=1721 return= 139.55 완주 lane=611808767_0
+  ep 274/300: steps=1148 return=  95.30 차량 충돌 lane=1307152438_3
+  ep 275/300: steps=1770 return= 141.68 완주 lane=611808767_0
+  ep 276/300: steps=1790 return= 143.68 완주 lane=611808767_0
+  ep 277/300: steps=2077 return= 191.89 완주 lane=611808767_0
+  ep 278/300: steps=1975 return= 180.95 완주 lane=611808767_0
+  ep 279/300: steps=1884 return= 159.29 완주 lane=611808767_0
+  ep 280/300: steps=1970 return= 184.14 완주 lane=611808767_0
+  ep 281/300: steps=1795 return= 150.54 완주 lane=611808767_0
+  ep 282/300: steps= 207 return=  14.14 차량 충돌 lane=:1681517542_4_0
+  ep 283/300: steps=1913 return= 164.18 완주 lane=611808767_0
+  ep 284/300: steps=1861 return= 131.46 완주 lane=611808767_0
+  ep 285/300: steps=1810 return= 152.28 완주 lane=611808767_0
+  ep 286/300: steps=1782 return= 146.62 완주 lane=611808767_0
+  ep 287/300: steps=1890 return= 161.19 완주 lane=611808767_0
+  ep 288/300: steps=1781 return= 153.02 완주 lane=611808767_0
+  ep 289/300: steps=1976 return= 179.86 완주 lane=611808767_0
+  ep 290/300: steps= 231 return=  17.35 신호 위반 lane=496583281#1_0
+  ep 291/300: steps=1865 return= 152.05 완주 lane=611808767_0
+  ep 292/300: steps=1884 return= 156.90 완주 lane=611808767_0
+  ep 293/300: steps=1899 return= 139.11 완주 lane=611808767_0
+  ep 294/300: steps=1853 return= 170.54 완주 lane=611808767_0
+  ep 295/300: steps=1798 return= 156.19 완주 lane=611808767_0
+  ep 296/300: steps= 195 return=  13.88 신호 위반 lane=452597718#1_0
+  ep 297/300: steps=1787 return= 147.62 완주 lane=611808767_0
+  ep 298/300: steps=1669 return= 133.41 완주 lane=611808767_0
+  ep 299/300: steps=1679 return= 149.27 완주 lane=611808767_0
+  ep 300/300: steps=1648 return= 122.52 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results\norule_B\model.pt                   10%       0%       5%    84%           53.4       828.9
+
+저장: results\eval300\norule_B.json
