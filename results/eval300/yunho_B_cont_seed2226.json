@@ -1,0 +1,43 @@
+{
+  "results\\yunho_B_cont\\model.pt": {
+    "collision_rate": 0.15,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.03,
+    "red_light_rate": 0.03,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.79,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.20999999999999996,
+    "episodes": 100,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":1681517542_4_0": 2,
+      "474882669#1-AddedOffRampEdge_3": 1,
+      "1307152438_3": 2,
+      "452597718#1_0": 1,
+      "206488360_2": 1,
+      ":51066582#1.110_0_2": 2,
+      "1235185544_0": 2,
+      "496583281#1_0": 2,
+      "1116479399_3": 1,
+      ":4582364294_0_0": 2,
+      "50981265_2": 1,
+      "1307152438_2": 1,
+      "1116479399_2": 1,
+      "1307152438_0": 1,
+      "206488360_1": 1
+    },
+    "lane_end_lanes": {
+      "1235185544_0": 2,
+      "1307152438_0": 1
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.87884224808229,
+    "mean_return": 135.80537699109456,
+    "mean_length_steps": 1621.51,
+    "mean_travel_time_s": 810.755,
+    "lane_changes_per_ep": 126.97,
+    "min_gap_median_m": 3.434393717698037,
+    "wall_time_s": 2382.61500787735
+  }
+}

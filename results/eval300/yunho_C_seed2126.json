@@ -1,0 +1,34 @@
+{
+  "results\\yunho_C\\model.pt": {
+    "collision_rate": 0.06,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.72,
+    "red_light_rate": 0.01,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.21,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.79,
+    "episodes": 100,
+    "transitions": [],
+    "failure_end_lanes": {
+      "468241513_1": 18,
+      "491135704#3_1": 54,
+      ":1681517542_4_0": 4,
+      "51066582#0_0": 1,
+      "496583281#1_0": 1,
+      ":4582364294_0_0": 1
+    },
+    "lane_end_lanes": {
+      "468241513_1": 18,
+      "491135704#3_1": 54
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 13.602534765002888,
+    "mean_return": 80.09273640636503,
+    "mean_length_steps": 964.47,
+    "mean_travel_time_s": 482.235,
+    "lane_changes_per_ep": 7.27,
+    "min_gap_median_m": 9.733918759531752,
+    "wall_time_s": 1677.8476560115814
+  }
+}
