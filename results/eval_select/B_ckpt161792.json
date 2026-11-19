@@ -1,0 +1,36 @@
+{
+  "results\\norule_B\\checkpoints\\model_161792.pt": {
+    "collision_rate": 0.09,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.01,
+    "red_light_rate": 0.05,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.85,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.15000000000000002,
+    "episodes": 100,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":51066582#1.110_0_2": 1,
+      "496583281#1_0": 4,
+      "1235185544_0": 1,
+      "1307152438_2": 2,
+      "452597718#1_0": 1,
+      "206488360_4": 1,
+      "474882669#1_2": 2,
+      ":4582364294_0_0": 2,
+      "468241514_2": 1
+    },
+    "lane_end_lanes": {
+      "1235185544_0": 1
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.448374482030667,
+    "mean_return": 141.7810549611843,
+    "mean_length_steps": 1722.08,
+    "mean_travel_time_s": 861.04,
+    "lane_changes_per_ep": 85.8,
+    "min_gap_median_m": 3.2077821471297057,
+    "wall_time_s": 18538.371021986008
+  }
+}

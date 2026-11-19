@@ -1,0 +1,39 @@
+{
+  "results\\norule_B\\checkpoints\\model_81920.pt": {
+    "collision_rate": 0.17,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.06,
+    "red_light_rate": 0.04,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.73,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.27,
+    "episodes": 100,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":51066582#1.110_0_2": 2,
+      "1235185544_0": 2,
+      "496583281#1_0": 3,
+      ":1681517542_4_0": 3,
+      "474882669#1-AddedOnRampEdge_0": 5,
+      "474882669#1_2": 6,
+      "493209391#1_2": 1,
+      "452597718#1_0": 1,
+      "50981265_2": 1,
+      ":4582364294_0_0": 2,
+      "-472043938#1_0": 1
+    },
+    "lane_end_lanes": {
+      "1235185544_0": 2,
+      "474882669#1-AddedOnRampEdge_0": 4
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.476871633829154,
+    "mean_return": 127.92673907800312,
+    "mean_length_steps": 1533.8,
+    "mean_travel_time_s": 766.9,
+    "lane_changes_per_ep": 98.57,
+    "min_gap_median_m": 4.593622687218201,
+    "wall_time_s": 18117.975516557693
+  }
+}

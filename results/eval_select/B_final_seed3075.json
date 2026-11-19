@@ -1,0 +1,28 @@
+{
+  "results\\norule_B\\model.pt": {
+    "collision_rate": 0.08,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.08,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.84,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.16000000000000003,
+    "episodes": 25,
+    "transitions": [],
+    "failure_end_lanes": {
+      "496583281#1_0": 2,
+      "-472043938#1_0": 1,
+      ":1681517542_4_0": 1
+    },
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.474953685752547,
+    "mean_return": 132.92062987750214,
+    "mean_length_steps": 1617.12,
+    "mean_travel_time_s": 808.56,
+    "lane_changes_per_ep": 9.4,
+    "min_gap_median_m": 7.862588305708865,
+    "wall_time_s": 1065.3858280181885
+  }
+}

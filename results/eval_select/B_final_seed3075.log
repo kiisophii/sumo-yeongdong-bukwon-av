@@ -1,0 +1,34 @@
+평가 알고리즘: PPO
+
+=== results\norule_B\model.pt (25 episodes) ===
+  ep   1/25: steps=1882 return= 151.21 완주 lane=611808767_0
+  ep   2/25: steps=1858 return= 140.00 완주 lane=611808767_0
+  ep   3/25: steps=1827 return= 148.32 완주 lane=611808767_0
+  ep   4/25: steps=2005 return= 157.33 완주 lane=611808767_0
+  ep   5/25: steps=1839 return= 147.80 완주 lane=611808767_0
+  ep   6/25: steps=1920 return= 149.55 완주 lane=611808767_0
+  ep   7/25: steps=1843 return= 150.12 완주 lane=611808767_0
+  ep   8/25: steps=1834 return= 155.66 완주 lane=611808767_0
+  ep   9/25: steps=1989 return= 165.98 완주 lane=611808767_0
+  ep  10/25: steps=1837 return= 143.92 완주 lane=611808767_0
+  ep  11/25: steps=1806 return= 161.15 완주 lane=611808767_0
+  ep  12/25: steps=1883 return= 161.52 완주 lane=611808767_0
+  ep  13/25: steps=1775 return= 149.16 완주 lane=611808767_0
+  ep  14/25: steps=1808 return= 148.21 완주 lane=611808767_0
+  ep  15/25: steps=1846 return= 145.46 완주 lane=611808767_0
+  ep  16/25: steps= 250 return=  19.36 신호 위반 lane=496583281#1_0
+  ep  17/25: steps= 239 return=  16.27 신호 위반 lane=496583281#1_0
+  ep  18/25: steps=1987 return= 170.59 완주 lane=611808767_0
+  ep  19/25: steps=1838 return= 160.13 완주 lane=611808767_0
+  ep  20/25: steps=2004 return= 166.06 완주 lane=611808767_0
+  ep  21/25: steps=1785 return= 143.31 완주 lane=611808767_0
+  ep  22/25: steps=1900 return= 149.81 완주 lane=611808767_0
+  ep  23/25: steps=2031 return= 190.24 완주 lane=611808767_0
+  ep  24/25: steps= 225 return=  17.08 차량 충돌 lane=-472043938#1_0
+  ep  25/25: steps= 217 return=  14.77 차량 충돌 lane=:1681517542_4_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results\norule_B\model.pt                    8%       0%       0%    84%           52.1       808.6
+
+저장: results\eval_select\B_final_seed3075.json
