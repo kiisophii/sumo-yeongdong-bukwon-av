@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results\yunho_B_yellow\model.pt (60 episodes) ===
+  ep   1/60: steps=1926 return= 151.99 완주 lane=611808767_0
+  ep   2/60: steps=1967 return= 154.44 완주 lane=611808767_0
+  ep   3/60: steps=1832 return= 142.71 완주 lane=611808767_0
+  ep   4/60: steps=1870 return= 125.59 완주 lane=611808767_0
+  ep   5/60: steps=1788 return= 147.26 완주 lane=611808767_0
+  ep   6/60: steps=1844 return= 161.12 완주 lane=611808767_0
+  ep   7/60: steps=1961 return= 147.06 완주 lane=611808767_0
+  ep   8/60: steps= 668 return=  56.08 차량 충돌 lane=:51066582#1.110_0_2
+  ep   9/60: steps=2185 return= 161.52 완주 lane=611808767_0
+  ep  10/60: steps=1989 return= 173.09 완주 lane=611808767_0
+  ep  11/60: steps= 506 return=  35.41 차량 충돌 lane=:51066582#1.110_0_2
+  ep  12/60: steps=2075 return= 167.19 완주 lane=611808767_0
+  ep  13/60: steps=1859 return= 145.76 완주 lane=611808767_0
+  ep  14/60: steps=2030 return= 163.87 완주 lane=611808767_0
+  ep  15/60: steps=2066 return= 175.39 완주 lane=611808767_0
+  ep  16/60: steps=1965 return= 153.41 완주 lane=611808767_0
+  ep  17/60: steps=2213 return= 178.57 완주 lane=611808767_0
+  ep  18/60: steps=1924 return= 160.30 완주 lane=611808767_0
+  ep  19/60: steps=1978 return= 156.85 완주 lane=611808767_0
+  ep  20/60: steps=1917 return= 140.54 완주 lane=611808767_0
+  ep  21/60: steps= 693 return=  59.82 차량 충돌 lane=:51066582#1.110_0_2
+  ep  22/60: steps= 861 return=  50.90 차량 충돌 lane=474882669#1-AddedOffRampEdge_2
+  ep  23/60: steps=2070 return= 149.02 완주 lane=611808767_0
+  ep  24/60: steps=1954 return= 132.93 완주 lane=611808767_0
+  ep  25/60: steps=1935 return= 143.89 완주 lane=611808767_0
+  ep  26/60: steps=2071 return= 178.21 완주 lane=611808767_0
+  ep  27/60: steps=1959 return= 152.09 완주 lane=611808767_0
+  ep  28/60: steps=2043 return= 162.73 완주 lane=611808767_0
+  ep  29/60: steps=2085 return= 172.87 완주 lane=611808767_0
+  ep  30/60: steps=2060 return= 173.45 완주 lane=611808767_0
+  ep  31/60: steps=2074 return= 152.40 완주 lane=611808767_0
+  ep  32/60: steps=2126 return= 190.61 완주 lane=611808767_0
+  ep  33/60: steps=2049 return= 171.41 완주 lane=611808767_0
+  ep  34/60: steps=2039 return= 143.84 완주 lane=611808767_0
+  ep  35/60: steps=1879 return= 137.94 완주 lane=611808767_0
+  ep  36/60: steps=1921 return= 131.65 완주 lane=611808767_0
+  ep  37/60: steps=2026 return= 164.27 완주 lane=611808767_0
+  ep  38/60: steps=2244 return= 198.48 완주 lane=611808767_0
+  ep  39/60: steps=2029 return= 160.64 완주 lane=611808767_0
+  ep  40/60: steps=1913 return= 154.29 완주 lane=611808767_0
+  ep  41/60: steps=2042 return= 166.29 완주 lane=611808767_0
+  ep  42/60: steps= 184 return=  11.78 차량 충돌 lane=:1681517542_4_0
+  ep  43/60: steps=1979 return= 171.04 완주 lane=611808767_0
+  ep  44/60: steps=1879 return= 140.16 완주 lane=611808767_0
+  ep  45/60: steps=2212 return= 203.83 완주 lane=611808767_0
+  ep  46/60: steps=1936 return= 131.86 완주 lane=611808767_0
+  ep  47/60: steps=1970 return= 160.08 완주 lane=611808767_0
+  ep  48/60: steps= 195 return=  12.91 차량 충돌 lane=:1681517542_4_0
+  ep  49/60: steps=1902 return= 144.47 완주 lane=611808767_0
+  ep  50/60: steps=2066 return= 183.75 완주 lane=611808767_0
+  ep  51/60: steps=1995 return= 151.43 완주 lane=611808767_0
+  ep  52/60: steps=2034 return= 153.74 완주 lane=611808767_0
+  ep  53/60: steps=1918 return= 145.92 완주 lane=611808767_0
+  ep  54/60: steps=2002 return= 153.05 완주 lane=611808767_0
+  ep  55/60: steps=1836 return= 151.91 완주 lane=611808767_0
+  ep  56/60: steps=1952 return= 149.17 완주 lane=611808767_0
+  ep  57/60: steps=1858 return= 140.78 완주 lane=611808767_0
+  ep  58/60: steps=2065 return= 160.44 완주 lane=611808767_0
+  ep  59/60: steps=1967 return= 155.27 완주 lane=611808767_0
+  ep  60/60: steps=1883 return= 147.22 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results\yunho_B_yellow\model.pt             10%       0%       0%    90%           49.5       920.6
+
+저장: results\eval_yellow\B_yellow_seed2146.json
