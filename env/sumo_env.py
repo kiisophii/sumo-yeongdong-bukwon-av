@@ -55,7 +55,11 @@ if "SUMO_HOME" not in os.environ:
 sys.path.append(os.path.join(os.environ["SUMO_HOME"], "tools"))
 
 import traci
+from traci import constants as tc
 from sumolib import checkBinary
+
+from .tof_observation import ToFObservation
+from .tof_perception import BuildingOccluders, ToFFrame
 
 # libsumo: SUMO를 파이썬 프로세스 안에서 직접 실행하는 라이브러리 (TraCI와 같은 API).
 # 소켓 왕복이 없어서 화면 없는(headless) 학습/수집이 수 배 빨라진다.
@@ -270,6 +274,13 @@ class SumoHighwayEnv(gym.Env):
         self.junction_lookahead = float(mdp_obs.get("junction_lookahead", 150.0))
         if self.junction_obs:
             self.obs_dim += 6
+        self.tof = mdp_obs.get("tof")
+        self.tof_observation_dims = 2 if self.tof else 0
+        self.obs_dim += self.tof_observation_dims
+        if self.tof:
+            buildings = os.path.join(os.path.dirname(cfg_path), "tof.buildings.xml")
+            self._tof_buildings = BuildingOccluders(buildings if self.osm_mode else None)
+            self._tof_geometry = None
         self.observation_space = spaces.Box(-1.0, 1.0, shape=(self.obs_dim,),
                                             dtype=np.float32)
 
@@ -396,14 +407,25 @@ class SumoHighwayEnv(gym.Env):
         reuse = (self._started and self.osm_mode and not self.gui
                  and self.reuse_episodes > 0
                  and self._episodes_since_start < self.reuse_episodes)
+        if reuse and self.tof:
+            try:
+                # Arrival/removal can already have cleared the context subscription.
+                # A live reference must still be detached before remove().
+                if self.ego_id in traci.vehicle.getAllContextSubscriptionResults():
+                    traci.vehicle.unsubscribeContext(
+                        self.ego_id, tc.CMD_GET_VEHICLE_VARIABLE, self.tof["range_m"] + 20.0,
+                    )
+            except traci.TraCIException:
+                reuse = False
         if reuse:
             # 이전 ego가 아직 출발 대기 중(주차장 입구가 막혀 도로에 못 들어감)이면 getIDList에는
             # 없지만 시뮬레이션에는 남아 있다 → 상태와 상관없이 지운다 (city_v1 학습 63만 스텝에서
             # "ego already exists"로 멈춘 원인)
-            try:
-                traci.vehicle.remove(self.ego_id)
-            except traci.TraCIException:
-                pass
+            if not self.tof or self.ego_id in traci.vehicle.getLoadedIDList():
+                try:
+                    traci.vehicle.remove(self.ego_id)
+                except traci.TraCIException:
+                    pass
             gap = float(np.random.uniform(*self.reuse_gap_seconds))
             traci.simulationStep(traci.simulation.getTime() + gap)
             self._episodes_since_start += 1
@@ -476,6 +498,16 @@ class SumoHighwayEnv(gym.Env):
             raise RuntimeError(
                 "ego 삽입 실패: 도로 입구가 30스텝 이상 막혀 있습니다. "
                 "TRAFFIC['vehs_per_hour']를 낮추거나 depart_speed를 확인하세요.")
+
+        if self.tof:
+            self._tof_time = None
+            self._tof_positions = {}
+            self._tof_length = traci.vehicle.getLength(self.ego_id)
+            # Keep a margin for bodies whose front bumpers are outside the sensor range.
+            traci.vehicle.subscribeContext(
+                self.ego_id, tc.CMD_GET_VEHICLE_VARIABLE, self.tof["range_m"] + 20.0,
+                (tc.VAR_POSITION, tc.VAR_ANGLE, tc.VAR_LENGTH, tc.VAR_WIDTH),
+            )
 
         # GUI 기본 시점: ego를 화면 중앙에서 추적하고 충분히 가까이 확대한다.
         # 긴 직선도로 전체를 한 화면에 맞추는 기본 뷰는 차량이 점/삼각형처럼
@@ -828,17 +860,51 @@ class SumoHighwayEnv(gym.Env):
             pass
         return out
 
-    def _get_obs(self):
+    def _tof_frame(self):
+        now = traci.simulation.getTime()
+        if self._tof_time != now:
+            nearby = traci.vehicle.getContextSubscriptionResults(self.ego_id) or {}
+            samples = {
+                vehicle: (data[tc.VAR_POSITION], data[tc.VAR_ANGLE],
+                          data[tc.VAR_LENGTH], data[tc.VAR_WIDTH])
+                for vehicle, data in nearby.items() if vehicle != self.ego_id
+            }
+            frame = ToFFrame(
+                traci.vehicle.getPosition(self.ego_id), traci.vehicle.getAngle(self.ego_id),
+                self._tof_length, samples, self._tof_buildings, self.tof,
+                self._tof_positions, 0.0 if self._tof_time is None else now - self._tof_time,
+            )
+            if self._tof_geometry is None:
+                if self._outgoing is None:
+                    self._build_lane_tables()
+                self._tof_geometry = ToFObservation(
+                    self._road_net, self.visibility, self.density_veh_len, self.junction_lookahead,
+                )
+            self._tof_scene = frame
+            self._tof_lane_id = traci.vehicle.getLaneID(self.ego_id)
+            self._tof_lanes = self._tof_geometry.lanes(
+                frame, self._tof_lane_id, self.obs_offsets, self._tof_length,
+                traci.vehicle.getSpeed(self.ego_id),
+            )
+            self._tof_positions, self._tof_time = frame.positions, now
+        return self._tof_scene
+
+    def _get_obs(self, *, alive=None):
         # ego가 이미 사라졌다면(충돌/도착) 0벡터 반환 — 종료 직전 마지막 관측용
-        if self.ego_id not in traci.vehicle.getIDList():
+        if alive is None:
+            alive = self.ego_id in traci.vehicle.getIDList()
+        if not alive:
             return np.zeros(self.obs_dim, dtype=np.float32)
 
         v = traci.vehicle.getSpeed(self.ego_id)
         obs = [v / self.vmax]                      # [0] 내 절대속도
+        if self.tof:
+            frame = self._tof_frame()
+            neighbors, front_density, rear_density = self._tof_lanes
 
         # ----- 5개 차선(좌2→좌1→현재→우1→우2)의 선행/후행 상대거리·상대속도 -----
         for offset in self.obs_offsets:
-            lead = self._neighbor(offset, leader=True)
+            lead = neighbors[offset][0] if self.tof else self._neighbor(offset, leader=True)
             if lead is None:
                 obs += [1.0, 1.0]                  # 없음: 멀고 + 위협 없음
             else:
@@ -846,7 +912,7 @@ class SumoHighwayEnv(gym.Env):
                 obs += [gap / self.visibility,
                         float(np.clip((lv - v) / self.vmax, -1.0, 1.0))]
 
-            foll = self._neighbor(offset, leader=False)
+            foll = neighbors[offset][1] if self.tof else self._neighbor(offset, leader=False)
             if foll is None:
                 obs += [-1.0, -1.0]                # 없음: 멀고 + 위협 없음
             else:
@@ -861,11 +927,22 @@ class SumoHighwayEnv(gym.Env):
 
         # ----- 5개 차선의 전방 차량 밀도 (같은 순서) -----
         for offset in self.obs_offsets:
-            obs.append(self._lane_density(offset))
+            obs.append(front_density[offset] if self.tof else self._lane_density(offset))
 
         # ----- (팀14) 앞 신호·교차로 -----
         if self.junction_obs:
-            obs += self._junction_features()
+            if self.tof:
+                route = traci.vehicle.getRoute(self.ego_id)
+                next_index = traci.vehicle.getRouteIndex(self.ego_id) + 1
+                next_edge = route[next_index] if 0 < next_index < len(route) else None
+                obs += self._tof_geometry.junction(
+                    frame, self._tof_lane_id, next_edge, traci.vehicle.getNextTLS(self.ego_id),
+                )
+            else:
+                obs += self._junction_features()
+        if self.tof:
+            side_rear = (rear_density[1], rear_density[-1]) if self.tof.get("rear_density", True) else (0.0, 0.0)
+            obs.extend(side_rear)
 
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
 
@@ -991,9 +1068,9 @@ class SumoHighwayEnv(gym.Env):
                     min(halt / 20.0, 3.0)]
         return np.array(ctx, dtype=np.float32)
 
-    def _route_step_hook(self):
+    def _route_step_hook(self, alive):
         """(팀14) 매 스텝: 학습형 선택 실행, 갈림 구간 통과시간 기록."""
-        if not self.route_alts or self.ego_id not in traci.vehicle.getIDList():
+        if not self.route_alts or not alive:
             return
         road = traci.vehicle.getRoadID(self.ego_id)
         now = traci.simulation.getTime()
@@ -1035,14 +1112,19 @@ class SumoHighwayEnv(gym.Env):
                 break
         except traci.TraCIException:
             pass
+        return sig + self._junction_yield_features()
+
+    def _junction_yield_features(self):
+        """양보 위반 판정에 쓰는 교차로 정보."""
+        L = self.junction_lookahead
         jun = [1.0, -1.0, -1.0]
         try:
             lane = traci.vehicle.getLaneID(self.ego_id)
             if not lane.startswith(":"):
                 ahead = (traci.lane.getLength(lane)
                          - traci.vehicle.getLanePosition(self.ego_id))
-                links = traci.vehicle.getNextLinks(self.ego_id)
-                if links and ahead <= L:
+                links = traci.vehicle.getNextLinks(self.ego_id) if ahead <= L else ()
+                if links:
                     lk = links[0]
                     # (다음 차선, 우선 여부, 진입 가능, 엇갈리는 차 있음, 교차로 내부 차선,
                     #  신호/우선 상태 문자, 방향, 길이)
@@ -1051,7 +1133,7 @@ class SumoHighwayEnv(gym.Env):
                         jun = [ahead / L, 1.0, 1.0 if lk[3] else -1.0]
         except traci.TraCIException:
             pass
-        return sig + jun
+        return jun
 
     # ==================================================================
     # 1 스텝 진행: 행동 적용 → 시뮬레이션 1스텝 → 보상/종료 판정
@@ -1182,6 +1264,7 @@ class SumoHighwayEnv(gym.Env):
         import sumolib
         net_path = os.path.join(os.path.dirname(self.cfg_path), "highway.net.xml")
         net = sumolib.net.readNet(net_path, withInternal=True)
+        self._road_net = net
         inc, out = {}, {}
         self._edge_lanes = {edge.getID(): edge.getLanes()
                             for edge in net.getEdges(withInternal=False)}
@@ -1216,7 +1299,6 @@ class SumoHighwayEnv(gym.Env):
             return False
 
         v = traci.vehicle.getSpeed(self.ego_id)
-        scan_front, scan_rear = self._scan_lane_neighbors(direction)
 
         def closer(a, b):
             if a is None:
@@ -1225,7 +1307,13 @@ class SumoHighwayEnv(gym.Env):
                 return a
             return a if a[0] <= b[0] else b
 
-        lead = closer(self._neighbor(direction, leader=True), scan_front)
+        if self.tof:
+            self._tof_frame()
+            lead, foll = self._tof_lanes[0][direction]
+        else:
+            scan_front, scan_rear = self._scan_lane_neighbors(direction)
+            lead = closer(self._neighbor(direction, leader=True), scan_front)
+
         if lead is not None:
             gap, lv = lead
             if gap <= self.lc_front_min + self.lc_front_tau * v:
@@ -1241,7 +1329,8 @@ class SumoHighwayEnv(gym.Env):
                 if gap <= self.lc_front_min + closing ** 2 / (2.0 * self.lc_brake_decel):
                     return False
 
-        foll = closer(self._neighbor(direction, leader=False), scan_rear)
+        if not self.tof:
+            foll = closer(self._neighbor(direction, leader=False), scan_rear)
         if foll is not None:
             gap, fv = foll
             if gap <= self.lc_rear_min + self.lc_rear_tau * fv:
@@ -1336,7 +1425,7 @@ class SumoHighwayEnv(gym.Env):
         except traci.TraCIException:
             pass
 
-    def _apply_lane_change(self, lane_change: int) -> bool:
+    def _apply_lane_change(self, lane_change: int, *, alive=None) -> bool:
         """가능하고 "안전한" 경우에만 차선변경을 적용하고 성공 여부를 반환.
 
         안전 게이트(_lane_change_is_safe)를 통과하지 못한 명령은 실행하지
@@ -1348,7 +1437,9 @@ class SumoHighwayEnv(gym.Env):
         # 실행되지 않은 이유 (분석용, info["lane_change_blocked"]):
         #   "junction" 교차로 내부 / "no_lane" 그 방향에 차선 없음 / "unsafe" 안전 게이트
         self._lc_block_reason = None
-        if self.ego_id not in traci.vehicle.getIDList():
+        if alive is None:
+            alive = self.ego_id in traci.vehicle.getIDList()
+        if not alive:
             return False
         try:
             edge = traci.vehicle.getRoadID(self.ego_id)
@@ -1466,17 +1557,18 @@ class SumoHighwayEnv(gym.Env):
 
         # (팀14) 신호·양보 위반 판정용: 행동 적용 전 "바로 앞" 신호와 교차로 상태
         pre_tls, pre_jun = None, None
-        if self.junction_obs and self.ego_id in traci.vehicle.getIDList():
+        alive_before = self.ego_id in traci.vehicle.getIDList()
+        if self.junction_obs and alive_before:
             try:
                 nxt = traci.vehicle.getNextTLS(self.ego_id)
                 if nxt:
                     pre_tls = nxt[0]          # (신호 id, 링크 번호, 거리, 상태 문자)
-                pre_jun = self._junction_features()[3:]
+                pre_jun = self._junction_yield_features()
             except traci.TraCIException:
                 pass
 
         # ----- (1) 종방향 + 횡방향 행동 적용 -----
-        if self.ego_id in traci.vehicle.getIDList():
+        if alive_before:
             v = traci.vehicle.getSpeed(self.ego_id)
             lane_before = int(traci.vehicle.getLaneIndex(self.ego_id))
             lane_id_before = traci.vehicle.getLaneID(self.ego_id)
@@ -1728,12 +1820,13 @@ class SumoHighwayEnv(gym.Env):
                          else _dv / (self.max_decel * self.step_length))
             self._action_executed = (float(np.clip(_acc_exec, -1.0, 1.0)), float(lane_change))
             self._assist_intervened = (abs(v_new - _v_policy) > 1e-6) or (lane_change != lane_change_policy)
-            lane_change_applied = self._apply_lane_change(lane_change)
+            lane_change_applied = self._apply_lane_change(lane_change, alive=alive_before)
 
         # ----- (2) 시뮬레이션 1스텝 -----
         traci.simulationStep()
         self.step_count += 1
-        self._route_step_hook()
+        alive = self.ego_id in traci.vehicle.getIDList()
+        self._route_step_hook(alive)
 
         # ----- (3) 이벤트/관측 -----
         vehicle_collision = self.ego_id in traci.simulation.getCollidingVehiclesIDList()
@@ -1741,7 +1834,6 @@ class SumoHighwayEnv(gym.Env):
         # 순간이동도 기존 보상과 종료 조건에서는 실패로 유지한다.
         collided = vehicle_collision or teleported
         arrived = self.ego_id in traci.simulation.getArrivedIDList()
-        alive = self.ego_id in traci.vehicle.getIDList()
         # 경로 이탈: 끝나는 차선(차로 감소 / 진출 전용)에서 빠져나오지 못하고
         # 차선 끝에 도달 → 실제 도로라면 정지/사고이므로 충돌과 같게 처리
         lane_end = False
@@ -1775,11 +1867,11 @@ class SumoHighwayEnv(gym.Env):
         # (팀14) 신호 위반: 빨간불이던 정지선을 이번 스텝에 지나갔는가
         #   = 앞 신호가 빨강이었고, 지금은 그 신호가 더 이상 "앞"에 없음(통과)
         red_light, yield_violation = False, False
-        if alive and pre_tls is not None:
+        if alive and pre_tls is not None and pre_tls[3] in "rR":
             try:
                 nxt = traci.vehicle.getNextTLS(self.ego_id)
                 still_ahead = bool(nxt) and nxt[0][0] == pre_tls[0] and nxt[0][1] == pre_tls[1]
-                if not still_ahead and pre_tls[3] in "rR":
+                if not still_ahead:
                     red_light = True
             except traci.TraCIException:
                 pass
@@ -1791,7 +1883,7 @@ class SumoHighwayEnv(gym.Env):
         if red_light and self.rw.get("red_light_terminate", True):
             collided = True    # 신호 위반은 충돌과 같은 실패로 처리
 
-        obs = self._get_obs()
+        obs = self._get_obs(alive=alive)
         terminated, truncated = False, False
         ego_speed, ego_gap = None, None
 

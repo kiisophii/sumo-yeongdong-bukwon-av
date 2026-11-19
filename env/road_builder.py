@@ -15,7 +15,7 @@ import os
 import subprocess
 
 from sumolib import checkBinary  # SUMO 실행파일(sumo, netconvert 등) 경로를 찾아주는 유틸
-from env.mdp_config import SIMULATION
+from env.mdp_config import OBSERVATION, SIMULATION
 try:
     from env.road_config import SCENERY
 except ImportError:      # 구버전 설정 하위호환
@@ -725,6 +725,15 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     else:
         with open(scenery, "w") as f:
             f.write("<additional/>\n")
+
+    if OBSERVATION["tof"]:
+        # Building footprints are projected into this exact SUMO network frame.
+        subprocess.run(
+            [checkBinary("polyconvert"), "--net-file", net_path,
+             "--osm-files", _resolve(ctx or road["osm_file"]),
+             "--type-file", os.path.join(os.path.dirname(__file__), "tof_buildings.typ.xml"),
+             "--discard", "--no-warnings", "-o", os.path.join(out_dir, "tof.buildings.xml")],
+            check=True, capture_output=True)
 
     # ── 5) GUI 시작 화면: 지정한 관심 지점(합류부 등)을 확대 ──
     #   SUMO zoom(%)은 "네트워크 전체 폭 = 100%" 기준

@@ -406,6 +406,10 @@ class PPO:
     def save(self, path: str):
         torch.save(self.policy.state_dict(), path)
 
-    def load(self, path: str):
-        self.policy.load_state_dict(
-            torch.load(path, map_location=self.device))
+    def load(self, path: str, *, append_zero_inputs: int = 0):
+        state = torch.load(path, map_location=self.device, weights_only=True)
+        if append_zero_inputs:
+            weight = state["trunk.0.weight"]
+            if weight.shape[1] == self.policy.trunk[0].in_features - append_zero_inputs:
+                state["trunk.0.weight"] = torch.nn.functional.pad(weight, (0, append_zero_inputs))
+        self.policy.load_state_dict(state)

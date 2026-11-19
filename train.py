@@ -204,7 +204,8 @@ if __name__ == "__main__":
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
-                   "total_timesteps": TOTAL_TIMESTEPS}, f, ensure_ascii=False, indent=2)
+                   "total_timesteps": TOTAL_TIMESTEPS,
+                   "tof_observation": OBSERVATION["tof"]}, f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 
@@ -231,10 +232,12 @@ if __name__ == "__main__":
     )
     # (팀14) 기존 모델에서 이어서 학습
     if globals().get("_args") is not None and getattr(_args, "init_model", None):
-        agent.load(_args.init_model)
+        agent.load(_args.init_model, append_zero_inputs=env.tof_observation_dims)
         print(f"이어서 학습: {_args.init_model}")
     print(f"obs_dim={env.observation_space.shape[0]}, "
           f"act_dim={env.action_space.shape[0]}, device={agent.device}")
+    if env.tof:
+        print(f"tof_rear_density={'on' if env.tof['rear_density'] else 'off'}")
 
     # 5) 학습 → 저장
     #    try/finally: Ctrl+C나 에러로 중단돼도 SUMO 정리 + 결과 저장은 수행

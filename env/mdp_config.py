@@ -95,6 +95,12 @@ OBSERVATION = {
     "density_veh_length": 7.5,   # 밀도 계산 시 차량 1대의 점유 길이 (m)
                                  # = 차체(~5m) + 최소 안전간격(~2.5m).
                                  # 최대 수용 대수 = W / 이 값
+    "tof": {
+        "range_m": 250.0,         # AutoL G32의 보고서상 최대 검출 거리
+        "horizontal_fov_deg": 120.0,
+        "azimuths_deg": (0.0, -130.0, 130.0),    # 정면·좌측후방·우측후방
+        "rear_density": __import__("os").environ.get("TEAM14_TOF_REAR_DENSITY", "1") == "1",
+    } if __import__("os").environ.get("TEAM14_TOF_OBS") == "1" else None,
 }
 
 # ──────────────────────────────────────────────────────────────

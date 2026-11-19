@@ -1,0 +1,47 @@
+{
+  "results\\run_20261119_203130_tof_norule_b_cont\\model.pt": {
+    "collision_rate": 0.31,
+    "teleport_rate": 0.01,
+    "lane_end_rate": 0.02666666666666667,
+    "red_light_rate": 0.03333333333333333,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.62,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.38,
+    "episodes": 300,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":4582364294_0_0": 6,
+      "468241514_2": 32,
+      ":1681517542_4_0": 22,
+      "474882669#1-AddedOnRampEdge_0": 8,
+      ":51066582#1.110_0_2": 7,
+      "474882669#1-AddedOnRampEdge_2": 1,
+      "474882669#1-AddedOnRampEdge_1": 3,
+      "496583281#1_0": 9,
+      "51066582#1_2": 3,
+      "377057231_4": 3,
+      ":4627913063_0_3": 10,
+      "51066582#0_0": 2,
+      "-472043938#1_0": 1,
+      "452597718#1_0": 2,
+      "51066582#1.110_0": 1,
+      "1307152438_3": 2,
+      "488779086#1_0": 1,
+      ":651290887_2_2": 1
+    },
+    "lane_end_lanes": {
+      "474882669#1-AddedOnRampEdge_0": 8
+    },
+    "teleport_end_lanes": {
+      "377057231_4": 3
+    },
+    "mean_speed_mps": 13.728197010609765,
+    "mean_return": 125.42297012975231,
+    "mean_length_steps": 1583.6,
+    "mean_travel_time_s": 791.8,
+    "lane_changes_per_ep": 25.003333333333334,
+    "min_gap_median_m": 2.767820813604102,
+    "wall_time_s": 3529.0409331321716
+  }
+}
