@@ -929,8 +929,14 @@ class SumoHighwayEnv(gym.Env):
                 if d is not None and d != float("inf") and d < max(ahead.values()):
                     worst = max(worst, (need - d) / 20.0)
             nxt = traci.vehicle.getNextTLS(self.ego_id)
-            if nxt and nxt[0][3] in "rR":
-                worst = max(worst, (need - float(nxt[0][2])) / 20.0)
+            if nxt:
+                st, dist = nxt[0][3], float(nxt[0][2])
+                red_like = st in "rR"
+                if st in "yY" and os.environ.get("STOP_SHAPING_YELLOW", "0") == "1":
+                    remain = traci.trafficlight.getNextSwitch(nxt[0][0]) - traci.simulation.getTime()
+                    red_like = v * remain < dist   # 지금 속도로는 노란불 안에 정지선을 못 지남
+                if red_like:
+                    worst = max(worst, (need - dist) / 20.0)
         except traci.TraCIException:
             pass
         return float(min(max(worst, 0.0), 1.0))
