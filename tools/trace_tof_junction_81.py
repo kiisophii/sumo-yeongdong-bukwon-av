@@ -11,6 +11,8 @@ import sys
 
 DEFAULT_MODEL = Path("results/run_20261120_202557_tof_multi_lane_bonus_600k/model.pt")
 TARGET_LANE = ":1681517542_4_0"
+TARGET_APPROACH = "-472043938#1_0"
+TARGET_EXIT_EDGE = "-40839116#4"
 BASE_SEED = 2326
 EXPECTED = {1: 189, 21: 201, 28: 178, 38: 219, 70: 218, 76: 209, 86: 165, 99: 201}
 
@@ -78,6 +80,8 @@ def replay(env, policy, sumo_env, seed, expected_steps):
         obs, _, terminated, truncated, info = env.step(action)
         executed = info.get("action_executed")
         row["executed_accel_cmd"] = executed[0] if executed is not None else None
+        row["decelerated_during_hazard"] = bool(info["tof_yield_decelerated"])
+        row["next_road_id"] = info["road_id"]
         row["step_end_reason"] = info["end_reason"]
         rows.append(row)
         if terminated or truncated:
@@ -93,6 +97,10 @@ def replay(env, policy, sumo_env, seed, expected_steps):
     collision_time = api.simulation.getTime()
     reproduced = (info["end_reason"] == "collision" and info["end_lane"] == TARGET_LANE
                   and (expected_steps is None or len(rows) == expected_steps))
+    entry = next((i for i, row in enumerate(rows) if row["lane_id"] == TARGET_LANE), len(rows))
+    hazards = [row for row in rows[:entry]
+               if row["lane_id"] == TARGET_APPROACH and row["hazard_obs"]]
+    decel_steps = sum(row["decelerated_during_hazard"] for row in hazards)
     summary = {
         "seed": seed,
         "episode": seed - BASE_SEED + 1,
@@ -100,6 +108,11 @@ def replay(env, policy, sumo_env, seed, expected_steps):
         "expected_steps": expected_steps,
         "outcome": info["end_reason"],
         "end_lane": info["end_lane"],
+        "target_passed": any(row["lane_id"] == TARGET_LANE and row["next_road_id"] == TARGET_EXIT_EDGE
+                             and row["step_end_reason"] is None for row in rows[entry:]),
+        "target_first_hazard_s": hazards[0]["time_s"] if hazards else None,
+        "target_preentry_brake_cmd_steps": sum(row["accel_cmd"] < 0.0 for row in hazards),
+        "target_preentry_decel_steps": decel_steps,
         "matches_original_log": reproduced if expected_steps is not None else None,
         "collision_time_s": collision_time if info["end_reason"] == "collision" else None,
         "final_approach_first_hazard_lead_s": None,
@@ -144,7 +157,7 @@ def main():
         TEAM14_TOF_LEAD_HOLD_S="0", TEAM14_TOF_LEAD_GAP_WINDOW="0", SUMO_USE_LIBSUMO="1",
         HARD_START_PROB="0", STOP_SHAPING="0", TEAM14_TOF_JUNCTION_YIELD="0",
         JUNCTION_YIELD="0", ROUTE_ASSIST_M="0", ROUTE_SHIELD_M="0", RED_STOP="0",
-        MERGE_SUMO="0", MERGE_STOP="0", ZIPPER_FOLLOW="0", LC_REVERSE_COOLDOWN="0",
+        MERGE_SUMO="0", MERGE_STOP="0", ZIPPER_FOLLOW="0", LC_REVERSE_COOLDOWN="0", JUNCTION_ROW="0",
     )
     for key in ("SIM_REUSE", "ASSIST_PROB"):
         os.environ.pop(key, None)

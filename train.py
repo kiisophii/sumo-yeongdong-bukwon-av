@@ -18,10 +18,13 @@ import shutil
 from datetime import datetime
 from math import isfinite
 
+import torch
+
 from env.road_config import ROAD, EGO, TRAFFIC
 from env.mdp_config import SIMULATION, OBSERVATION, ACTION
 from env.mdp_config import REWARD as REWARD_DEFAULTS
 from env import road_builder
+from env.junction_curriculum import JunctionCurriculum
 from env.sumo_env import SumoHighwayEnv
 
 from algorithms.ppo import PPO
@@ -176,13 +179,69 @@ if __name__ == "__main__":
                      help="ToF 앞차 미검출·시야 미확인 상태의 초과 속도 감점 계수")
     _ap.add_argument("--init-model", default=None,
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
+    _ap.add_argument("--init-accel-scale", type=float, default=1.0,
+                     help="초기 hybrid 모델의 가감속 평균 출력층 가중치와 편향 축소 배율")
     _ap.add_argument("--seed", type=int, default=None,
                      help="(팀14) 난수 시드 (기본: HPARAMS['seed']=0). 같은 설정 반복 실험용")
     _ap.add_argument("--tof-junction-yield-weight", type=float, default=0.0,
                      help="ToF가 양보 대상 차량을 감지했을 때 제동 여유 부족에 대한 감점 상한")
+    _ap.add_argument("--tof-junction-yield-preview", action="store_true",
+                     help="교차 차량 감지 시 더 이른 제동 여유 및 가속 명령 감점 사용")
+    _ap.add_argument("--tof-junction-yield-reaction-s", type=float, default=1.5,
+                     help="조기 양보 보상에서 정지거리 계산에 쓰는 반응 여유(초)")
+    _ap.add_argument("--tof-junction-entry-penalty", type=float, default=0.0,
+                     help="ToF 교차 위험이 표시된 상태로 교차로에 진입할 때 1회 감점")
+    _ap.add_argument("--tof-junction-brake-weight", type=float, default=0.0,
+                     help="ToF 교차 위험과 정지 여유 부족이 동시에 있을 때 제동 부족 감점 상한")
+    _ap.add_argument("--tof-junction-brake-explore-std", type=float, default=0.0,
+                     help="학습 중 ToF 교차 위험과 정지 여유 부족이 동시에 있을 때 가감속 표준편차 하한")
     _ap.add_argument("--tof-route-stall-weight", type=float, default=0.0,
                      help="경로를 잇는 옆 차로에 들어갈 여유가 있는데 저속으로 머무를 때 감점 상한")
+    _ap.add_argument("--tof-junction-curriculum-share", type=float, default=0.0,
+                     help="학습 스텝 중 짧은 교차로 접근 장면의 목표 비율 (예: 0.25)")
+    _ap.add_argument("--tof-junction-curriculum-lane",
+                     help="집중 학습 에피소드의 교차로 접근 차로 ID")
+    _ap.add_argument("--tof-junction-north-south-vph", type=int,
+                     help="학습용 신협오거리 남북 직진 차량의 시간당 투입 대수")
+    _ap.add_argument("--tof-junction-safe-pass-bonus", type=float, default=0.0,
+                     help="집중 학습에서 ToF 위험에 감속 후 무충돌 교차로 통과 시 1회 보상")
+    _ap.add_argument("--tof-junction-diagnostics", action="store_true",
+                     help="집중 학습 위험 관측의 제동·가속, GAE, 업데이트 전후 평균 가감속 기록")
     _args = _ap.parse_args()
+    _init_accel_scale = _args.init_accel_scale
+    if not 0.0 < _init_accel_scale <= 1.0:
+        _ap.error("--init-accel-scale 값은 0 초과 1 이하여야 합니다.")
+    if _init_accel_scale != 1.0 and (not _args.init_model or HPARAMS["policy_type"] != "hybrid"):
+        _ap.error("--init-accel-scale 사용에는 --init-model과 hybrid 정책이 필요합니다.")
+    _north_south_flow = TRAFFIC.get("routes", {}).get("five_north_south")
+    _north_south_vph = _args.tof_junction_north_south_vph
+    if _north_south_vph is not None:
+        if _north_south_vph <= 0:
+            _ap.error("--tof-junction-north-south-vph 값은 양의 정수여야 합니다.")
+        if _north_south_flow is None:
+            _ap.error("현재 시나리오에서 신협오거리 남북 직진 흐름을 찾을 수 없습니다.")
+    _brake_explore_std = _args.tof_junction_brake_explore_std
+    if not isfinite(_brake_explore_std) or _brake_explore_std < 0.0:
+        _ap.error("--tof-junction-brake-explore-std 값은 0 이상의 유한수여야 합니다.")
+    if _brake_explore_std > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                        and HPARAMS["policy_type"] == "hybrid"):
+        _ap.error("--tof-junction-brake-explore-std 사용에는 ToF 교차로 관측과 hybrid 정책이 필요합니다.")
+    _junction_share = _args.tof_junction_curriculum_share
+    _junction_lane = _args.tof_junction_curriculum_lane
+    if not 0.0 <= _junction_share < 1.0:
+        _ap.error("--tof-junction-curriculum-share 값은 0 이상 1 미만이어야 합니다.")
+    if _junction_share > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                      and ROAD.get("type") == "osm"):
+        _ap.error("--tof-junction-curriculum-share 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
+    if _junction_lane and _junction_share <= 0.0:
+        _ap.error("--tof-junction-curriculum-lane 사용에는 양수의 집중 학습 비율이 필요합니다.")
+    if _args.tof_junction_diagnostics and (_junction_share <= 0.0 or HPARAMS["policy_type"] != "hybrid"):
+        _ap.error("--tof-junction-diagnostics 사용에는 ToF 교차로 집중 학습과 hybrid 정책이 필요합니다.")
+    _safe_pass_bonus = _args.tof_junction_safe_pass_bonus
+    if not isfinite(_safe_pass_bonus) or _safe_pass_bonus < 0.0:
+        _ap.error("--tof-junction-safe-pass-bonus 값은 0 이상의 유한수여야 합니다.")
+    if _safe_pass_bonus > 0.0 and not _junction_lane:
+        _ap.error("--tof-junction-safe-pass-bonus 사용에는 집중 학습 차로가 필요합니다.")
     _tof_penalty = _args.tof_unseen_speed_penalty
     if not isfinite(_tof_penalty) or _tof_penalty < 0.0:
         _ap.error("--tof-unseen-speed-penalty 값은 0 이상의 유한수여야 합니다.")
@@ -230,8 +289,34 @@ if __name__ == "__main__":
     if _yield_weight > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]):
         _ap.error("--tof-junction-yield-weight 사용에는 ToF와 교차로 관측을 켜야 합니다.")
     REWARD["tof_junction_yield_weight"] = _yield_weight
+    _entry_penalty = _args.tof_junction_entry_penalty
+    if not isfinite(_entry_penalty) or _entry_penalty < 0.0:
+        _ap.error("--tof-junction-entry-penalty 값은 0 이상의 유한수여야 합니다.")
+    if _entry_penalty > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                    and ROAD.get("type") == "osm"):
+        _ap.error("--tof-junction-entry-penalty 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
+    REWARD["tof_junction_entry_penalty"] = _entry_penalty
+    if _entry_penalty > 0.0:
+        print(f"ToF 교차 위험 중 진입 감점: -{_entry_penalty:g}/회")
+    _brake_weight = _args.tof_junction_brake_weight
+    if not isfinite(_brake_weight) or _brake_weight < 0.0:
+        _ap.error("--tof-junction-brake-weight 값은 0 이상의 유한수여야 합니다.")
+    if _brake_weight > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                   and ROAD.get("type") == "osm"):
+        _ap.error("--tof-junction-brake-weight 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
+    REWARD["tof_junction_brake_weight"] = _brake_weight
+    if _brake_weight > 0.0:
+        print(f"ToF 교차로 제동 부족 감점: 최대={_brake_weight:g}/step")
+    REWARD["tof_junction_yield_preview"] = _args.tof_junction_yield_preview
+    _yield_reaction_s = _args.tof_junction_yield_reaction_s
+    if not isfinite(_yield_reaction_s) or _yield_reaction_s <= 0.0:
+        _ap.error("--tof-junction-yield-reaction-s 값은 0보다 큰 유한수여야 합니다.")
+    REWARD["tof_junction_yield_reaction_s"] = _yield_reaction_s
     if _yield_weight > 0.0:
-        print(f"ToF 교차로 양보 접근 감점: 최대={_yield_weight:g}/step")
+        mode = "조기 제동" if _args.tof_junction_yield_preview else "기본"
+        print(f"ToF 교차로 양보 접근 감점 ({mode}): 최대={_yield_weight:g}/step")
+        if _args.tof_junction_yield_preview:
+            print(f"ToF 조기 양보 보상 반응 여유: {_yield_reaction_s:g}초")
     _stall_weight = _args.tof_route_stall_weight
     if not isfinite(_stall_weight) or _stall_weight < 0.0:
         _ap.error("--tof-route-stall-weight 값은 0 이상의 유한수여야 합니다.")
@@ -243,8 +328,17 @@ if __name__ == "__main__":
         print(f"ToF 경로 차로 정체 감점: 최대={_stall_weight:g}/step")
 
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
-    sumocfg = road_builder.build(ROAD, EGO, TRAFFIC,
-                                 os.path.join(BASE, "env", "sumo"))
+    _sumo_dir = os.path.join(BASE, "env", "sumo")
+    if _north_south_vph is not None:
+        TRAFFIC = {
+            **TRAFFIC,
+            "routes": {**TRAFFIC["routes"], "five_north_south": {
+                **_north_south_flow, "vehs_per_hour": _north_south_vph,
+            }},
+        }
+        _sumo_dir = os.path.join(_sumo_dir, f"training_north_south_{_north_south_vph}")
+        print(f"학습용 교차로 남북 직진 교통량: {_north_south_vph}대/시간")
+    sumocfg = road_builder.build(ROAD, EGO, TRAFFIC, _sumo_dir)
     print(f"도로 생성 완료: {sumocfg}")
     print(f"  길이 {ROAD['length']}m, {ROAD['num_lanes']}차선, "
           f"교통량 {TRAFFIC['vehs_per_hour']}대/시간")
@@ -257,7 +351,19 @@ if __name__ == "__main__":
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
+                   "init_accel_scale": _init_accel_scale,
                    "tof_junction_yield_weight": _yield_weight,
+                   "tof_junction_entry_penalty": _entry_penalty,
+                   "tof_junction_brake_weight": _brake_weight,
+                   "tof_junction_brake_explore_std": _brake_explore_std,
+                   "tof_junction_yield_preview": _args.tof_junction_yield_preview,
+                   "tof_junction_yield_reaction_s": _yield_reaction_s,
+                   "tof_junction_curriculum_share": _junction_share,
+                   "tof_junction_curriculum_lane": _junction_lane,
+                   "tof_junction_safe_pass_bonus": _safe_pass_bonus,
+                   "tof_junction_diagnostics": _args.tof_junction_diagnostics,
+                   "tof_junction_north_south_vph": TRAFFIC.get("routes", {}).get(
+                       "five_north_south", {}).get("vehs_per_hour"),
                    "tof_route_stall_weight": _stall_weight,
                    "total_timesteps": TOTAL_TIMESTEPS,
                    "tof_merge_gap_weight": _merge_weight,
@@ -278,6 +384,17 @@ if __name__ == "__main__":
         traffic=TRAFFIC,
         gui=False,   # 학습은 화면 없이 (수십 배 빠름)
     )
+    training_env = env
+    if _junction_share > 0.0:
+        training_env = JunctionCurriculum(
+            env, share=_junction_share, seed=HPARAMS["seed"], target_lane=_junction_lane,
+            safe_pass_bonus=_safe_pass_bonus,
+        )
+        print(f"ToF 교차로 집중 학습 스텝 목표: {_junction_share:.0%}")
+        if _junction_lane:
+            print(f"ToF 집중 학습 접근 차로: {_junction_lane}")
+        if _safe_pass_bonus > 0.0:
+            print(f"ToF 교차로 양보 후 안전 통과 보너스: +{_safe_pass_bonus:g}/회")
 
     # 4) 경험 버퍼 + 에이전트
     #    버퍼는 메인에서 만들어 에이전트에 "주입"한다 (utils/buffer.py).
@@ -294,6 +411,23 @@ if __name__ == "__main__":
     if globals().get("_args") is not None and getattr(_args, "init_model", None):
         agent.load(_args.init_model, append_zero_inputs=env.tof_observation_dims)
         print(f"이어서 학습: {_args.init_model}")
+        if _init_accel_scale != 1.0:
+            with torch.no_grad():
+                agent.policy.mu_head.weight.mul_(_init_accel_scale)
+                agent.policy.mu_head.bias.mul_(_init_accel_scale)
+            initial_model = os.path.join(run_dir, "model_init_scaled.pt")
+            agent.save(initial_model)
+            print(f"가감속 출력층 초기 배율: {_init_accel_scale:g}배 · 학습 전 모델: {initial_model}")
+    if _brake_explore_std > 0.0:
+        agent.policy.configure_brake_exploration(
+            std_floor=_brake_explore_std,
+            junction_index=env.obs_dim - env.tof_observation_dims - 3,
+            speed_scale=env.vmax,
+            distance_scale=env.junction_lookahead,
+            reaction_s=max(_yield_reaction_s, env.step_length),
+            braking_decel=min(1.5, env.max_decel),
+        )
+        print(f"ToF 교차로 제동 탐색 표준편차 하한: {_brake_explore_std:g}")
     print(f"obs_dim={env.observation_space.shape[0]}, "
           f"act_dim={env.action_space.shape[0]}, device={agent.device}")
     if env.tof:
@@ -302,22 +436,27 @@ if __name__ == "__main__":
     # 5) 학습 → 저장
     #    try/finally: Ctrl+C나 에러로 중단돼도 SUMO 정리 + 결과 저장은 수행
     try:
-        agent.learn(env,
+        agent.learn(training_env,
                     total_timesteps=TOTAL_TIMESTEPS,
                     logger=logger,
                     log_interval=LOG_INTERVAL,
                     eval_interval=EVAL_INTERVAL,
                     eval_episodes=EVAL_EPISODES,
                     ckpt_dir=os.path.join(run_dir, "checkpoints"),
-                    ckpt_every=_args.ckpt_every)
+                    ckpt_every=_args.ckpt_every,
+                    eval_env=env,
+                    junction_diagnostics=_args.tof_junction_diagnostics)
     finally:
-        env.close()
-        logger.close()
-        model_path = os.path.join(run_dir, "model.pt")
-        agent.save(model_path)
-        snapshot_configs(run_dir)
-        print(f"\n저장 완료: {model_path}")
-        print(f"재생 방법:      python test.py "
-              f"{os.path.relpath(model_path, BASE)}")
-        print(f"학습 곡선 보기: tensorboard --logdir {RESULTS_DIR}"
-              f"  → http://localhost:6006")
+        try:
+            # SUMO 연결이 먼저 끊겨도 진단 로그와 모델은 남긴다.
+            logger.close()
+            model_path = os.path.join(run_dir, "model.pt")
+            agent.save(model_path)
+            snapshot_configs(run_dir)
+            print(f"\n저장 완료: {model_path}")
+            print(f"재생 방법:      python test.py "
+                  f"{os.path.relpath(model_path, BASE)}")
+            print(f"학습 곡선 보기: tensorboard --logdir {RESULTS_DIR}"
+                  f"  → http://localhost:6006")
+        finally:
+            env.close()

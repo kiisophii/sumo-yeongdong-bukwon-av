@@ -1,0 +1,38 @@
+{
+  "model": "C:\\Users\\USER\\sumo-tof-junction-reward\\results\\run_20261122_034944_tof_junction_accel05_20k\\model_init_scaled.pt",
+  "target_lane": ":1681517542_4_0",
+  "episodes": [
+    {
+      "seed": 2420,
+      "episode": 95,
+      "steps": 1830,
+      "expected_steps": null,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 361.5,
+      "target_preentry_brake_cmd_steps": 0,
+      "target_preentry_decel_steps": 0,
+      "matches_original_log": null,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    },
+    {
+      "seed": 2424,
+      "episode": 99,
+      "steps": 1801,
+      "expected_steps": 201,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 402.5,
+      "target_preentry_brake_cmd_steps": 0,
+      "target_preentry_decel_steps": 0,
+      "matches_original_log": false,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    }
+  ]
+}

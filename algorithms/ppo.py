@@ -198,7 +198,7 @@ class PPO:
     # ==================================================================
     # 1단계) rollout 수집
     # ==================================================================
-    def collect_rollout(self, env, state, logger=None, ep_stats=None):
+    def collect_rollout(self, env, state, logger=None, ep_stats=None, *, junction_rows=None):
         """현재 정책으로 n_steps만큼 경험을 모은다.
 
         Args:
@@ -210,14 +210,53 @@ class PPO:
         obs = state
         finished_returns = []
         self.buffer.clear()
-        track_route_bonus = getattr(env, "tof_route_lane_bonus", 0.0) > 0.0
+        base_env = getattr(env, "unwrapped", env)
+        track_route_bonus = getattr(base_env, "tof_route_lane_bonus", 0.0) > 0.0
         self._rollout_route_lane_bonus_events = 0 if track_route_bonus else None
+        track_yield_penalty = getattr(base_env, "tof_junction_yield_weight", 0.0) > 0.0
+        self._rollout_tof_yield_penalty_events = 0 if track_yield_penalty else None
+        track_yield_actions = getattr(base_env, "tof", None) and getattr(base_env, "junction_obs", False)
+        yield_metrics = {
+            "tof_yield_hazard_steps": 0,
+            "tof_yield_brake_cmd_steps": 0,
+            "tof_yield_decel_steps": 0,
+            "tof_yield_risky_entry_events": 0,
+        } if track_yield_actions else {}
+        if track_yield_actions and getattr(base_env, "tof_junction_brake_weight", 0.0) > 0.0:
+            yield_metrics.update(tof_yield_brake_needed_steps=0,
+                                 tof_yield_brake_cmd_when_needed_steps=0,
+                                 tof_yield_decel_when_needed_steps=0)
+        track_focus = getattr(env, "track_junction_focus", False)
+        if track_focus:
+            yield_metrics.update(tof_junction_focus_steps=0, tof_junction_focus_hazard_steps=0,
+                                 tof_junction_focus_decel_steps=0, tof_junction_focus_crossings=0,
+                                 tof_junction_safe_pass_events=0)
+        if junction_rows is not None:
+            junction_index = base_env.obs_dim - base_env.tof_observation_dims - 3
 
-        for _ in range(self.n_steps):
+        for rollout_index in range(self.n_steps):
             action, log_prob, value = self.act(obs)
             next_obs, reward, terminated, truncated, _info = env.step(action)
+            focused_step = track_focus and _info.get("tof_junction_focus", False)
+            if focused_step:
+                yield_metrics["tof_junction_focus_steps"] += 1
+                yield_metrics["tof_junction_focus_hazard_steps"] += int(_info.get("tof_yield_hazard", False))
+                yield_metrics["tof_junction_focus_decel_steps"] += int(_info.get("tof_yield_decelerated", False))
+                yield_metrics["tof_junction_focus_crossings"] += int(_info.get("tof_junction_focus_crossed", False))
+                yield_metrics["tof_junction_safe_pass_events"] += int("tof_junction_safe_pass_bonus" in _info)
             if track_route_bonus and _info.get("tof_route_lane_bonus", 0.0) > 0.0:
                 self._rollout_route_lane_bonus_events += 1
+            if track_yield_penalty and _info.get("tof_yield_approach_penalty", 0.0) > 0.0:
+                self._rollout_tof_yield_penalty_events += 1
+            if track_yield_actions and _info.get("tof_yield_hazard"):
+                yield_metrics["tof_yield_hazard_steps"] += 1
+                yield_metrics["tof_yield_brake_cmd_steps"] += int(_info["accel_raw"] < 0.0)
+                yield_metrics["tof_yield_decel_steps"] += int(_info["tof_yield_decelerated"])
+                yield_metrics["tof_yield_risky_entry_events"] += int(_info.get("tof_yield_risky_entry", False))
+                if _info.get("tof_yield_brake_needed", False):
+                    yield_metrics["tof_yield_brake_needed_steps"] += 1
+                    yield_metrics["tof_yield_brake_cmd_when_needed_steps"] += int(_info["accel_raw"] < 0.0)
+                    yield_metrics["tof_yield_decel_when_needed_steps"] += int(_info["tof_yield_decelerated"])
             # (팀14 실험) EXEC_ACTION_BUFFER=1: 보조 규칙이 행동을 바꿨으면, 버퍼에는 실제로 실행된
             #   행동과 그 행동의 현재 정책 log-prob을 넣는다. 그래야 보상과 행동이 맞아서
             #   정책이 "규칙이 한 일"을 배운다 (안 하면 정책 행동과 보상이 어긋남).
@@ -232,6 +271,24 @@ class PPO:
                     action, log_prob = _ex, float(_lp.item())
 
             self.num_timesteps += 1
+            if junction_rows is not None and focused_step and _info["tof_yield_hazard"]:
+                executed = _info.get("action_executed")
+                junction_rows.append({
+                    "step": self.num_timesteps,
+                    "rollout_index": rollout_index,
+                    "junction_distance_obs_m": float(obs[junction_index]) * base_env.junction_lookahead,
+                    "ego_speed_obs_mps": float(obs[0]) * base_env.vmax,
+                    "brake_needed": bool(_info["tof_yield_brake_needed"]),
+                    "ppo_action_accel": float(action[0]),
+                    "accel_cmd": float(_info["accel_raw"]),
+                    "executed_accel_cmd": float(executed[0]) if executed is not None else None,
+                    "decelerated": bool(_info["tof_yield_decelerated"]),
+                    "reward": float(reward),
+                    "approach_penalty": float(_info["tof_yield_approach_penalty"]),
+                    "brake_penalty": float(_info["tof_yield_brake_penalty"]),
+                    "entry_penalty": float(_info["tof_yield_entry_penalty"]),
+                    "end_reason": _info["end_reason"],
+                })
             ep_stats[0] += reward
             ep_stats[1] += 1
 
@@ -243,8 +300,10 @@ class PPO:
             if truncated and not terminated:
                 stored_reward += self.gamma * self.get_value(next_obs)
 
+            # V(next_obs) is already included for a cutoff. End the advantage
+            # trace here so the next training episode cannot affect it.
             self.buffer.add(obs, action, log_prob, stored_reward, value,
-                            terminated)
+                            terminated or (focused_step and truncated))
 
             if terminated or truncated:
                 finished_returns.append(ep_stats[0])
@@ -257,12 +316,13 @@ class PPO:
                 obs = next_obs
 
         # rollout이 에피소드 중간에 끊겼다면 이후 가치를 부트스트랩
+        self._rollout_tof_yield_metrics = yield_metrics
         return obs, self.get_value(obs), finished_returns
 
     # ==================================================================
     # 3단계) 정책 업데이트 (clipped surrogate)
     # ==================================================================
-    def update(self, advantages, returns) -> dict:
+    def update(self, advantages, returns, *, junction_rows=None) -> dict:
         obs_t, act_t, old_log_prob_t = self.buffer.to_tensors(self.device)
         adv_t = torch.as_tensor(advantages, device=self.device)
         ret_t = torch.as_tensor(returns, device=self.device)
@@ -270,6 +330,17 @@ class PPO:
         # advantage 정규화: 스케일을 평균0/표준편차1로 → 학습률 민감도 감소
         if self.normalize_advantage:
             adv_t = (adv_t - adv_t.mean()) / (adv_t.std() + 1e-8)
+
+        if junction_rows:
+            diagnostic_indices = [row["rollout_index"] for row in junction_rows]
+            diagnostic_obs = obs_t[diagnostic_indices]
+            with torch.no_grad():
+                mean_before = self.policy(diagnostic_obs)[0].squeeze(-1).tolist()
+            normalized = adv_t[diagnostic_indices].tolist()
+            for row, mean, advantage in zip(junction_rows, mean_before, normalized):
+                row["advantage_raw"] = float(advantages[row["rollout_index"]])
+                row["advantage_used"] = advantage
+                row["mean_accel_before"] = mean
 
         T = len(self.buffer)
         indices = np.arange(T)
@@ -331,7 +402,20 @@ class PPO:
                 stats["clip_frac"] += clip_frac.item()
                 n_batches += 1
 
+        if junction_rows:
+            with torch.no_grad():
+                mean_after = self.policy(diagnostic_obs)[0].squeeze(-1).tolist()
+            for row, mean in zip(junction_rows, mean_after):
+                row["mean_accel_after"] = mean
+                row["mean_accel_delta"] = mean - row["mean_accel_before"]
+
         out = {k: v / max(n_batches, 1) for k, v in stats.items()}
+        if isinstance(self.policy, HybridActorCritic):
+            brake_mask = self.policy.brake_exploration_mask(obs_t)
+            if brake_mask is not None:
+                selected = brake_mask.squeeze(-1)
+                out["tof_junction_explore_steps"] = int(selected.sum().item())
+                out["tof_junction_explore_brake_cmd_steps"] = int((selected & (act_t[:, 0] < 0)).sum().item())
         # hybrid 진단: 업데이트 "후" 정책의 평균 차선변경(좌+우) 확률.
         #   0으로 붕괴 → 차선유지 지역최적 경고 / 적당히 유지되며
         #   eval의 차선변경 횟수가 오르면 제대로 배우는 중.
@@ -347,11 +431,14 @@ class PPO:
     def learn(self, env, total_timesteps: int, logger=None,
               log_interval: int = 1, eval_interval: int = 0,
               eval_episodes: int = 5,
-              ckpt_dir: str = None, ckpt_every: int = 0):
+              ckpt_dir: str = None, ckpt_every: int = 0, *, eval_env=None,
+              junction_diagnostics=False):
         """학습 실행.
 
         Args:
             logger: utils.logger.RunLogger (없으면 콘솔 출력만)
+            eval_env: 집중 학습 없이 전체 경로를 평가할 환경
+            junction_diagnostics: 집중 학습 중 위험 관측의 가감속과 GAE를 CSV로 기록
             eval_interval: 몇 번의 업데이트마다 평가할지 (0이면 평가 안 함)
             ckpt_dir, ckpt_every: (팀14) ckpt_every 스텝마다 ckpt_dir/model_<스텝>.pt 저장
                 (0이면 저장 안 함). 학습이 오래가면 성능이 오르내리므로 중간 모델을 골라 쓰기 위함
@@ -364,8 +451,9 @@ class PPO:
 
         while self.num_timesteps < total_timesteps:
             # 1) rollout
+            junction_rows = [] if junction_diagnostics and logger is not None else None
             obs, last_value, finished = self.collect_rollout(
-                env, obs, logger=logger, ep_stats=ep_stats)
+                env, obs, logger=logger, ep_stats=ep_stats, junction_rows=junction_rows)
             recent_returns.extend(finished)
 
             # 2) advantage
@@ -373,8 +461,10 @@ class PPO:
                 last_value, self.gamma, self.gae_lambda)
 
             # 3) update
-            stats = self.update(advantages, returns)
+            stats = self.update(advantages, returns, junction_rows=junction_rows)
             n_updates += 1
+            if junction_rows:
+                logger.log_junction_diagnostics(n_updates, junction_rows)
 
             # 로깅
             metrics = {
@@ -383,9 +473,12 @@ class PPO:
                                if recent_returns else float("nan"),
                 "std": self.policy.current_std,
                 **stats,
+                **self._rollout_tof_yield_metrics,
             }
             if self._rollout_route_lane_bonus_events is not None:
                 metrics["tof_route_lane_bonus_events"] = self._rollout_route_lane_bonus_events
+            if self._rollout_tof_yield_penalty_events is not None:
+                metrics["tof_yield_penalty_events"] = self._rollout_tof_yield_penalty_events
             if logger is not None:
                 logger.log_train(self.num_timesteps, metrics,
                                  verbose=(n_updates % log_interval == 0))
@@ -399,7 +492,8 @@ class PPO:
 
             # 4) 주기적 평가 (utils/evaluator.py 사용)
             if eval_interval > 0 and n_updates % eval_interval == 0:
-                m = evaluate_policy(self, env, n_episodes=eval_episodes)
+                m = evaluate_policy(self, eval_env if eval_env is not None else env,
+                                    n_episodes=eval_episodes)
                 if logger is not None:
                     logger.log_eval(self.num_timesteps, m.as_dict(),
                                     m.summary(), eval_episodes)

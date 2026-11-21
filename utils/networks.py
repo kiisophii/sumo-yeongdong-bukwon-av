@@ -220,11 +220,34 @@ class HybridActorCritic(nn.Module):
         if not np.isscalar(init_log_std):
             init_log_std = float(init_log_std[0])
         self.log_std = nn.Parameter(torch.ones(1) * float(init_log_std))
+        self.brake_explore_std = 0.0
+        self._brake_explore_obs = None
+
+    def configure_brake_exploration(self, *, std_floor, junction_index, speed_scale,
+                                    distance_scale, reaction_s, braking_decel):
+        self.brake_explore_std = std_floor
+        self._brake_explore_obs = (junction_index, speed_scale, distance_scale,
+                                   reaction_s, braking_decel)
+
+    def brake_exploration_mask(self, obs):
+        if self._brake_explore_obs is None or not self.training or self.brake_explore_std <= 0.0:
+            return None
+        index, speed_scale, distance_scale, reaction_s, decel = self._brake_explore_obs
+        junction = obs[..., index:index + 3]
+        speed = obs[..., :1].clamp_min(0.0) * speed_scale
+        available = (junction[..., :1] * distance_scale - 2.0).clamp_min(0.0)
+        stopping_distance = speed * reaction_s + speed.square() / (2.0 * decel)
+        hazard = (junction[..., 1:] > 0).all(dim=-1, keepdim=True)
+        return hazard & (stopping_distance > available)
 
     def forward(self, obs):
         z = self.trunk(obs)
         mu = torch.tanh(self.mu_head(z))          # 가감속 평균 ∈ [-1,1]
         std = torch.exp(self.log_std)
+        brake_mask = self.brake_exploration_mask(obs)
+        if brake_mask is not None:
+            # Both rollout sampling and PPO log-prob must use this same distribution.
+            std = torch.where(brake_mask, std.clamp_min(self.brake_explore_std), std)
         lane_logits = self.lane_head(z)
         return mu, std, lane_logits, self.v_head(z).squeeze(-1)
 

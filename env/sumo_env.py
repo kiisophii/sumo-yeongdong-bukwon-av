@@ -251,7 +251,11 @@ class SumoHighwayEnv(gym.Env):
         self.ego_id = "ego"        # SUMO 안에서 ego 차량을 식별하는 ID
         self.step_count = 0
         self.tof_junction_yield_weight = float(reward.get("tof_junction_yield_weight", 0.0))
-        self._tof_yield_reward_hazard = False
+        self.tof_junction_entry_penalty = float(reward.get("tof_junction_entry_penalty", 0.0))
+        self.tof_junction_brake_weight = float(reward.get("tof_junction_brake_weight", 0.0))
+        self.tof_junction_yield_preview = bool(reward.get("tof_junction_yield_preview", False))
+        self.tof_junction_yield_reaction_s = float(reward.get("tof_junction_yield_reaction_s", 1.5))
+        self._tof_yield_hazard = False
         self.tof_route_stall_weight = float(reward.get("tof_route_stall_weight", 0.0))
         self._tof_route_stall_time = 0.0
         self._tof_route_stall_yield = False
@@ -390,6 +394,8 @@ class SumoHighwayEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        options = options or {}
+        focus_lane = options.get("tof_junction_focus_lane") if options.get("tof_junction_focus") else None
         self._tof_route_stall_time = 0.0
         self._tof_route_stall_yield = False
         # (팀14 실험) ASSIST_PROB=p: 판마다 확률 p로만 보조 규칙을 켠다 (보조 바퀴 학습).
@@ -420,6 +426,7 @@ class SumoHighwayEnv(gym.Env):
         # 하는 비용(~1.3초)이 사라지고, 교통 상황은 계속 변하므로 다양성도
         # 유지된다. 안전을 위해 reuse_episodes마다 한 번은 완전히 재시작.
         reuse = (self._started and self.osm_mode and not self.gui
+                 and not focus_lane
                  and self.reuse_episodes > 0
                  and self._episodes_since_start < self.reuse_episodes)
         if reuse and self.tof:
@@ -479,14 +486,23 @@ class SumoHighwayEnv(gym.Env):
         #   출발시킨다 (학습용 커리큘럼, 주행 보조 아님). 평가 때는 설정하지 않는다 → 항상 0 m에서 출발.
         self.hard_start = None
         depart_speed = self.ego_depart_speed
+        depart_pos = "0"
+        junction_focus = False
+        focus_exit_edge = None
         normal_add = (route_id, depart_lane, depart_speed)
+        if options.get("tof_junction_focus"):
+            start = self._tof_junction_start(route_id, focus_lane=focus_lane)
+            if start is not None:
+                route_id, depart_lane, depart_pos, focus_exit_edge = start
+                depart_speed = "max"
+                junction_focus = True
         hs = float(os.environ.get("HARD_START_PROB", "0") or 0)
-        if hs > 0 and float(np.random.random()) < hs:
+        if not junction_focus and hs > 0 and float(np.random.random()) < hs:
             picked = self._hard_start_route(route_id)
             if picked is not None:
                 route_id, self.hard_start = picked
                 depart_lane, depart_speed = "best", "max"
-        self._add_ego(route_id, depart_lane, depart_speed)
+        self._add_ego(route_id, depart_lane, depart_speed, depart_pos=depart_pos)
 
         # ── ego 삽입 보증 ──
         # 도로 입구는 flow가 차를 스폰하는 자리라, 시작 차선 입구가 잠시
@@ -497,13 +513,14 @@ class SumoHighwayEnv(gym.Env):
         while self.ego_id not in traci.vehicle.getIDList() and _wait < 30:
             traci.simulationStep()
             _wait += 1
-        if self.ego_id not in traci.vehicle.getIDList() and self.hard_start is not None:
+        if self.ego_id not in traci.vehicle.getIDList() and (self.hard_start is not None or junction_focus):
             # 어려운 구간 출발 자리가 꽉 막혀 있으면 원래 출발점으로 되돌린다
             try:
                 traci.vehicle.remove(self.ego_id)
             except traci.TraCIException:
                 pass
             self.hard_start = None
+            junction_focus = False
             self._add_ego(*normal_add)
             _wait = 0
             while self.ego_id not in traci.vehicle.getIDList() and _wait < 30:
@@ -543,7 +560,12 @@ class SumoHighwayEnv(gym.Env):
                 pass
 
         self.step_count = 0
-        return self._get_obs(), {}
+        info = {}
+        if junction_focus:
+            info["tof_junction_focus"] = True
+            if focus_lane:
+                info["tof_junction_focus_exit_edge"] = focus_exit_edge
+        return self._get_obs(), info
 
     # ==================================================================
     # 관측 만들기 (레이아웃은 env/mdp_config.py 주석 참고)
@@ -1044,19 +1066,19 @@ class SumoHighwayEnv(gym.Env):
                     (signal_distance <= near and signal_color <= 0.0)
                     or (junction_distance <= near and must_yield > 0.0 and conflict >= 0.0)
                 )
-            if self.tof_junction_yield_weight > 0.0 and self.junction_obs:
+            if self.junction_obs:
                 # 후방 밀도 슬롯을 붙이기 전의 교차로 관측은 양보 여부와 교차 차량 여부로 끝난다.
-                self._tof_yield_reward_hazard = obs[-2] > 0 and obs[-1] > 0
+                self._tof_yield_hazard = obs[-2] > 0 and obs[-1] > 0
             side_rear = (rear_density[1], rear_density[-1]) if self.tof.get("rear_density", True) else (0.0, 0.0)
             obs.extend(side_rear)
 
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
 
-    def _add_ego(self, route_id, depart_lane, depart_speed):
+    def _add_ego(self, route_id, depart_lane, depart_speed, *, depart_pos="0"):
         """ego를 넣고 SUMO 자동 제어를 끈 뒤 1스텝 진행한다."""
         traci.vehicle.add(self.ego_id, route_id, typeID="ego_type",
                           departLane=depart_lane,
-                          departPos="0",
+                          departPos=depart_pos,
                           departSpeed=depart_speed)
         # ★ 중요: speedMode=0 → SUMO의 내장 안전장치(자동 안전제동 등)를 전부 끔.
         #   이걸 꺼야 RL이 속도를 온전히 제어하고, 잘못 배우면 실제로 충돌한다.
@@ -1070,6 +1092,38 @@ class SumoHighwayEnv(gym.Env):
         # SUMO의 자율 차선변경은 끄고, RL이 내리는 TraCI 차선변경 명령만 사용한다.
         traci.vehicle.setLaneChangeMode(self.ego_id, 0)
         traci.simulationStep()  # ego가 실제로 도로에 나타나도록 1스텝 진행
+
+    def _tof_junction_start(self, route_id, *, focus_lane=None):
+        """Sample an approach to an unsignalized yield movement on the chosen route."""
+        from .tof_observation import YIELD_CONNECTION_STATES
+
+        if self._outgoing is None:
+            self._build_lane_tables()
+        edges = traci.route.getEdges(route_id)
+        candidates = []
+        for index, (edge, following) in enumerate(zip(edges, edges[1:])):
+            for lane in self._edge_lanes[edge]:
+                if focus_lane and lane.getID() != focus_lane:
+                    continue
+                if lane.getLength() < 30.0 or not lane.allows("passenger"):
+                    continue
+                for link in lane.getOutgoing():
+                    if (link.getTo().getID() == following and not link.getTLSID()
+                            and link.getState() in YIELD_CONNECTION_STATES
+                            and link.getJunction().hasFoes()):
+                        candidates.append((index, lane))
+                        break
+        if not candidates:
+            if focus_lane:
+                raise ValueError(f"ToF 집중 학습 차로 {focus_lane!r}를 경로 {route_id!r}에서 찾을 수 없습니다.")
+            return None
+        index, lane = candidates[int(self.np_random.integers(len(candidates)))]
+        length = lane.getLength()
+        distance = self.np_random.uniform(25.0, min(65.0, length))
+        focus_id = f"tof_junction_{route_id}_{index}"
+        if focus_id not in traci.route.getIDList():
+            traci.route.add(focus_id, edges[index:])
+        return focus_id, str(lane.getIndex()), str(length - distance), edges[index + 1]
 
     _HARD_START_TARGETS = "474882669#1-AddedOnRampEdge,1307152438,1235185544"
 
@@ -1692,10 +1746,14 @@ class SumoHighwayEnv(gym.Env):
         lane_id_before, road_before = None, None
         self._lc_block_reason = None
         tof_yield_approach_penalty = 0.0
+        tof_yield_brake_needed = False
+        tof_yield_brake_penalty = 0.0
 
         # (팀14) 신호·양보 위반 판정용: 행동 적용 전 "바로 앞" 신호와 교차로 상태
         pre_tls, pre_jun = None, None
         alive_before = self.ego_id in traci.vehicle.getIDList()
+        # 정책이 이번 행동을 고를 때 본 위험 표시를 기록한다.
+        tof_yield_hazard = alive_before and self._tof_yield_hazard
         if self.junction_obs and alive_before:
             try:
                 nxt = traci.vehicle.getNextTLS(self.ego_id)
@@ -1963,15 +2021,35 @@ class SumoHighwayEnv(gym.Env):
                          else _dv / (self.max_decel * self.step_length))
             self._action_executed = (float(np.clip(_acc_exec, -1.0, 1.0)), float(lane_change))
             self._assist_intervened = (abs(v_new - _v_policy) > 1e-6) or (lane_change != lane_change_policy)
-            if self._tof_yield_reward_hazard:
+            if tof_yield_hazard and (self.tof_junction_yield_weight > 0.0
+                                     or self.tof_junction_brake_weight > 0.0):
                 remaining = (traci.lane.getLength(lane_id_before)
                              - traci.vehicle.getLanePosition(self.ego_id))
-                # 이번 스텝 이동 거리와 이후 제동 거리의 합을 정지 여유와 비교한다.
                 distance = max(0.0, remaining - 2.0)
-                decel = min(2.5, self.max_decel)
-                stopping_distance = v_new * self.step_length + v_new ** 2 / (2.0 * decel)
-                excess = min(1.0, max(0.0, stopping_distance - distance) / 10.0)
-                tof_yield_approach_penalty = self.tof_junction_yield_weight * excess
+                preview_time = max(self.tof_junction_yield_reaction_s, self.step_length)
+                if self.tof_junction_yield_weight > 0.0:
+                    if self.tof_junction_yield_preview:
+                        reaction_time = preview_time
+                        decel = min(1.5, self.max_decel)
+                        # 제한속도로 실행 속도가 고정되어도 가속 명령에는 감점 차이를 남긴다.
+                        accel_scale = 0.75 + 0.25 * accel_raw
+                    else:
+                        reaction_time = self.step_length
+                        decel = min(2.5, self.max_decel)
+                        accel_scale = 1.0
+                    stopping_distance = v_new * reaction_time + v_new ** 2 / (2.0 * decel)
+                    excess = min(1.0, max(0.0, stopping_distance - distance) / 10.0)
+                    tof_yield_approach_penalty = self.tof_junction_yield_weight * excess * accel_scale
+                if self.tof_junction_brake_weight > 0.0:
+                    decel = min(1.5, self.max_decel)
+                    reaction_term = decel * preview_time
+                    stop_speed = float(np.sqrt(reaction_term ** 2 + 2.0 * decel * distance) - reaction_term)
+                    if v > stop_speed + 1e-6:
+                        tof_yield_brake_needed = True
+                        # Compare commands even when the executed speed is clipped at the limit.
+                        target = -min(decel, (v - stop_speed) / self.step_length) / self.max_decel
+                        deficit = max(0.0, accel_raw - target) / (1.0 - target)
+                        tof_yield_brake_penalty = self.tof_junction_brake_weight * deficit
             lane_change_applied = self._apply_lane_change(lane_change, alive=alive_before)
             if (track_route_lane_bonus
                     and lane_change_applied and lane_change and not self._assist_intervened):
@@ -2006,6 +2084,20 @@ class SumoHighwayEnv(gym.Env):
         lane_after = int(traci.vehicle.getLaneIndex(self.ego_id)) if alive else None
         lane_id_after = traci.vehicle.getLaneID(self.ego_id) if alive else None
         road_after = lane_id_after.rsplit("_", 1)[0] if lane_id_after else None
+        tof_yield_risky_entry = False
+        if tof_yield_hazard and lane_id_before and not lane_id_before.startswith(":") and not teleported:
+            # A new edge includes both the internal lane and traversal of a short junction in one step.
+            tof_yield_risky_entry = road_after is not None and road_after != road_before
+            if road_after is None and vehicle_collision:
+                # SUMO can remove the ego on the same tick as entry. Use the
+                # collision location to recover the crossing, not to label the risk.
+                node_id = self._road_net.getEdge(edge_before).getToNode().getID()
+                tof_yield_risky_entry = any(
+                    self.ego_id in (event.collider, event.victim)
+                    and event.lane.startswith(f":{node_id}_")
+                    for event in traci.simulation.getCollisions()
+                )
+        tof_yield_entry_penalty = self.tof_junction_entry_penalty if tof_yield_risky_entry else 0.0
         # (팀14) 실제로 차로가 바뀌었는지 (같은 edge 안에서). MERGE_SUMO처럼 SUMO가 옮긴 경우도
         #   잡아서 핑퐁 쿨다운(_last_lc)이 알게 한다 (Fable 검토 H4)
         lane_change_executed = 0
@@ -2135,6 +2227,8 @@ class SumoHighwayEnv(gym.Env):
         if yield_violation and not terminated:
             reward -= float(self.rw.get("yield_penalty", 0.0))
         reward -= tof_yield_approach_penalty
+        reward -= tof_yield_entry_penalty
+        reward -= tof_yield_brake_penalty
 
         if self.step_count >= self.max_steps:
             truncated = True
@@ -2158,7 +2252,14 @@ class SumoHighwayEnv(gym.Env):
         info = {
             "collided": collided,
             "vehicle_collision": vehicle_collision,
+            "tof_yield_hazard": tof_yield_hazard,
+            "tof_yield_decelerated": (tof_yield_hazard and alive
+                                     and traci.vehicle.getSpeed(self.ego_id) < v - 1e-6),
             "tof_yield_approach_penalty": tof_yield_approach_penalty,
+            "tof_yield_risky_entry": tof_yield_risky_entry,
+            "tof_yield_entry_penalty": tof_yield_entry_penalty,
+            "tof_yield_brake_needed": tof_yield_brake_needed,
+            "tof_yield_brake_penalty": tof_yield_brake_penalty,
             "teleported": teleported,
             "end_reason": end_reason,
             "end_lane": (lane_id_before if vehicle_collision or teleported

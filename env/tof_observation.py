@@ -6,6 +6,9 @@ from math import hypot, isfinite
 from .tof_perception import offset
 
 
+YIELD_CONNECTION_STATES = {"m", "=", "s", "w", "Z"}
+
+
 class Path:
     def __init__(self, points):
         self.segments = []
@@ -262,7 +265,7 @@ class ToFObservation:
         distance = path.length - reference[0]
         connection = next((c for c in lane.getOutgoing() if c.getTo().getID() == next_edge_id), None)
         if (distance > self.junction_range or connection is None or connection.getTLSID()
-                or connection.getState() not in {"m", "=", "s", "w", "Z"}):
+                or connection.getState() not in YIELD_CONNECTION_STATES):
             return signal + [1.0, -1.0, -1.0]
         paths = self._conflicting_approaches(connection)
         clear = bool(paths)

@@ -20,6 +20,7 @@ class RunLogger:
         self.run_dir = run_dir
         self.train_rows = []   # 학습 곡선 기록
         self.eval_rows = []    # 평가 지표 기록
+        self.junction_diagnostic_rows = []
         self.writer = None
 
         if use_tensorboard:
@@ -68,11 +69,15 @@ class RunLogger:
             self.writer.add_scalar("episode/return", ep_return, step)
             self.writer.add_scalar("episode/length", ep_length, step)
 
+    def log_junction_diagnostics(self, update: int, rows: list):
+        self.junction_diagnostic_rows.extend({"update": update, **row} for row in rows)
+
     # ------------------------------------------------------------------
     def save_csv(self):
         """모아둔 기록을 CSV 파일로 저장."""
         for name, rows in [("training_log.csv", self.train_rows),
-                           ("eval_log.csv", self.eval_rows)]:
+                           ("eval_log.csv", self.eval_rows),
+                           ("junction_ppo_diagnostic.csv", self.junction_diagnostic_rows)]:
             if not rows:
                 continue
             # 모든 행의 키를 합집합으로 모아 헤더를 만든다 (키가 달라도 안전)
