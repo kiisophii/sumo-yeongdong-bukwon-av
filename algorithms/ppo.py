@@ -210,10 +210,14 @@ class PPO:
         obs = state
         finished_returns = []
         self.buffer.clear()
+        track_route_bonus = getattr(env, "tof_route_lane_bonus", 0.0) > 0.0
+        self._rollout_route_lane_bonus_events = 0 if track_route_bonus else None
 
         for _ in range(self.n_steps):
             action, log_prob, value = self.act(obs)
             next_obs, reward, terminated, truncated, _info = env.step(action)
+            if track_route_bonus and _info.get("tof_route_lane_bonus", 0.0) > 0.0:
+                self._rollout_route_lane_bonus_events += 1
             # (팀14 실험) EXEC_ACTION_BUFFER=1: 보조 규칙이 행동을 바꿨으면, 버퍼에는 실제로 실행된
             #   행동과 그 행동의 현재 정책 log-prob을 넣는다. 그래야 보상과 행동이 맞아서
             #   정책이 "규칙이 한 일"을 배운다 (안 하면 정책 행동과 보상이 어긋남).
@@ -380,6 +384,8 @@ class PPO:
                 "std": self.policy.current_std,
                 **stats,
             }
+            if self._rollout_route_lane_bonus_events is not None:
+                metrics["tof_route_lane_bonus_events"] = self._rollout_route_lane_bonus_events
             if logger is not None:
                 logger.log_train(self.num_timesteps, metrics,
                                  verbose=(n_updates % log_interval == 0))

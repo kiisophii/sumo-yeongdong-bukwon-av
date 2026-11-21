@@ -100,6 +100,8 @@ OBSERVATION = {
         "horizontal_fov_deg": 120.0,
         "azimuths_deg": (0.0, -130.0, 130.0),    # 정면·좌측후방·우측후방
         "rear_density": __import__("os").environ.get("TEAM14_TOF_REAR_DENSITY", "1") == "1",
+        "lead_hold_s": float(__import__("os").environ.get("TEAM14_TOF_LEAD_HOLD_S", "0")),
+        "lead_gap_window": __import__("os").environ.get("TEAM14_TOF_LEAD_GAP_WINDOW") == "1",
     } if __import__("os").environ.get("TEAM14_TOF_OBS") == "1" else None,
 }
 
@@ -188,6 +190,8 @@ REWARD = {
                                  #   (80 km/h 구간에서 80으로 달려도 만점),
                                  #   "global" = 도로 전체 vmax (직선 도로 기본)
     "speed_weight": 0.1,         # 속도 보상 가중치. 한 스텝 최대 +0.1
+    "tof_unseen_speed_penalty": 0.0,  # ToF 앞차 미검출·시야 미확인 상태의 초과 속도 감점 계수
+    "tof_unseen_speed_fraction": 0.5,  # 감점을 시작하는 속도 / 현재 보상 기준 속도
     "close_gap_threshold": 6.0, # 앞차와 이 거리(m) 미만으로 붙으면 (좁게 따라붙기 허용:
                                  #  10→6m 완화. 추월 직전 대기 위치를 잡기 쉬워짐)
     "close_gap_penalty": 0.1,    #   → 스텝당 이만큼 감점

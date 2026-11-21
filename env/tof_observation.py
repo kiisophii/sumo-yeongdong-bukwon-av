@@ -1,6 +1,7 @@
 """Project visible ego sensor tracks onto local navigation-map geometry."""
 
-from math import hypot
+from dataclasses import dataclass
+from math import hypot, isfinite
 
 from .tof_perception import offset
 
@@ -31,10 +32,24 @@ class Path:
         return result
 
     def point_at(self, position):
+        pose = self.pose_at(position)
+        return pose[0] if pose is not None else None
+
+    def pose_at(self, position):
         for start, length, a, tangent in self.segments:
             if start <= position <= start + length:
-                return offset(a, tangent, position - start)
+                return offset(a, tangent, position - start), tangent
         return None
+
+
+@dataclass(frozen=True)
+class _LastLead:
+    track_id: str
+    observed_at: float
+    path: Path
+    position: float
+    length: float
+    speed: float
 
 
 def _shape(lane):
@@ -47,11 +62,17 @@ def _connection_shape(connection, net):
 
 
 class ToFObservation:
-    def __init__(self, net, visibility, nominal_spacing, junction_range):
+    def __init__(self, net, visibility, nominal_spacing, junction_range, *,
+                 lead_hold_s=0.0, lead_gap_window=False):
+        if not isfinite(lead_hold_s) or lead_hold_s < 0.0:
+            raise ValueError("ToF lead_hold_s must be finite and non-negative")
         self.net = net
         self.window = visibility
         self.spacing = nominal_spacing
         self.junction_range = junction_range
+        self.lead_hold_s = lead_hold_s
+        self.lead_gap_window = lead_gap_window
+        self._last_lead = None
         self.lane_paths = {}
         self.foe_paths = {}
         self.signal_points = {
@@ -90,7 +111,36 @@ class ToFObservation:
                    for fraction in (0.2, 0.5, 0.8))
         return 0.0 if all(p is not None and frame.visible(p) for p in samples) else -1.0
 
-    def lanes(self, frame, lane_id, offsets, ego_length, ego_speed):
+    def reset_lead_history(self):
+        self._last_lead = None
+
+    def _estimate_lead(self, frame, window, ego_length, now):
+        previous = self._last_lead
+        if previous is None:
+            return None
+        # Retire the estimate if the target is now measured outside the current lane.
+        age = now - previous.observed_at
+        if not 0.0 < age <= self.lead_hold_s or previous.track_id in frame.tracks:
+            self.reset_lead_history()
+            return None
+
+        path, ref, width = window
+        pose = previous.path.pose_at(previous.position + previous.speed * age)
+        projection = path.project(*pose) if pose is not None else None
+        if projection is not None:
+            along, lateral = projection
+            delta = along - ref
+            gap = max(0.0, delta - (ego_length + previous.length) / 2)
+            range_distance = gap if self.lead_gap_window else delta
+            # A clear line of sight without a fresh return invalidates the estimate.
+            if (lateral <= width / 2 and delta > 0.0 and range_distance <= self.window
+                    and not frame.visible(pose[0])):
+                return gap, previous.speed
+
+        self.reset_lead_history()
+        return None
+
+    def lanes(self, frame, lane_id, offsets, ego_length, ego_speed, *, now=None):
         lane = self.net.getLane(lane_id)
         edge_lanes = lane.getEdge().getLanes()
         windows = {}
@@ -104,21 +154,41 @@ class ToFObservation:
                     windows[side] = (path, prefix + origin[0], target.getWidth())
 
         hits = {side: [] for side in windows}
-        for track in frame.tracks.values():
+        remember_lead = self.lead_hold_s > 0.0 and now is not None
+        select_lead = remember_lead or self.lead_gap_window
+        current_lead = None
+        for track_id, track in frame.tracks.items():
             possible = []
+            extended_delta = None
+            half_lengths = (ego_length + track.length) / 2
             for side, (path, ref, width) in windows.items():
                 position = path.project(track.center, track.direction)
                 if position is None:
                     continue
                 along, lateral = position
                 delta = along - ref
-                if lateral <= width / 2 and abs(delta) <= self.window:
+                if lateral > width / 2:
+                    continue
+                if abs(delta) <= self.window:
                     possible.append((lateral, abs(side), side, delta))
+                elif self.lead_gap_window and side == 0 and 0.0 < delta <= self.window + half_lengths:
+                    extended_delta = delta
             if possible:
                 _, _, side, delta = min(possible)
-                gap = max(0.0, abs(delta) - (ego_length + track.length) / 2)
-                speed = ego_speed if track.speed is None else track.speed
+            elif extended_delta is not None:
+                # Use unassigned tracks at the edge of the window only for the ego-lane lead.
+                side, delta = 0, extended_delta
+            else:
+                continue
+            gap = max(0.0, abs(delta) - half_lengths)
+            speed = ego_speed if track.speed is None else track.speed
+            if possible:
                 hits[side].append((delta, gap, speed))
+            if select_lead and side == 0 and delta > 0.0:
+                reading = gap, speed
+                if current_lead is None or reading < current_lead[0]:
+                    path, ref, _ = windows[0]
+                    current_lead = reading, track_id, track, path, ref + delta
 
         neighbors, front_density, rear_density = {}, {}, {}
         for side in offsets:
@@ -132,6 +202,20 @@ class ToFObservation:
             neighbors[side] = (min(front, default=None), min(rear, default=None))
             front_density[side] = self._density(path, ref, len(front), 1, frame)
             rear_density[side] = self._density(path, ref, len(rear), -1, frame)
+
+        if current_lead is not None:
+            reading, track_id, track, path, position = current_lead
+            if self.lead_gap_window:
+                neighbors[0] = reading, neighbors[0][1]
+            if remember_lead:
+                self._last_lead = None if track.speed is None else _LastLead(
+                    track_id, now, path, position, track.length, track.speed,
+                )
+        elif remember_lead and 0 in windows:
+            estimate = self._estimate_lead(frame, windows[0], ego_length, now)
+            if estimate is not None:
+                # Only fill the PPO lead slots; density uses current measurements.
+                neighbors[0] = estimate, neighbors[0][1]
         return neighbors, front_density, rear_density
 
     def _conflicting_approaches(self, connection):

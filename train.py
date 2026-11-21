@@ -16,6 +16,7 @@
 import os
 import shutil
 from datetime import datetime
+from math import isfinite
 
 from env.road_config import ROAD, EGO, TRAFFIC
 from env.mdp_config import SIMULATION, OBSERVATION, ACTION
@@ -158,6 +159,8 @@ if __name__ == "__main__":
     _ap.add_argument("--gamma", type=float, help="할인율 (기본: HPARAMS['gamma'])")
     _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
     _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
+    _ap.add_argument("--tof-merge-gap-weight", type=float, default=0.0,
+                     help="ToF 차로 끝 합류 간격 확보를 위한 속도 감점 계수")
     _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
     _ap.add_argument("--ckpt-every", type=int, default=0,
                      help="(팀14) 이 스텝마다 중간 모델 저장 (run폴더/checkpoints). 0 = 안 함")
@@ -165,19 +168,52 @@ if __name__ == "__main__":
                      help="(팀14) 충돌·경로이탈 벌점 (기본 5)")
     _ap.add_argument("--arrival-bonus", type=float, default=None,
                      help="(팀14) 완주 보너스 (기본 2)")
+    _ap.add_argument("--tof-route-lane-bonus", type=float, default=0.0,
+                     help="안전하게 차로를 옮겨 앞 경로에 필요한 변경 횟수를 줄일 때 보상")
     _ap.add_argument("--blocked-penalty", type=float, default=None,
                      help="(팀14) 느린 앞차에 막힘 스텝당 감점 (기본 0.05)")
+    _ap.add_argument("--tof-unseen-speed-penalty", type=float, default=0.0,
+                     help="ToF 앞차 미검출·시야 미확인 상태의 초과 속도 감점 계수")
     _ap.add_argument("--init-model", default=None,
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _ap.add_argument("--seed", type=int, default=None,
                      help="(팀14) 난수 시드 (기본: HPARAMS['seed']=0). 같은 설정 반복 실험용")
+    _ap.add_argument("--tof-junction-yield-weight", type=float, default=0.0,
+                     help="ToF가 양보 대상 차량을 감지했을 때 제동 여유 부족에 대한 감점 상한")
+    _ap.add_argument("--tof-route-stall-weight", type=float, default=0.0,
+                     help="경로를 잇는 옆 차로에 들어갈 여유가 있는데 저속으로 머무를 때 감점 상한")
     _args = _ap.parse_args()
+    _tof_penalty = _args.tof_unseen_speed_penalty
+    if not isfinite(_tof_penalty) or _tof_penalty < 0.0:
+        _ap.error("--tof-unseen-speed-penalty 값은 0 이상의 유한수여야 합니다.")
+    if _tof_penalty > 0.0 and not OBSERVATION["tof"]:
+        _ap.error("--tof-unseen-speed-penalty를 사용하려면 TEAM14_TOF_OBS=1을 설정하세요.")
+    REWARD["tof_unseen_speed_penalty"] = _tof_penalty
+    _route_lane_bonus = _args.tof_route_lane_bonus
+    if not isfinite(_route_lane_bonus) or _route_lane_bonus < 0.0:
+        _ap.error("--tof-route-lane-bonus 값은 0 이상의 유한수여야 합니다.")
+    if _route_lane_bonus > 0.0 and not (OBSERVATION["tof"] and ROAD.get("type") == "osm"):
+        _ap.error("--tof-route-lane-bonus 사용에는 OSM 도로와 ToF 관측이 필요합니다.")
+    REWARD["tof_route_lane_bonus"] = _route_lane_bonus
+    if _route_lane_bonus > 0.0:
+        print(f"ToF 경로 차로 변경 보상: +{_route_lane_bonus:g}/변경 횟수 감소")
     for _k, _v in (("collision_penalty", _args.collision_penalty), ("arrival_bonus", _args.arrival_bonus),
                    ("blocked_penalty", _args.blocked_penalty)):
         if _v is not None:
             REWARD[_k] = _v
     print(f"보상: 충돌 -{REWARD['collision_penalty']}, 완주 +{REWARD['arrival_bonus']}, "
           f"막힘 -{REWARD.get('blocked_penalty', 0.0)}")
+    if _tof_penalty > 0.0:
+        print(f"ToF 전방 시야 미확인 감점: 계수={_tof_penalty:g}, "
+              f"시작 속도 비율={REWARD['tof_unseen_speed_fraction']:g}")
+    _merge_weight = _args.tof_merge_gap_weight
+    if not isfinite(_merge_weight) or _merge_weight < 0.0:
+        _ap.error("--tof-merge-gap-weight 값은 0 이상의 유한수여야 합니다.")
+    if _merge_weight > 0.0 and not OBSERVATION["tof"]:
+        _ap.error("--tof-merge-gap-weight를 사용하려면 TEAM14_TOF_OBS=1을 설정하세요.")
+    REWARD["tof_merge_gap_weight"] = _merge_weight
+    if _merge_weight > 0.0:
+        print(f"ToF 합류 간격 확보 감점: 계수={_merge_weight:g}")
     if _args.lr is not None:
         HPARAMS["lr"] = _args.lr
     if _args.gamma is not None:
@@ -188,6 +224,23 @@ if __name__ == "__main__":
         TOTAL_TIMESTEPS = _args.timesteps
     if _args.seed is not None:
         HPARAMS["seed"] = _args.seed
+    _yield_weight = _args.tof_junction_yield_weight
+    if not 0.0 <= _yield_weight < float("inf"):
+        _ap.error("--tof-junction-yield-weight 값은 0 이상의 유한수여야 합니다.")
+    if _yield_weight > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]):
+        _ap.error("--tof-junction-yield-weight 사용에는 ToF와 교차로 관측을 켜야 합니다.")
+    REWARD["tof_junction_yield_weight"] = _yield_weight
+    if _yield_weight > 0.0:
+        print(f"ToF 교차로 양보 접근 감점: 최대={_yield_weight:g}/step")
+    _stall_weight = _args.tof_route_stall_weight
+    if not isfinite(_stall_weight) or _stall_weight < 0.0:
+        _ap.error("--tof-route-stall-weight 값은 0 이상의 유한수여야 합니다.")
+    if _stall_weight > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                   and ROAD.get("type") == "osm"):
+        _ap.error("--tof-route-stall-weight 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
+    REWARD["tof_route_stall_weight"] = _stall_weight
+    if _stall_weight > 0.0:
+        print(f"ToF 경로 차로 정체 감점: 최대={_stall_weight:g}/step")
 
     # 1) 도로 생성 (env/road_config.py 기준으로 매번 재생성)
     sumocfg = road_builder.build(ROAD, EGO, TRAFFIC,
@@ -204,8 +257,15 @@ if __name__ == "__main__":
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
+                   "tof_junction_yield_weight": _yield_weight,
+                   "tof_route_stall_weight": _stall_weight,
                    "total_timesteps": TOTAL_TIMESTEPS,
-                   "tof_observation": OBSERVATION["tof"]}, f, ensure_ascii=False, indent=2)
+                   "tof_merge_gap_weight": _merge_weight,
+                   "tof_route_lane_bonus": _route_lane_bonus,
+                   "tof_observation": OBSERVATION["tof"],
+                   "tof_unseen_speed_penalty": _tof_penalty,
+                   "tof_unseen_speed_fraction": REWARD["tof_unseen_speed_fraction"]},
+                  f, ensure_ascii=False, indent=2)
     logger = RunLogger(run_dir)
     print(f"결과 폴더: {run_dir}")
 

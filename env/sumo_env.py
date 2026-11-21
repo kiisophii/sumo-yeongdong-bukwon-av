@@ -235,7 +235,13 @@ class SumoHighwayEnv(gym.Env):
         self.lane_change_index = int(action.get("lane_change_index", 1))
         self.lane_change_threshold = float(action.get("lane_change_threshold", 0.5))
         self.lane_change_duration = float(action.get("lane_change_duration", 1.0))
+        self.tof_merge_gap_weight = float(reward.get("tof_merge_gap_weight", 0.0))
         self.rw = reward
+        self.tof_route_lane_bonus = float(reward.get("tof_route_lane_bonus", 0.0))
+        self._route_lane_bonus_edge = None
+        self._route_lane_bonus_visited = set()
+        self.tof_unseen_speed_penalty = float(reward.get("tof_unseen_speed_penalty", 0.0))
+        self.tof_unseen_speed_fraction = float(reward.get("tof_unseen_speed_fraction", 0.5))
 
         # GUI는 ego를 따라가며 가까이 보이도록 기본값을 둔다.
         self.gui_zoom = float(mdp_sim.get("gui_zoom", 1200.0))
@@ -244,6 +250,11 @@ class SumoHighwayEnv(gym.Env):
 
         self.ego_id = "ego"        # SUMO 안에서 ego 차량을 식별하는 ID
         self.step_count = 0
+        self.tof_junction_yield_weight = float(reward.get("tof_junction_yield_weight", 0.0))
+        self._tof_yield_reward_hazard = False
+        self.tof_route_stall_weight = float(reward.get("tof_route_stall_weight", 0.0))
+        self._tof_route_stall_time = 0.0
+        self._tof_route_stall_yield = False
         self._started = False      # SUMO 프로세스가 떠 있는지 여부
 
         # Gymnasium 행동 공간:
@@ -379,6 +390,8 @@ class SumoHighwayEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
+        self._tof_route_stall_time = 0.0
+        self._tof_route_stall_yield = False
         # (팀14 실험) ASSIST_PROB=p: 판마다 확률 p로만 보조 규칙을 켠다 (보조 바퀴 학습).
         #   규칙이 꺼진 판에서는 정책이 직접 하다 실패하며 배운다. 설정 안 하면 기존과 같음.
         ap = os.environ.get("ASSIST_PROB")
@@ -395,6 +408,8 @@ class SumoHighwayEnv(gym.Env):
         self._merge_speed = None
         self._sumo_lc_on = False
         self._last_lc = (0, -1e9)
+        self._route_lane_bonus_edge = None
+        self._route_lane_bonus_visited.clear()
         self._merge_wait = -9
         self._yield_wait = 0
         self._yield_release = -1
@@ -502,6 +517,8 @@ class SumoHighwayEnv(gym.Env):
         if self.tof:
             self._tof_time = None
             self._tof_positions = {}
+            if self._tof_geometry is not None:
+                self._tof_geometry.reset_lead_history()
             self._tof_length = traci.vehicle.getLength(self.ego_id)
             # Keep a margin for bodies whose front bumpers are outside the sensor range.
             traci.vehicle.subscribeContext(
@@ -660,6 +677,81 @@ class SumoHighwayEnv(gym.Env):
             }
         return self._lane_change_targets[key]
 
+    def _tof_route_escape_available(self, edge, lane):
+        """차로 끝에 가까울 때 경로를 잇는 인접 차로로 갈 여유가 있는지 본다."""
+        if edge not in self._edge_lanes or self._tof_route_stall_yield:
+            return False
+        ego = self.ego_id
+        route = traci.vehicle.getRoute(ego)
+        index = traci.vehicle.getRouteIndex(ego)
+        if not 0 <= index < len(route) - 1 or route[index] != edge:
+            return False
+
+        lanes = self._edge_lanes[edge]
+        remaining = lanes[lane].getLength() - traci.vehicle.getLanePosition(ego)
+        if remaining > 100.0:
+            return False
+        neighbors, front_density, rear_density = self._tof_lanes
+        lead = neighbors[0][0]
+        if lead is not None and lead[0] <= 8.0:
+            return False
+
+        next_edge = route[index + 1]
+        vehicle_class = traci.vehicle.getVehicleClass(ego)
+
+        def connects(lane_index):
+            return any(c.getTo().getID() == next_edge and c.getToLane().allows(vehicle_class)
+                       for c in lanes[lane_index].getOutgoing())
+
+        if connects(lane):
+            return False
+        for target in self._lane_change_neighbors(edge, vehicle_class).get(lane, ()):
+            direction = target - lane
+            if (connects(target) and front_density[direction] >= 0.0
+                    and rear_density[direction] >= 0.0 and self._lane_change_is_safe(direction)):
+                return True
+        return False
+
+    def _route_lane_bonus_candidate(self, edge, current, target):
+        """안전한 차로 변경이 앞 경로에 필요한 최소 변경 횟수를 줄이는지 판정한다."""
+        if edge not in self._edge_lanes:
+            return False
+
+        ego = self.ego_id
+        route = traci.vehicle.getRoute(ego)
+        index = traci.vehicle.getRouteIndex(ego)
+        if not 0 <= index < len(route) - 1 or route[index] != edge:
+            return False
+
+        lanes = self._edge_lanes[edge]
+        remaining = lanes[current].getLength() - traci.vehicle.getLanePosition(ego)
+        if not 0.0 < remaining <= self.route_lookahead:
+            return False
+
+        vehicle_class = traci.vehicle.getVehicleClass(ego)
+        legal_targets = self._lane_change_neighbors(edge, vehicle_class).get(current, ())
+        if target not in legal_targets:
+            return False
+
+        window = self._route_lane_window(route, index, remaining)
+        plans = self._route_lane_plan(window, vehicle_class)
+        unreachable = (float("inf"), 0.0)
+        target_changes = plans.get(target, unreachable)[0]
+        # 현재 구간에서 이미 지났던 차로의 최선보다 좋아져야 재지급한다.
+        # 경로를 미리 보는 범위가 늘어나도 같은 기준으로 다시 비교한다.
+        best_changes = min(plans.get(lane, unreachable)[0] for lane in self._route_lane_bonus_visited)
+        if target_changes >= best_changes:
+            return False
+
+        direction = target - current
+        _, front_density, rear_density = self._tof_lanes
+        if front_density[direction] < 0.0 or rear_density[direction] < 0.0:
+            return False
+        # 안전 게이트가 꺼진 실험에서도 보상 판정에만 동일한 간격 기준을 적용한다.
+        if not self.lc_safety_enabled and not self._lane_change_is_safe(direction):
+            return False
+        return True
+
     def _route_lane_plan(self, route_window, vehicle_class):
         """차로별 (최소 변경 횟수, 첫 변경 마감까지의 거리)를 구한다."""
         key = (route_window, vehicle_class)
@@ -714,6 +806,14 @@ class SumoHighwayEnv(gym.Env):
         self._route_lane_plan_cache[key] = current_plans
         return current_plans
 
+    def _route_lane_window(self, route, index, distance):
+        """차로 연결을 비교할 때 분기까지 미리 볼 경로 구간들."""
+        last = index
+        while last + 1 < len(route) and distance <= self.route_lookahead:
+            last += 1
+            distance += self._edge_lanes[route[last]][0].getLength()
+        return tuple(route[index:last + 1])
+
     def _route_lane_observation(self):
         """현재 선택한 경로와 SUMO 차로 연결로 5개 차로 점수를 계산."""
         ego = self.ego_id
@@ -731,14 +831,7 @@ class SumoHighwayEnv(gym.Env):
         vehicle_class = traci.vehicle.getVehicleClass(ego)
         pos = traci.vehicle.getLanePosition(ego)
         distance = max(0.0, self._edge_lanes[edge][lane].getLength() - pos)
-        last = index
-        # 일반 도로 길이로 분기까지의 거리를 추정한다. 현재 edge가
-        # 예고 거리보다 짧으면, 그 끝에서 타야 하는 다음 edge를 포함한다.
-        while last + 1 < len(route) and distance <= self.route_lookahead:
-            last += 1
-            distance += self._edge_lanes[route[last]][0].getLength()
-
-        plans = self._route_lane_plan(tuple(route[index:last + 1]), vehicle_class)
+        plans = self._route_lane_plan(self._route_lane_window(route, index, distance), vehicle_class)
         # 정차했을 때도 차로 끝으로 갈수록 관측이 낮아지도록 5 m/s를
         # 시간 추정의 속도 하한으로 둔다 (차량 제어에는 적용하지 않음).
         speed = max(traci.vehicle.getSpeed(ego), 5.0)
@@ -879,12 +972,14 @@ class SumoHighwayEnv(gym.Env):
                     self._build_lane_tables()
                 self._tof_geometry = ToFObservation(
                     self._road_net, self.visibility, self.density_veh_len, self.junction_lookahead,
+                    lead_hold_s=self.tof.get("lead_hold_s", 0.0),
+                    lead_gap_window=self.tof.get("lead_gap_window", False),
                 )
             self._tof_scene = frame
             self._tof_lane_id = traci.vehicle.getLaneID(self.ego_id)
             self._tof_lanes = self._tof_geometry.lanes(
                 frame, self._tof_lane_id, self.obs_offsets, self._tof_length,
-                traci.vehicle.getSpeed(self.ego_id),
+                traci.vehicle.getSpeed(self.ego_id), now=now,
             )
             self._tof_positions, self._tof_time = frame.positions, now
         return self._tof_scene
@@ -941,6 +1036,17 @@ class SumoHighwayEnv(gym.Env):
             else:
                 obs += self._junction_features()
         if self.tof:
+            if self.tof_route_stall_weight > 0.0 and self.junction_obs:
+                # 후방 밀도 슬롯 전까지 마지막 6개는 신호와 교차로 관측이다.
+                signal_distance, signal_color, _, junction_distance, must_yield, conflict = obs[-6:]
+                near = 25.0 / self.junction_lookahead
+                self._tof_route_stall_yield = (
+                    (signal_distance <= near and signal_color <= 0.0)
+                    or (junction_distance <= near and must_yield > 0.0 and conflict >= 0.0)
+                )
+            if self.tof_junction_yield_weight > 0.0 and self.junction_obs:
+                # 후방 밀도 슬롯을 붙이기 전의 교차로 관측은 양보 여부와 교차 차량 여부로 끝난다.
+                self._tof_yield_reward_hazard = obs[-2] > 0 and obs[-1] > 0
             side_rear = (rear_density[1], rear_density[-1]) if self.tof.get("rear_density", True) else (0.0, 0.0)
             obs.extend(side_rear)
 
@@ -1344,6 +1450,35 @@ class SumoHighwayEnv(gym.Env):
                     return False
         return True
 
+    def _tof_merge_gap_penalty(self, edge, lane, ahead, speed, speed_ref):
+        """계속 갈 수 있는 옆 차로가 막혔을 때 합류 여유를 남기는 속도 보상."""
+        if not ahead:
+            return 0.0
+        remaining = ahead.get(lane, float("inf"))
+        if remaining >= 120.0:
+            return 0.0
+
+        # 차로 끝에 접근할수록 옆 차량이 지나갈 시간과 끝에서의 공간을 확보한다.
+        wait_speed = max(0.0, remaining - 8.0) / 6.0
+        excess = min(1.0, (speed - wait_speed) / speed_ref)
+        if excess <= 0.0 or traci.vehicle.getDistance(self.ego_id) < self.lc_spawn_protect:
+            return 0.0
+
+        vehicle_class = traci.vehicle.getVehicleClass(self.ego_id)
+        targets = self._lane_change_neighbors(edge, vehicle_class).get(lane, ())
+        neighbors = self._tof_lanes[0]
+        blocked = False
+        for target in targets:
+            offset = target - lane
+            if ahead.get(target, 0.0) <= remaining + 20.0 or offset not in neighbors:
+                continue
+            lead, rear = neighbors[offset]
+            # 감지된 차가 없으면 차간격 부족에 따른 감점 근거도 없다.
+            if (lead is None and rear is None) or self._lane_change_is_safe(offset):
+                return 0.0
+            blocked = True
+        return self.tof_merge_gap_weight * excess if blocked else 0.0
+
     def _route_assist(self, lane_change: int) -> int:
         """(팀14 실험) 경로상 꼭 필요한 차선변경 보조. 환경변수 ROUTE_ASSIST_M (기본 0 = 끔).
 
@@ -1549,11 +1684,14 @@ class SumoHighwayEnv(gym.Env):
         lane_raw = float(np.clip(action_arr[self.lane_change_index], -1.0, 1.0))
         lane_change = self._quantize_lane_change(lane_raw)
         lane_change_policy = lane_change   # (팀14) 보조 규칙이 덮어쓰기 전 정책 명령
+        route_lane_bonus_earned = False
+        track_route_lane_bonus = self.tof_route_lane_bonus > 0.0 and self.tof and self.osm_mode
         edge_before = None
         lane_change_applied = False
         lane_before = None
         lane_id_before, road_before = None, None
         self._lc_block_reason = None
+        tof_yield_approach_penalty = 0.0
 
         # (팀14) 신호·양보 위반 판정용: 행동 적용 전 "바로 앞" 신호와 교차로 상태
         pre_tls, pre_jun = None, None
@@ -1574,6 +1712,11 @@ class SumoHighwayEnv(gym.Env):
             lane_id_before = traci.vehicle.getLaneID(self.ego_id)
             road_before = lane_id_before.rsplit("_", 1)[0]
             edge_before = traci.vehicle.getRoadID(self.ego_id)
+            if track_route_lane_bonus:
+                if edge_before != self._route_lane_bonus_edge:
+                    self._route_lane_bonus_edge = edge_before
+                    self._route_lane_bonus_visited.clear()
+                self._route_lane_bonus_visited.add(lane_before)
 
             accel_cmd = (accel_raw * self.max_accel
                          if accel_raw >= 0.0 else accel_raw * self.max_decel)
@@ -1820,7 +1963,20 @@ class SumoHighwayEnv(gym.Env):
                          else _dv / (self.max_decel * self.step_length))
             self._action_executed = (float(np.clip(_acc_exec, -1.0, 1.0)), float(lane_change))
             self._assist_intervened = (abs(v_new - _v_policy) > 1e-6) or (lane_change != lane_change_policy)
+            if self._tof_yield_reward_hazard:
+                remaining = (traci.lane.getLength(lane_id_before)
+                             - traci.vehicle.getLanePosition(self.ego_id))
+                # 이번 스텝 이동 거리와 이후 제동 거리의 합을 정지 여유와 비교한다.
+                distance = max(0.0, remaining - 2.0)
+                decel = min(2.5, self.max_decel)
+                stopping_distance = v_new * self.step_length + v_new ** 2 / (2.0 * decel)
+                excess = min(1.0, max(0.0, stopping_distance - distance) / 10.0)
+                tof_yield_approach_penalty = self.tof_junction_yield_weight * excess
             lane_change_applied = self._apply_lane_change(lane_change, alive=alive_before)
+            if (track_route_lane_bonus
+                    and lane_change_applied and lane_change and not self._assist_intervened):
+                route_lane_bonus_earned = self._route_lane_bonus_candidate(
+                    edge_before, lane_before, lane_before + lane_change)
 
         # ----- (2) 시뮬레이션 1스텝 -----
         traci.simulationStep()
@@ -1837,6 +1993,7 @@ class SumoHighwayEnv(gym.Env):
         # 경로 이탈: 끝나는 차선(차로 감소 / 진출 전용)에서 빠져나오지 못하고
         # 차선 끝에 도달 → 실제 도로라면 정지/사고이므로 충돌과 같게 처리
         lane_end = False
+        ahead = None
         if alive and self.osm_mode and not collided:
             try:
                 ahead = self._route_ahead()
@@ -1886,9 +2043,13 @@ class SumoHighwayEnv(gym.Env):
         obs = self._get_obs(alive=alive)
         terminated, truncated = False, False
         ego_speed, ego_gap = None, None
+        tof_route_lane_bonus = 0.0
+        tof_merge_gap_penalty = 0.0
+        tof_route_stall_penalty = 0.0
 
-        # ----- (4) 기존 보상 유지 -----
+        # ----- (4) 보상 -----
         self._stop_pen = 0.0
+        tof_unseen_penalty = 0.0
         if collided:
             reward = -float(self.rw["collision_penalty"])
             if red_light:
@@ -1907,7 +2068,19 @@ class SumoHighwayEnv(gym.Env):
             if same_lane_leader is not None:
                 ego_gap = same_lane_leader[0]
             v_ref = self._speed_ref()
-            reward = float(self.rw["speed_weight"]) * min(ego_speed / v_ref, 1.0)
+            speed_fraction = min(ego_speed / v_ref, 1.0)
+            reward = float(self.rw["speed_weight"]) * speed_fraction
+            if (route_lane_bonus_earned and lane_change_executed == lane_change
+                    and not red_light and not yield_violation):
+                # 차량이 실제로 목표 차로에 들어간 뒤 보상을 지급한다.
+                tof_route_lane_bonus = self.tof_route_lane_bonus
+                reward += tof_route_lane_bonus
+            if self.tof and self.tof_unseen_speed_penalty > 0.0:
+                neighbors, front_density, _ = self._tof_lanes
+                if neighbors[0][0] is None and front_density[0] < 0.0:
+                    excess = max(0.0, speed_fraction - self.tof_unseen_speed_fraction)
+                    tof_unseen_penalty = self.tof_unseen_speed_penalty * excess
+                    reward -= tof_unseen_penalty
             # (팀14 실험) STOP_SHAPING=w: 끊기는 차로 끝·빨간불 앞에서 "못 멈출 속도"면 매 스텝 최대 w 감점
             _sw = float(os.environ.get("STOP_SHAPING", "0") or 0)
             if _sw > 0:
@@ -1916,6 +2089,21 @@ class SumoHighwayEnv(gym.Env):
             if (ego_gap is not None and
                     ego_gap < float(self.rw["close_gap_threshold"])):
                 reward -= float(self.rw["close_gap_penalty"])
+
+            if self.tof and self.tof_merge_gap_weight > 0.0:
+                tof_merge_gap_penalty = self._tof_merge_gap_penalty(
+                    road_after, lane_after, ahead, ego_speed, v_ref)
+                reward -= tof_merge_gap_penalty
+
+            if self.tof_route_stall_weight > 0.0 and self.tof and self.osm_mode:
+                if (ego_speed < 1.0 and lane_id_after == lane_id_before
+                        and self._tof_route_escape_available(road_after, lane_after)):
+                    self._tof_route_stall_time += self.step_length
+                    if self._tof_route_stall_time >= 2.0:
+                        tof_route_stall_penalty = self.tof_route_stall_weight * (1.0 - ego_speed)
+                        reward -= tof_route_stall_penalty
+                else:
+                    self._tof_route_stall_time = 0.0
 
             # ---- 막힘 페널티: 느린 앞차 뒤에 갇혀 있는 동안 매 스텝 감점 ----
             # "차선을 유지한 채 막혀 있기"와 "변경으로 탈출하기" 사이에
@@ -1946,6 +2134,7 @@ class SumoHighwayEnv(gym.Env):
 
         if yield_violation and not terminated:
             reward -= float(self.rw.get("yield_penalty", 0.0))
+        reward -= tof_yield_approach_penalty
 
         if self.step_count >= self.max_steps:
             truncated = True
@@ -1969,6 +2158,7 @@ class SumoHighwayEnv(gym.Env):
         info = {
             "collided": collided,
             "vehicle_collision": vehicle_collision,
+            "tof_yield_approach_penalty": tof_yield_approach_penalty,
             "teleported": teleported,
             "end_reason": end_reason,
             "end_lane": (lane_id_before if vehicle_collision or teleported
@@ -1976,9 +2166,13 @@ class SumoHighwayEnv(gym.Env):
             "road_id": road_before if teleported else road_after,
             "lane_end": lane_end,
             "red_light": red_light,
+            "tof_route_lane_bonus": tof_route_lane_bonus,
             "route": self.route_name,
             "hard_start": getattr(self, "hard_start", None),
+            "tof_merge_gap_penalty": tof_merge_gap_penalty,
+            "tof_route_stall_penalty": tof_route_stall_penalty,
             "stop_penalty": float(getattr(self, "_stop_pen", 0.0)),
+            "tof_unseen_speed_penalty": tof_unseen_penalty,
             "route_estimates": dict(self.route_estimates),
             "disrupted_route": (self.disrupted or {}).get("route"),
             "branch_time": self.branch_time,

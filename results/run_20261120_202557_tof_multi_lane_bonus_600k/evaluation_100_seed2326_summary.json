@@ -1,0 +1,30 @@
+{
+  "source": "Original Windows console evaluation reported by the model author",
+  "scenario": "museum",
+  "evaluation_base_seed": 2326,
+  "independent_seeds": true,
+  "episodes": 100,
+  "counts": {
+    "arrival": 81,
+    "collision": 15,
+    "teleport": 0,
+    "lane_end": 1,
+    "red_light": 3
+  },
+  "reported_mean_speed_kmh": 52.5,
+  "reported_mean_travel_time_s": 803.6,
+  "transitions": [
+    {
+      "from_edge": "491135704#3",
+      "to_edge": "491135706",
+      "approaches": 65,
+      "entries": 65
+    },
+    {
+      "from_edge": "377057231",
+      "to_edge": "50981102",
+      "approaches": 83,
+      "entries": 82
+    }
+  ]
+}

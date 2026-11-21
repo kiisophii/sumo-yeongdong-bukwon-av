@@ -65,6 +65,7 @@ def _input_key(road, ego, traffic) -> str:
            "ego": ego,
            "traffic": {k: v for k, v in traffic.items() if k not in _MUTATED_KEYS},
            "simulation": {k: v for k, v in SIMULATION.items() if k.startswith("gui")},
+           "tof_buildings": bool(OBSERVATION["tof"]),
            "scenery": SCENERY}
     h.update(json.dumps(cfg, sort_keys=True, default=str).encode())
     # env/ 아래 원본 파일(osm, 패치, road_builder.py 자신 등)의 내용. 생성물(env/sumo*)은 제외
@@ -523,6 +524,67 @@ def _resolve(path: str) -> str:
     return os.path.join(root, path)
 
 
+def _remove_tof_canopies(osm_path: str, polygons_path: str) -> None:
+    """센서 높이에서 개방된 지붕을 ToF 평면 가림 파일에서 제외한다."""
+    import xml.etree.ElementTree as ET
+    from sumolib.geomhelper import distancePointToPolygon, isWithin
+
+    osm = ET.parse(osm_path).getroot()
+    canopy_ids = set()
+    toll_footprints = {}
+    covered_roads = []
+    motor_roads = {
+        "motorway", "motorway_link", "trunk", "trunk_link",
+        "primary", "primary_link", "secondary", "secondary_link",
+        "tertiary", "tertiary_link", "unclassified", "residential",
+        "service", "living_street", "road",
+    }
+    for way in osm.iter("way"):
+        tags = {tag.get("k"): tag.get("v") for tag in way.findall("tag")}
+        building = tags.get("building")
+        if building == "roof":
+            canopy_ids.add(way.get("id"))
+        elif tags.get("barrier") == "toll_booth" and building not in (None, "no"):
+            outline = [node.get("ref") for node in way.findall("nd")]
+            if len(outline) >= 4 and outline[0] == outline[-1]:
+                toll_footprints[way.get("id")] = outline
+        elif tags.get("covered") == "yes" and tags.get("highway") in motor_roads:
+            refs = [node.get("ref") for node in way.findall("nd")]
+            if len(refs) >= 2 and refs[0] != refs[-1]:
+                covered_roads.append(refs)
+
+    if toll_footprints and covered_roads:
+        coords = {node.get("id"): (float(node.get("lon")), float(node.get("lat")))
+                  for node in osm.iter("node")}
+        for toll_id, outline in toll_footprints.items():
+            if not all(ref in coords for ref in outline):
+                continue
+            boundary = set(outline)
+            polygon = [coords[ref] for ref in outline]
+            for refs in covered_roads:
+                # 양 끝이 지붕 경계에 연결되고 도로가 내부를 지나는 경우다.
+                if refs[0] not in boundary or refs[-1] not in boundary:
+                    continue
+                if not all(ref in coords for ref in refs):
+                    continue
+                road = [coords[ref] for ref in refs]
+                for (ax, ay), (bx, by) in zip(road, road[1:]):
+                    midpoint = ((ax + bx) / 2, (ay + by) / 2)
+                    if isWithin(midpoint, polygon) and distancePointToPolygon(midpoint, polygon) > 1e-9:
+                        canopy_ids.add(toll_id)
+                        break
+                if toll_id in canopy_ids:
+                    break
+
+    if canopy_ids:
+        tree = ET.parse(polygons_path)
+        root = tree.getroot()
+        for polygon in root.findall("poly"):
+            if polygon.get("id") in canopy_ids:
+                root.remove(polygon)
+        tree.write(polygons_path, encoding="utf-8", xml_declaration=True)
+
+
 def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
     """OSM 파일로 실제 도로망을 만들고 sumocfg 경로를 반환한다.
 
@@ -728,12 +790,15 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
 
     if OBSERVATION["tof"]:
         # Building footprints are projected into this exact SUMO network frame.
+        osm_path = _resolve(ctx or road["osm_file"])
+        tof_polygons = os.path.join(out_dir, "tof.buildings.xml")
         subprocess.run(
             [checkBinary("polyconvert"), "--net-file", net_path,
-             "--osm-files", _resolve(ctx or road["osm_file"]),
+             "--osm-files", osm_path,
              "--type-file", os.path.join(os.path.dirname(__file__), "tof_buildings.typ.xml"),
-             "--discard", "--no-warnings", "-o", os.path.join(out_dir, "tof.buildings.xml")],
+             "--discard", "--no-warnings", "-o", tof_polygons],
             check=True, capture_output=True)
+        _remove_tof_canopies(osm_path, tof_polygons)
 
     # ── 5) GUI 시작 화면: 지정한 관심 지점(합류부 등)을 확대 ──
     #   SUMO zoom(%)은 "네트워크 전체 폭 = 100%" 기준
