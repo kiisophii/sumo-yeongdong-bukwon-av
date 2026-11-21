@@ -1042,16 +1042,75 @@ class SumoHighwayEnv(gym.Env):
                 ahead = (traci.lane.getLength(lane)
                          - traci.vehicle.getLanePosition(self.ego_id))
                 links = traci.vehicle.getNextLinks(self.ego_id)
-                if links and ahead <= L:
+                inside = os.environ.get("TEAM14_JUN_INSIDE", "0") == "1"
+                if links and ahead <= L and not inside:
                     lk = links[0]
                     # (다음 차선, 우선 여부, 진입 가능, 엇갈리는 차 있음, 교차로 내부 차선,
                     #  신호/우선 상태 문자, 방향, 길이)
                     signalized = lk[5] in "GgyYrRu"
                     if not signalized and not lk[1]:
                         jun = [ahead / L, 1.0, 1.0 if lk[3] else -1.0]
+                elif links and inside:
+                    # (팀14 실험 TEAM14_JUN_INSIDE=1)
+                    #  1) 바로 다음 교차로가 우선(양보 없음)이어도 L 안의 그다음 교차로까지 본다
+                    #     (예: 요금소 15 m 뒤 지퍼 합류는 예전엔 15 m 앞에서야 보였다).
+                    #  2) 지퍼 합류(상태 Z)는 우선 표시가 붙어도 서로 끼어드는 곳이라 양보로 본다.
+                    #  3) SUMO의 "엇갈리는 차 접근"은 이미 교차로 안에 들어간 차를 빼먹으므로 직접 확인.
+                    d, from_lane = ahead, lane
+                    for lk in links:
+                        if d > L or lk[5] in "GgyYrRu":
+                            break
+                        if not lk[1] or lk[5] == "Z":
+                            self._jun_yield_from = from_lane
+                            foe = bool(lk[3]) or (bool(lk[4]) and self._foe_inside(lk[4]))
+                            jun = [d / L, 1.0, 1.0 if foe else -1.0]
+                            break
+                        d += lk[7] + traci.lane.getLength(lk[0])
+                        from_lane = lk[0]
+                self._jun_yield_from = lane if jun[1] > 0 else None
+            elif (os.environ.get("TEAM14_JUN_INSIDE", "0") == "1"
+                  and getattr(self, "_jun_yield_from", None)):
+                # (팀14 실험) 교차로 안 관측: 양보 교차로에 들어간 뒤에도
+                #   [34]=0(교차로 안), [35]=+1(양보), [36]=엇갈리는 차 있음/없음 을 계속 보여 준다.
+                #   기존에는 교차로 내부 차선에 들어서는 순간 "교차로 없음, 차 없음"으로 바뀌어
+                #   합류 중에 멈췄다가 다시 가속해 부딪히는 충돌이 났다.
+                jun = [0.0, 1.0, 1.0 if self._foe_inside(lane) else -1.0]
         except traci.TraCIException:
             pass
         return sig + jun
+
+    def _foe_inside(self, lane):
+        """교차로 내부 차선 lane과 엇갈리는 차가 교차로 안에 있거나 곧 들어오는가."""
+        foes = set(traci.lane.getInternalFoes(lane))
+        if not foes:
+            return False
+        for fl in foes:
+            for v in traci.lane.getLastStepVehicleIDs(fl):
+                if v != self.ego_id:
+                    return True
+        if lane.startswith(":"):
+            # 방금 합류를 마친 엇갈리는 차가 교차로 출구 바로 앞(15 m)에 있으면 아직 "있음".
+            #   (지퍼 합류에서 이 차가 빠지자마자 '없음'이 되어 가속 → 추돌하던 문제)
+            for lk in traci.lane.getLinks(lane):
+                for v in traci.lane.getLastStepVehicleIDs(lk[0]):
+                    if v != self.ego_id and traci.vehicle.getLanePosition(v) < 15.0:
+                        return True
+        jid = lane[1:].rsplit("_", 2)[0]
+        for e in traci.junction.getIncomingEdges(jid):
+            for i in range(traci.edge.getLaneNumber(e)):
+                il = f"{e}_{i}"
+                if il == self._jun_yield_from:
+                    continue
+                if not any(lk[4] in foes for lk in traci.lane.getLinks(il)):
+                    continue
+                ln = traci.lane.getLength(il)
+                for v in traci.lane.getLastStepVehicleIDs(il):
+                    if v == self.ego_id:
+                        continue
+                    rem = ln - traci.vehicle.getLanePosition(v)
+                    if rem <= max(10.0, traci.vehicle.getSpeed(v) * 4.0):
+                        return True
+        return False
 
     # ==================================================================
     # 1 스텝 진행: 행동 적용 → 시뮬레이션 1스텝 → 보상/종료 판정
