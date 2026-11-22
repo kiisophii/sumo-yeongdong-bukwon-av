@@ -1,0 +1,54 @@
+{
+  "model": "results/run_20261122_143625_tof_ppo_tof_residual_40k/checkpoints/model_40960.pt",
+  "target_lane": ":1681517542_4_0",
+  "episodes": [
+    {
+      "seed": 2344,
+      "episode": 19,
+      "steps": 1832,
+      "expected_steps": null,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": null,
+      "target_preentry_brake_cmd_steps": 0,
+      "target_preentry_decel_steps": 0,
+      "matches_original_log": null,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    },
+    {
+      "seed": 2336,
+      "episode": 11,
+      "steps": 1875,
+      "expected_steps": null,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": null,
+      "target_preentry_brake_cmd_steps": 0,
+      "target_preentry_decel_steps": 0,
+      "matches_original_log": null,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    },
+    {
+      "seed": 2380,
+      "episode": 55,
+      "steps": 1831,
+      "expected_steps": null,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 402.0,
+      "target_preentry_brake_cmd_steps": 4,
+      "target_preentry_decel_steps": 4,
+      "matches_original_log": null,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    }
+  ]
+}

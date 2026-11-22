@@ -1,0 +1,11 @@
+{
+  "steps": 20480,
+  "focus_steps": 13080,
+  "focus_requests": 165,
+  "focus_fallback_episodes": 0,
+  "focus_episodes": 165,
+  "lead_visible_steps": 6525,
+  "lead_closing_steps": 2363,
+  "brake_cmd_while_closing_steps": 740,
+  "decel_while_closing_steps": 796
+}

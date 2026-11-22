@@ -1,0 +1,185 @@
+diff --git a/env/mdp_config.py b/env/mdp_config.py
+index ba11edc..af9e255 100644
+--- a/env/mdp_config.py
++++ b/env/mdp_config.py
+@@ -103,6 +103,7 @@ OBSERVATION = {
+         "lead_hold_s": float(__import__("os").environ.get("TEAM14_TOF_LEAD_HOLD_S", "0")),
+         "lead_gap_window": __import__("os").environ.get("TEAM14_TOF_LEAD_GAP_WINDOW") == "1",
+         "zipper_conflict_continuity": __import__("os").environ.get("TEAM14_TOF_ZIPPER_CONFLICT_CONTINUITY") == "1",
++        "zipper_eta_gate": __import__("os").environ.get("TEAM14_TOF_ZIPPER_ETA_GATE") == "1",
+     } if __import__("os").environ.get("TEAM14_TOF_OBS") == "1" else None,
+ }
+ 
+diff --git a/env/sumo_env.py b/env/sumo_env.py
+index b8deed8..2a22651 100644
+--- a/env/sumo_env.py
++++ b/env/sumo_env.py
+@@ -992,6 +992,7 @@ class SumoHighwayEnv(gym.Env):
+                 traci.vehicle.getPosition(self.ego_id), traci.vehicle.getAngle(self.ego_id),
+                 self._tof_length, samples, self._tof_buildings, self.tof,
+                 self._tof_positions, 0.0 if self._tof_time is None else now - self._tof_time,
++                previous_tracks=self._tof_scene.tracks if self._tof_time is not None else None,
+             )
+             if self._tof_geometry is None:
+                 if self._outgoing is None:
+@@ -1001,6 +1002,7 @@ class SumoHighwayEnv(gym.Env):
+                     lead_hold_s=self.tof.get("lead_hold_s", 0.0),
+                     lead_gap_window=self.tof.get("lead_gap_window", False),
+                     zipper_conflict_continuity=self.tof.get("zipper_conflict_continuity", False),
++                    zipper_eta_gate=self.tof.get("zipper_eta_gate", False),
+                 )
+             self._tof_scene = frame
+             self._tof_lane_id = traci.vehicle.getLaneID(self.ego_id)
+@@ -1059,6 +1061,7 @@ class SumoHighwayEnv(gym.Env):
+                 next_edge = route[next_index] if 0 < next_index < len(route) else None
+                 obs += self._tof_geometry.junction(
+                     frame, self._tof_lane_id, next_edge, traci.vehicle.getNextTLS(self.ego_id),
++                    ego_speed=v, ego_length=self._tof_length,
+                 )
+             else:
+                 obs += self._junction_features()
+diff --git a/env/tof_observation.py b/env/tof_observation.py
+index da1037e..3697037 100644
+--- a/env/tof_observation.py
++++ b/env/tof_observation.py
+@@ -1,12 +1,13 @@
+ """Project visible ego sensor tracks onto local navigation-map geometry."""
+ 
+ from dataclasses import dataclass
+-from math import hypot, isfinite
++from math import hypot, isfinite, sqrt
+ 
+ from .tof_perception import offset
+ 
+ 
+ YIELD_CONNECTION_STATES = {"m", "=", "s", "w", "Z"}
++ZIPPER_ETA_MARGIN_S = 0.20
+ 
+ 
+ class Path:
+@@ -64,9 +65,32 @@ def _connection_shape(connection, net):
+     return _shape(net.getLane(via)) if via else ()
+ 
+ 
++def _merge_end_gap(connection, connector):
++    """Distance from the end of a connector to the shared outgoing lane."""
++    if not connector:
++        return 0.0
++    exit_x, exit_y = _shape(connection.getToLane())[0]
++    end_x, end_y = connector[-1]
++    return hypot(exit_x - end_x, exit_y - end_y)
++
++
++def _ego_can_clear_first(ego_clear_s, other_distance, track):
++    # With missing tracks or no forward motion, leave the legacy hazard in place.
++    if (other_distance <= 0.0 or track.speed is None or track.speed <= 0.1
++            or track.acceleration is None or not isfinite(track.acceleration)):
++        return False
++    acceleration = max(0.0, track.acceleration)
++    # Solve d = v*t + 0.5*a*t^2 with a stable expression at a = 0.
++    arrival_s = 2.0 * other_distance / (
++        track.speed + sqrt(track.speed ** 2 + 2.0 * acceleration * other_distance)
++    )
++    return arrival_s - ego_clear_s >= ZIPPER_ETA_MARGIN_S
++
++
+ class ToFObservation:
+     def __init__(self, net, visibility, nominal_spacing, junction_range, *,
+-                 lead_hold_s=0.0, lead_gap_window=False, zipper_conflict_continuity=False):
++                 lead_hold_s=0.0, lead_gap_window=False, zipper_conflict_continuity=False,
++                 zipper_eta_gate=False):
+         if not isfinite(lead_hold_s) or lead_hold_s < 0.0:
+             raise ValueError("ToF lead_hold_s must be finite and non-negative")
+         self.net = net
+@@ -76,6 +100,7 @@ class ToFObservation:
+         self.lead_hold_s = lead_hold_s
+         self.lead_gap_window = lead_gap_window
+         self.zipper_conflict_continuity = zipper_conflict_continuity
++        self.zipper_eta_gate = zipper_eta_gate
+         self.junction_track_ids = set()
+         self._last_lead = None
+         self.lane_paths = {}
+@@ -239,12 +264,14 @@ class ToFObservation:
+                     continue
+                 shape = _shape(lane)
+                 approach = Path(shape)
+-                path = Path(shape + _connection_shape(other, self.net))
+-                paths.append((path, approach.length, lane.getWidth() / 2))
++                connector = _connection_shape(other, self.net)
++                path = Path(shape + connector)
++                merge_position = path.length + _merge_end_gap(other, connector)
++                paths.append((path, approach.length, lane.getWidth() / 2, merge_position))
+         self.foe_paths[connection] = paths
+         return paths
+ 
+-    def junction(self, frame, lane_id, next_edge_id, signals):
++    def junction(self, frame, lane_id, next_edge_id, signals, *, ego_speed=0.0, ego_length=0.0):
+         self.junction_track_ids.clear()
+         # Distance and phase are a line-of-sight gated RGB signal proxy.
+         # Preserve the pretrained policy's encoding when no signal is upcoming.
+@@ -280,21 +307,30 @@ class ToFObservation:
+         distance = path.length - reference[0]
+         if distance > self.junction_range:
+             return signal + [1.0, -1.0, -1.0]
++        ego_clear_s = None
++        if inside and self.zipper_eta_gate and ego_speed > 0.1 and ego_length > 0.0:
++            end_gap = _merge_end_gap(connection, _shape(lane))
++            # Use the current ego speed, which already includes previous braking.
++            ego_clear_s = (distance + end_gap + ego_length / 2.0) / ego_speed
+         paths = self._conflicting_approaches(connection)
+-        for other, stop, width in paths:
++        for other, stop, width, merge_position in paths:
+             for track_id, track in frame.tracks.items():
+                 result = other.project(track.center, track.direction)
+                 if result is None:
+                     continue
+                 position, lateral = result
+                 if lateral <= width and stop - position <= max(8.0, 4.0 * (track.speed or 0.0)):
++                    if ego_clear_s is not None and _ego_can_clear_first(
++                        ego_clear_s, merge_position - position - track.length / 2.0, track,
++                    ):
++                        continue
+                     self.junction_track_ids.add(track_id)
+         if self.junction_track_ids:
+             return signal + [distance / self.junction_range, 1.0, 1.0]
+         if inside:
+             return signal + [1.0, -1.0, -1.0]
+         clear = bool(paths)
+-        for other, stop, _ in paths:
++        for other, stop, _, _ in paths:
+             for back in (1.0, 10.0, 20.0, 30.0, 40.0):
+                 point = other.point_at(max(0.0, stop - back))
+                 clear = clear and point is not None and frame.visible(point)
+diff --git a/env/tof_perception.py b/env/tof_perception.py
+index eb1c6f5..cafd83c 100644
+--- a/env/tof_perception.py
++++ b/env/tof_perception.py
+@@ -121,12 +121,13 @@ class Track:
+     direction: tuple
+     length: float
+     speed: float | None
++    acceleration: float | None = None
+ 
+ 
+ class ToFFrame:
+     """One geometric scan from front and two rear-quarter G32-inspired heads."""
+ 
+-    def __init__(self, front, angle, length, samples, buildings, config, previous, dt):
++    def __init__(self, front, angle, length, samples, buildings, config, previous, dt, *, previous_tracks=None):
+         self.direction = heading(angle)
+         self.center = offset(front, self.direction, -length / 2)
+         self.range = config["range_m"]
+@@ -151,8 +152,12 @@ class ToFFrame:
+             old = previous.get(key)
+             speed = None if old is None or dt <= 0 else hypot(
+                 target.center[0] - old[0], target.center[1] - old[1]) / dt
++            previous_track = previous_tracks.get(key) if previous_tracks is not None else None
++            acceleration = None
++            if speed is not None and previous_track is not None and previous_track.speed is not None:
++                acceleration = (speed - previous_track.speed) / dt
+             self.positions[key] = target.center
+-            self.tracks[key] = Track(target.center, target.direction, target.length, speed)
++            self.tracks[key] = Track(target.center, target.direction, target.length, speed, acceleration)
+ 
+     def visible(self, point, *, ignore=None, front_only=False):
+         dx, dy = point[0] - self.center[0], point[1] - self.center[1]

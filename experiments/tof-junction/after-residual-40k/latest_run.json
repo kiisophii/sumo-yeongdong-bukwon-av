@@ -1,0 +1,7 @@
+{
+  "run": "results/run_20261122_181749_224538_tof_lead_brake_natural",
+  "steps": 20480,
+  "model": "results/run_20261122_181749_224538_tof_lead_brake_natural/model.pt",
+  "starting_checkpoint": "results/run_20261122_143625_tof_ppo_tof_residual_40k/checkpoints/model_40960.pt",
+  "comparison_status": "pending"
+}

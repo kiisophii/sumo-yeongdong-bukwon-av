@@ -1,0 +1,30 @@
+{
+  "model": "results/run_20261122_143625_tof_ppo_tof_residual_40k/checkpoints/model_40960.pt",
+  "target_lane": ":1681517542_4_0",
+  "episodes": [
+    {
+      "seed": 2415,
+      "episode": 90,
+      "steps": 1146,
+      "expected_steps": null,
+      "outcome": "collision",
+      "end_lane": "1307152438_3",
+      "target_passed": true,
+      "target_first_hazard_s": 406.5,
+      "target_preentry_brake_cmd_steps": 2,
+      "target_preentry_decel_steps": 2,
+      "matches_original_log": null,
+      "collision_time_s": 877.5,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": [
+        {
+          "vehicle_id": "f_bukwon_to_east.101",
+          "collision_type": "collision",
+          "first_context_candidate_lead_s": 117.5,
+          "first_tof_detection_lead_s": 111.5,
+          "first_tof_conflict_lead_s": null
+        }
+      ]
+    }
+  ]
+}

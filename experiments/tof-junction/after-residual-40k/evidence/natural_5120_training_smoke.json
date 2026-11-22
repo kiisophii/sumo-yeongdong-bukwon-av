@@ -1,0 +1,9 @@
+{
+  "steps": 5120,
+  "focus_steps": 979,
+  "focus_episodes": 12,
+  "lead_visible_steps": 409,
+  "lead_closing_steps": 51,
+  "brake_cmd_while_closing_steps": 25,
+  "decel_while_closing_steps": 27
+}

@@ -1,0 +1,148 @@
+diff --git a/env/mdp_config.py b/env/mdp_config.py
+index d729cfb2001b6702e1729cac3472c51241f57341..ba11edc96d5adc9fb47744e92ac14f8f4e9438a5 100644
+--- a/env/mdp_config.py
++++ b/env/mdp_config.py
+@@ -102,6 +102,7 @@ OBSERVATION = {
+         "rear_density": __import__("os").environ.get("TEAM14_TOF_REAR_DENSITY", "1") == "1",
+         "lead_hold_s": float(__import__("os").environ.get("TEAM14_TOF_LEAD_HOLD_S", "0")),
+         "lead_gap_window": __import__("os").environ.get("TEAM14_TOF_LEAD_GAP_WINDOW") == "1",
++        "zipper_conflict_continuity": __import__("os").environ.get("TEAM14_TOF_ZIPPER_CONFLICT_CONTINUITY") == "1",
+     } if __import__("os").environ.get("TEAM14_TOF_OBS") == "1" else None,
+ }
+ 
+diff --git a/env/sumo_env.py b/env/sumo_env.py
+index 99b92669bf56abf239b9f1624822f8d6cb8ff481..b8deed8a81e55868baecf966c203e3b6f0b2be7f 100644
+--- a/env/sumo_env.py
++++ b/env/sumo_env.py
+@@ -1000,6 +1000,7 @@ class SumoHighwayEnv(gym.Env):
+                     self._road_net, self.visibility, self.density_veh_len, self.junction_lookahead,
+                     lead_hold_s=self.tof.get("lead_hold_s", 0.0),
+                     lead_gap_window=self.tof.get("lead_gap_window", False),
++                    zipper_conflict_continuity=self.tof.get("zipper_conflict_continuity", False),
+                 )
+             self._tof_scene = frame
+             self._tof_lane_id = traci.vehicle.getLaneID(self.ego_id)
+diff --git a/env/tof_observation.py b/env/tof_observation.py
+index 3e7871163d0718bc4c092d4a7f44b86a2fab3179..da1037e53d71716cbc2759ae2f2fa7bb61357a14 100644
+--- a/env/tof_observation.py
++++ b/env/tof_observation.py
+@@ -66,7 +66,7 @@ def _connection_shape(connection, net):
+ 
+ class ToFObservation:
+     def __init__(self, net, visibility, nominal_spacing, junction_range, *,
+-                 lead_hold_s=0.0, lead_gap_window=False):
++                 lead_hold_s=0.0, lead_gap_window=False, zipper_conflict_continuity=False):
+         if not isfinite(lead_hold_s) or lead_hold_s < 0.0:
+             raise ValueError("ToF lead_hold_s must be finite and non-negative")
+         self.net = net
+@@ -75,6 +75,8 @@ class ToFObservation:
+         self.junction_range = junction_range
+         self.lead_hold_s = lead_hold_s
+         self.lead_gap_window = lead_gap_window
++        self.zipper_conflict_continuity = zipper_conflict_continuity
++        self.junction_track_ids = set()
+         self._last_lead = None
+         self.lane_paths = {}
+         self.foe_paths = {}
+@@ -243,6 +245,7 @@ class ToFObservation:
+         return paths
+ 
+     def junction(self, frame, lane_id, next_edge_id, signals):
++        self.junction_track_ids.clear()
+         # Distance and phase are a line-of-sight gated RGB signal proxy.
+         # Preserve the pretrained policy's encoding when no signal is upcoming.
+         signal = [1.0, 0.0, -1.0] if signals else [1.0, 1.0, 1.0]
+@@ -256,27 +259,42 @@ class ToFObservation:
+         # Static right-of-way and possible conflict approaches come from the map.
+         # No simulator vehicle routes, hasFoe flag, or invisible track states enter PPO.
+         lane = self.net.getLane(lane_id)
+-        if lane_id.startswith(":") or next_edge_id is None:
++        inside = lane_id.startswith(":")
++        if inside:
++            if not self.zipper_conflict_continuity:
++                return signal + [1.0, -1.0, -1.0]
++            # The connector belongs to the same merge as its approach lane.
++            junction = lane.getEdge().getFromNode()
++            if junction.getType() != "zipper":
++                return signal + [1.0, -1.0, -1.0]
++            connection = next((c for c in junction.getConnections()
++                               if c.getViaLaneID() == lane_id and c.getState() == "Z"), None)
++        else:
++            connection = next((c for c in lane.getOutgoing() if c.getTo().getID() == next_edge_id), None)
++        if connection is None or connection.getTLSID() or connection.getState() not in YIELD_CONNECTION_STATES:
+             return signal + [1.0, -1.0, -1.0]
+-        path = Path(_shape(lane))
++        path = self._lane_path(lane)[1]
+         reference = path.project(frame.center)
+         if reference is None:
+             return signal + [1.0, -1.0, -1.0]
+         distance = path.length - reference[0]
+-        connection = next((c for c in lane.getOutgoing() if c.getTo().getID() == next_edge_id), None)
+-        if (distance > self.junction_range or connection is None or connection.getTLSID()
+-                or connection.getState() not in YIELD_CONNECTION_STATES):
++        if distance > self.junction_range:
+             return signal + [1.0, -1.0, -1.0]
+         paths = self._conflicting_approaches(connection)
+-        clear = bool(paths)
+         for other, stop, width in paths:
+-            for track in frame.tracks.values():
++            for track_id, track in frame.tracks.items():
+                 result = other.project(track.center, track.direction)
+                 if result is None:
+                     continue
+                 position, lateral = result
+                 if lateral <= width and stop - position <= max(8.0, 4.0 * (track.speed or 0.0)):
+-                    return signal + [distance / self.junction_range, 1.0, 1.0]
++                    self.junction_track_ids.add(track_id)
++        if self.junction_track_ids:
++            return signal + [distance / self.junction_range, 1.0, 1.0]
++        if inside:
++            return signal + [1.0, -1.0, -1.0]
++        clear = bool(paths)
++        for other, stop, _ in paths:
+             for back in (1.0, 10.0, 20.0, 30.0, 40.0):
+                 point = other.point_at(max(0.0, stop - back))
+                 clear = clear and point is not None and frame.visible(point)
+diff --git a/tools/trace_tof_junction_81.py b/tools/trace_tof_junction_81.py
+index 04fb36e651eb348030cd00eef3411bb48dd54f8c..78a6d42f432e5cc38c661814d2465b67f0611df5 100644
+--- a/tools/trace_tof_junction_81.py
++++ b/tools/trace_tof_junction_81.py
+@@ -17,29 +17,6 @@ BASE_SEED = 2326
+ EXPECTED = {1: 189, 21: 201, 28: 178, 38: 219, 70: 218, 76: 209, 86: 165, 99: 201}
+ 
+ 
+-def matching_tracks(env, frame, api, lane_id):
+-    """Name visible tracks that satisfy the existing junction observation test."""
+-    route = api.vehicle.getRoute(env.ego_id)
+-    next_index = api.vehicle.getRouteIndex(env.ego_id) + 1
+-    if not 0 < next_index < len(route):
+-        return set()
+-    geometry = env._tof_geometry
+-    lane = geometry.net.getLane(lane_id)
+-    connection = next((c for c in lane.getOutgoing() if c.getTo().getID() == route[next_index]), None)
+-    if connection is None:
+-        return set()
+-    matches = set()
+-    for approach, stop, width in geometry._conflicting_approaches(connection):
+-        for vehicle, track in frame.tracks.items():
+-            projected = approach.project(track.center, track.direction)
+-            if projected is None:
+-                continue
+-            position, lateral = projected
+-            if lateral <= width and stop - position <= max(8.0, 4.0 * (track.speed or 0.0)):
+-                matches.add(vehicle)
+-    return matches
+-
+-
+ def lead_time(rows, collision_time, predicate):
+     first = next((row["time_s"] for row in rows if predicate(row)), None)
+     return None if first is None else round(collision_time - first, 3)
+@@ -56,7 +33,7 @@ def replay(env, policy, sumo_env, seed, expected_steps):
+         lane_id = api.vehicle.getLaneID(ego)
+         distance_obs, must_yield, conflict = map(float, obs[junction_end - 3:junction_end])
+         hazard = must_yield > 0 and conflict > 0
+-        matches = matching_tracks(env, frame, api, lane_id) if hazard else set()
++        matches = env._tof_geometry.junction_track_ids.copy() if hazard else set()
+         if hazard and not matches:
+             raise RuntimeError("The ToF trace no longer matches this version of env/tof_observation.py.")
+         action = policy.predict(obs, deterministic=True)

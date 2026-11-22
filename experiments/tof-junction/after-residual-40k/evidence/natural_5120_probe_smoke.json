@@ -1,0 +1,126 @@
+{
+  "baseline": [
+    {
+      "seed": 3000,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 74,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    },
+    {
+      "seed": 3001,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 80,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    },
+    {
+      "seed": 3002,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 66,
+      "lead_visible_steps": 62,
+      "lead_closing_steps": 45,
+      "brake_cmd_while_closing_steps": 4,
+      "decel_while_closing_steps": 4
+    },
+    {
+      "seed": 3003,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 63,
+      "lead_visible_steps": 63,
+      "lead_closing_steps": 57,
+      "brake_cmd_while_closing_steps": 2,
+      "decel_while_closing_steps": 2
+    },
+    {
+      "seed": 3004,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 94,
+      "lead_visible_steps": 94,
+      "lead_closing_steps": 16,
+      "brake_cmd_while_closing_steps": 10,
+      "decel_while_closing_steps": 10
+    },
+    {
+      "seed": 3005,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 63,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    }
+  ],
+  "trained": [
+    {
+      "seed": 3000,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 74,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    },
+    {
+      "seed": 3001,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 80,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    },
+    {
+      "seed": 3002,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 66,
+      "lead_visible_steps": 62,
+      "lead_closing_steps": 47,
+      "brake_cmd_while_closing_steps": 4,
+      "decel_while_closing_steps": 4
+    },
+    {
+      "seed": 3003,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 63,
+      "lead_visible_steps": 63,
+      "lead_closing_steps": 57,
+      "brake_cmd_while_closing_steps": 2,
+      "decel_while_closing_steps": 2
+    },
+    {
+      "seed": 3004,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 94,
+      "lead_visible_steps": 94,
+      "lead_closing_steps": 16,
+      "brake_cmd_while_closing_steps": 9,
+      "decel_while_closing_steps": 9
+    },
+    {
+      "seed": 3005,
+      "outcome": "focus_window",
+      "end_lane": null,
+      "steps": 63,
+      "lead_visible_steps": 0,
+      "lead_closing_steps": 0,
+      "brake_cmd_while_closing_steps": 0,
+      "decel_while_closing_steps": 0
+    }
+  ]
+}
