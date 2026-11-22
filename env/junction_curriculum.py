@@ -6,7 +6,8 @@ import gymnasium as gym
 class JunctionCurriculum(gym.Wrapper):
     track_junction_focus = True
 
-    def __init__(self, env, *, share, seed, focus_steps=80, target_lane=None, safe_pass_bonus=0.0):
+    def __init__(self, env, *, share, seed, focus_steps=80, target_lane=None,
+                 safe_pass_bonus=0.0, warmup_jitter_s=0.0):
         super().__init__(env)
         self.share = share
         self.seed = seed
@@ -14,6 +15,7 @@ class JunctionCurriculum(gym.Wrapper):
         self.target_lane = target_lane
         self.approach_edge = target_lane.rsplit("_", 1)[0] if target_lane else None
         self.safe_pass_bonus = safe_pass_bonus
+        self.warmup_jitter_s = warmup_jitter_s
         self.total = 0
         self.focus_total = 0
         self.elapsed = 0
@@ -30,6 +32,7 @@ class JunctionCurriculum(gym.Wrapper):
         reset_options = {**(options or {}), "tof_junction_focus": prefer_focus}
         if prefer_focus and self.target_lane:
             reset_options["tof_junction_focus_lane"] = self.target_lane
+            reset_options["tof_junction_warmup_jitter_s"] = self.warmup_jitter_s
         obs, info = self.env.reset(seed=seed, options=reset_options)
         self.focused = info.get("tof_junction_focus", False)
         self.exit_edge = info.get("tof_junction_focus_exit_edge")

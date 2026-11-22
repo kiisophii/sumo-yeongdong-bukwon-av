@@ -253,6 +253,8 @@ class SumoHighwayEnv(gym.Env):
         self.tof_junction_yield_weight = float(reward.get("tof_junction_yield_weight", 0.0))
         self.tof_junction_entry_penalty = float(reward.get("tof_junction_entry_penalty", 0.0))
         self.tof_junction_brake_weight = float(reward.get("tof_junction_brake_weight", 0.0))
+        self.tof_junction_preentry_brake_bonus = float(reward.get("tof_junction_preentry_brake_bonus", 0.0))
+        self.tof_junction_adaptive_brake_target = bool(reward.get("tof_junction_adaptive_brake_target", False))
         self.tof_junction_yield_preview = bool(reward.get("tof_junction_yield_preview", False))
         self.tof_junction_yield_reaction_s = float(reward.get("tof_junction_yield_reaction_s", 1.5))
         self._tof_yield_hazard = False
@@ -470,6 +472,8 @@ class SumoHighwayEnv(gym.Env):
             # 에피소드마다 시작 교통 상황이 달라진다.
             if self.warmup_seconds:
                 lo, hi = self.warmup_seconds
+                jitter = options.get("tof_junction_warmup_jitter_s", 0.0) if focus_lane else 0.0
+                lo, hi = max(0.0, lo - jitter), hi + jitter
                 t_end = traci.simulation.getTime() + float(np.random.uniform(lo, hi))
                 traci.simulationStep(t_end)
 
@@ -1748,6 +1752,8 @@ class SumoHighwayEnv(gym.Env):
         tof_yield_approach_penalty = 0.0
         tof_yield_brake_needed = False
         tof_yield_brake_penalty = 0.0
+        tof_yield_brake_target_mps2 = 0.0
+        tof_yield_preentry_brake_bonus = 0.0
 
         # (팀14) 신호·양보 위반 판정용: 행동 적용 전 "바로 앞" 신호와 교차로 상태
         pre_tls, pre_jun = None, None
@@ -2021,8 +2027,8 @@ class SumoHighwayEnv(gym.Env):
                          else _dv / (self.max_decel * self.step_length))
             self._action_executed = (float(np.clip(_acc_exec, -1.0, 1.0)), float(lane_change))
             self._assist_intervened = (abs(v_new - _v_policy) > 1e-6) or (lane_change != lane_change_policy)
-            if tof_yield_hazard and (self.tof_junction_yield_weight > 0.0
-                                     or self.tof_junction_brake_weight > 0.0):
+            track_brake = self.tof_junction_brake_weight > 0.0 or self.tof_junction_preentry_brake_bonus > 0.0
+            if tof_yield_hazard and (self.tof_junction_yield_weight > 0.0 or track_brake):
                 remaining = (traci.lane.getLength(lane_id_before)
                              - traci.vehicle.getLanePosition(self.ego_id))
                 distance = max(0.0, remaining - 2.0)
@@ -2040,14 +2046,19 @@ class SumoHighwayEnv(gym.Env):
                     stopping_distance = v_new * reaction_time + v_new ** 2 / (2.0 * decel)
                     excess = min(1.0, max(0.0, stopping_distance - distance) / 10.0)
                     tof_yield_approach_penalty = self.tof_junction_yield_weight * excess * accel_scale
-                if self.tof_junction_brake_weight > 0.0:
+                if track_brake:
                     decel = min(1.5, self.max_decel)
                     reaction_term = decel * preview_time
                     stop_speed = float(np.sqrt(reaction_term ** 2 + 2.0 * decel * distance) - reaction_term)
                     if v > stop_speed + 1e-6:
                         tof_yield_brake_needed = True
+                        tof_yield_brake_target_mps2 = min(decel, (v - stop_speed) / self.step_length)
+                        if self.tof_junction_adaptive_brake_target:
+                            # Use the stopping-distance target with the existing 2 m buffer.
+                            required_decel = v ** 2 / (2.0 * distance) if distance > 0.0 else self.max_decel
+                            tof_yield_brake_target_mps2 = min(required_decel, self.max_decel, v / self.step_length)
                         # Compare commands even when the executed speed is clipped at the limit.
-                        target = -min(decel, (v - stop_speed) / self.step_length) / self.max_decel
+                        target = -tof_yield_brake_target_mps2 / self.max_decel
                         deficit = max(0.0, accel_raw - target) / (1.0 - target)
                         tof_yield_brake_penalty = self.tof_junction_brake_weight * deficit
             lane_change_applied = self._apply_lane_change(lane_change, alive=alive_before)
@@ -2162,6 +2173,15 @@ class SumoHighwayEnv(gym.Env):
             v_ref = self._speed_ref()
             speed_fraction = min(ego_speed / v_ref, 1.0)
             reward = float(self.rw["speed_weight"]) * speed_fraction
+            if (self.tof_junction_preentry_brake_bonus > 0.0 and tof_yield_brake_needed
+                    and accel_raw < 0.0 and not road_before.startswith(":")
+                    and road_after == road_before and not red_light):
+                # Credit speed removed toward the stop-speed threshold from the approach observation.
+                useful_drop = max(0.0, v - max(ego_speed, stop_speed))
+                bonus_target = tof_yield_brake_target_mps2 if self.tof_junction_adaptive_brake_target else decel
+                braking_fraction = min(1.0, useful_drop / (bonus_target * self.step_length))
+                tof_yield_preentry_brake_bonus = self.tof_junction_preentry_brake_bonus * braking_fraction
+                reward += tof_yield_preentry_brake_bonus
             if (route_lane_bonus_earned and lane_change_executed == lane_change
                     and not red_light and not yield_violation):
                 # 차량이 실제로 목표 차로에 들어간 뒤 보상을 지급한다.
@@ -2260,6 +2280,8 @@ class SumoHighwayEnv(gym.Env):
             "tof_yield_entry_penalty": tof_yield_entry_penalty,
             "tof_yield_brake_needed": tof_yield_brake_needed,
             "tof_yield_brake_penalty": tof_yield_brake_penalty,
+            "tof_yield_brake_target_mps2": tof_yield_brake_target_mps2,
+            "tof_yield_preentry_brake_bonus": tof_yield_preentry_brake_bonus,
             "teleported": teleported,
             "end_reason": end_reason,
             "end_lane": (lane_id_before if vehicle_collision or teleported

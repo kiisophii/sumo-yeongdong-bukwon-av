@@ -222,6 +222,26 @@ class HybridActorCritic(nn.Module):
         self.log_std = nn.Parameter(torch.ones(1) * float(init_log_std))
         self.brake_explore_std = 0.0
         self._brake_explore_obs = None
+        self.accel_residual_head = None
+        self._accel_residual_index = None
+
+    def enable_accel_residual(self, junction_index: int):
+        if not 0 <= junction_index <= self.trunk[0].in_features - 3:
+            raise ValueError("Junction observation indices are outside the policy input.")
+        if self.accel_residual_head is not None:
+            if junction_index != self._accel_residual_index:
+                raise ValueError("Checkpoint and environment junction observation indices differ.")
+            return
+
+        # The zero initialization should not consume the rollout's random draws.
+        with torch.random.fork_rng(devices=[]):
+            residual = nn.Linear(self.mu_head.in_features, 1, device="cpu")
+        nn.init.zeros_(residual.weight)
+        nn.init.zeros_(residual.bias)
+        self.accel_residual_head = residual.to(self.mu_head.weight)
+        self._accel_residual_index = junction_index
+        self.register_buffer("accel_residual_junction_index",
+                             torch.tensor(junction_index, device=self.mu_head.weight.device))
 
     def configure_brake_exploration(self, *, std_floor, junction_index, speed_scale,
                                     distance_scale, reaction_s, braking_decel):
@@ -242,7 +262,13 @@ class HybridActorCritic(nn.Module):
 
     def forward(self, obs):
         z = self.trunk(obs)
-        mu = torch.tanh(self.mu_head(z))          # 가감속 평균 ∈ [-1,1]
+        accel_logit = self.mu_head(z)
+        if self.accel_residual_head is not None:
+            index = self._accel_residual_index
+            hazard = (obs[..., index + 1:index + 3] > 0).all(dim=-1, keepdim=True)
+            offset = self.accel_residual_head(z)
+            accel_logit = accel_logit + torch.where(hazard, offset, 0.0)
+        mu = torch.tanh(accel_logit)              # 가감속 평균 ∈ [-1,1]
         std = torch.exp(self.log_std)
         brake_mask = self.brake_exploration_mask(obs)
         if brake_mask is not None:

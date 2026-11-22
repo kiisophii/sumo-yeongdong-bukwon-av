@@ -63,7 +63,7 @@ def load_agent(model_path, obs_dim, act_dim, algorithm="auto"):
     else:
         agent = PPO(obs_dim=obs_dim, act_dim=act_dim, **HPARAMS)
         try:
-            agent.policy.load_state_dict(checkpoint)
+            agent.load_policy_state_dict(checkpoint)
         except RuntimeError as exc:
             raise ValueError("PPO 모델과 현재 환경 차원 또는 HPARAMS의 네트워크 구조가 다릅니다.") from exc
         agent.policy.eval()

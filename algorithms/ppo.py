@@ -286,7 +286,9 @@ class PPO:
                     "reward": float(reward),
                     "approach_penalty": float(_info["tof_yield_approach_penalty"]),
                     "brake_penalty": float(_info["tof_yield_brake_penalty"]),
+                    "brake_target_mps2": float(_info.get("tof_yield_brake_target_mps2", 0.0)),
                     "entry_penalty": float(_info["tof_yield_entry_penalty"]),
+                    "preentry_brake_bonus": float(_info.get("tof_yield_preentry_brake_bonus", 0.0)),
                     "end_reason": _info["end_reason"],
                 })
             ep_stats[0] += reward
@@ -512,4 +514,18 @@ class PPO:
             weight = state["trunk.0.weight"]
             if weight.shape[1] == self.policy.trunk[0].in_features - append_zero_inputs:
                 state["trunk.0.weight"] = torch.nn.functional.pad(weight, (0, append_zero_inputs))
+        self.load_policy_state_dict(state)
+
+    def enable_accel_residual(self, junction_index: int):
+        if not isinstance(self.policy, HybridActorCritic):
+            raise ValueError("The acceleration residual requires a hybrid policy.")
+        initialized = self.policy.accel_residual_head is not None
+        self.policy.enable_accel_residual(junction_index)
+        if not initialized:
+            self.optimizer.add_param_group({"params": self.policy.accel_residual_head.parameters()})
+
+    def load_policy_state_dict(self, state):
+        junction_index = state.get("accel_residual_junction_index")
+        if junction_index is not None:
+            self.enable_accel_residual(int(junction_index.item()))
         self.policy.load_state_dict(state)

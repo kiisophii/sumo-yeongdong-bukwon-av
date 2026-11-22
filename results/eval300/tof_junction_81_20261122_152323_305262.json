@@ -1,0 +1,78 @@
+{
+  "model": "results/run_20261122_143625_tof_ppo_tof_residual_40k/checkpoints/model_40960.pt",
+  "target_lane": ":1681517542_4_0",
+  "episodes": [
+    {
+      "seed": 2353,
+      "episode": 28,
+      "steps": 179,
+      "expected_steps": 178,
+      "outcome": "collision",
+      "end_lane": "-472043938#1_0",
+      "target_passed": false,
+      "target_first_hazard_s": 365.0,
+      "target_preentry_brake_cmd_steps": 6,
+      "target_preentry_decel_steps": 6,
+      "matches_original_log": false,
+      "collision_time_s": 370.0,
+      "final_approach_first_hazard_lead_s": 5.0,
+      "partners": [
+        {
+          "vehicle_id": "f_five_market_south.6",
+          "collision_type": "junction",
+          "first_context_candidate_lead_s": 9.5,
+          "first_tof_detection_lead_s": 2.0,
+          "first_tof_conflict_lead_s": 2.0
+        }
+      ]
+    },
+    {
+      "seed": 2411,
+      "episode": 86,
+      "steps": 1808,
+      "expected_steps": 165,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 324.5,
+      "target_preentry_brake_cmd_steps": 7,
+      "target_preentry_decel_steps": 7,
+      "matches_original_log": false,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    },
+    {
+      "seed": 2401,
+      "episode": 76,
+      "steps": 1871,
+      "expected_steps": 209,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 401.5,
+      "target_preentry_brake_cmd_steps": 4,
+      "target_preentry_decel_steps": 4,
+      "matches_original_log": false,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    },
+    {
+      "seed": 2424,
+      "episode": 99,
+      "steps": 1899,
+      "expected_steps": 201,
+      "outcome": "arrival",
+      "end_lane": "611808767_0",
+      "target_passed": true,
+      "target_first_hazard_s": 402.5,
+      "target_preentry_brake_cmd_steps": 3,
+      "target_preentry_decel_steps": 3,
+      "matches_original_log": false,
+      "collision_time_s": null,
+      "final_approach_first_hazard_lead_s": null,
+      "partners": []
+    }
+  ]
+}

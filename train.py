@@ -181,6 +181,10 @@ if __name__ == "__main__":
                      help="(팀14) 이 model.pt에서 이어서 학습 (같은 관측·행동 차원일 때)")
     _ap.add_argument("--init-accel-scale", type=float, default=1.0,
                      help="초기 hybrid 모델의 가감속 평균 출력층 가중치와 편향 축소 배율")
+    _ap.add_argument("--ppo-accel-finetune", action="store_true",
+                     help="공통 MLP와 차선 출력층을 고정하고 가감속 정책과 가치 출력층을 PPO로 학습")
+    _ap.add_argument("--ppo-accel-residual", action="store_true",
+                     help="ToF 교차 위험 관측에서만 보정층을 사용하고 기존 가감속 출력층을 고정")
     _ap.add_argument("--seed", type=int, default=None,
                      help="(팀14) 난수 시드 (기본: HPARAMS['seed']=0). 같은 설정 반복 실험용")
     _ap.add_argument("--tof-junction-yield-weight", type=float, default=0.0,
@@ -193,6 +197,10 @@ if __name__ == "__main__":
                      help="ToF 교차 위험이 표시된 상태로 교차로에 진입할 때 1회 감점")
     _ap.add_argument("--tof-junction-brake-weight", type=float, default=0.0,
                      help="ToF 교차 위험과 정지 여유 부족이 동시에 있을 때 제동 부족 감점 상한")
+    _ap.add_argument("--tof-junction-preentry-brake-bonus", type=float, default=0.0,
+                     help="ToF 위험으로 제동이 필요할 때 진입 전 실제 감속의 즉시 보상 상한")
+    _ap.add_argument("--tof-junction-adaptive-brake-target", action="store_true",
+                     help="자차 속도와 교차로 진입점까지 남은 거리로 보상용 목표 감속도 계산")
     _ap.add_argument("--tof-junction-brake-explore-std", type=float, default=0.0,
                      help="학습 중 ToF 교차 위험과 정지 여유 부족이 동시에 있을 때 가감속 표준편차 하한")
     _ap.add_argument("--tof-route-stall-weight", type=float, default=0.0,
@@ -201,6 +209,8 @@ if __name__ == "__main__":
                      help="학습 스텝 중 짧은 교차로 접근 장면의 목표 비율 (예: 0.25)")
     _ap.add_argument("--tof-junction-curriculum-lane",
                      help="집중 학습 에피소드의 교차로 접근 차로 ID")
+    _ap.add_argument("--tof-junction-warmup-jitter-s", type=float, default=0.0,
+                     help="집중 학습 시작 시 배경 교통 예열시간의 하한과 상한을 넓힐 초 단위 폭")
     _ap.add_argument("--tof-junction-north-south-vph", type=int,
                      help="학습용 신협오거리 남북 직진 차량의 시간당 투입 대수")
     _ap.add_argument("--tof-junction-safe-pass-bonus", type=float, default=0.0,
@@ -208,6 +218,13 @@ if __name__ == "__main__":
     _ap.add_argument("--tof-junction-diagnostics", action="store_true",
                      help="집중 학습 위험 관측의 제동·가속, GAE, 업데이트 전후 평균 가감속 기록")
     _args = _ap.parse_args()
+    if _args.ppo_accel_residual and not (
+            _args.ppo_accel_finetune and OBSERVATION["tof"] and OBSERVATION["junction_features"]):
+        _ap.error("--ppo-accel-residual 사용에는 --ppo-accel-finetune과 ToF 교차로 관측이 필요합니다.")
+    if _args.ppo_accel_finetune and (not _args.init_model or HPARAMS["policy_type"] != "hybrid"):
+        _ap.error("--ppo-accel-finetune 사용에는 --init-model과 hybrid 정책이 필요합니다.")
+    if _args.ppo_accel_finetune:
+        HPARAMS["lane_entropy_coef"] = 0.0
     _init_accel_scale = _args.init_accel_scale
     if not 0.0 < _init_accel_scale <= 1.0:
         _ap.error("--init-accel-scale 값은 0 초과 1 이하여야 합니다.")
@@ -235,6 +252,9 @@ if __name__ == "__main__":
         _ap.error("--tof-junction-curriculum-share 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
     if _junction_lane and _junction_share <= 0.0:
         _ap.error("--tof-junction-curriculum-lane 사용에는 양수의 집중 학습 비율이 필요합니다.")
+    _warmup_jitter_s = _args.tof_junction_warmup_jitter_s
+    if not isfinite(_warmup_jitter_s) or _warmup_jitter_s < 0.0 or (_warmup_jitter_s and not _junction_lane):
+        _ap.error("교차로 예열시간 변동 폭은 0 이상의 유한수이며, 양수이면 집중 학습 차로가 필요합니다.")
     if _args.tof_junction_diagnostics and (_junction_share <= 0.0 or HPARAMS["policy_type"] != "hybrid"):
         _ap.error("--tof-junction-diagnostics 사용에는 ToF 교차로 집중 학습과 hybrid 정책이 필요합니다.")
     _safe_pass_bonus = _args.tof_junction_safe_pass_bonus
@@ -307,6 +327,18 @@ if __name__ == "__main__":
     REWARD["tof_junction_brake_weight"] = _brake_weight
     if _brake_weight > 0.0:
         print(f"ToF 교차로 제동 부족 감점: 최대={_brake_weight:g}/step")
+    _preentry_brake_bonus = _args.tof_junction_preentry_brake_bonus
+    if not isfinite(_preentry_brake_bonus) or _preentry_brake_bonus < 0.0:
+        _ap.error("--tof-junction-preentry-brake-bonus 값은 0 이상의 유한수여야 합니다.")
+    if _preentry_brake_bonus > 0.0 and not (OBSERVATION["tof"] and OBSERVATION["junction_features"]
+                                          and ROAD.get("type") == "osm"):
+        _ap.error("--tof-junction-preentry-brake-bonus 사용에는 OSM 도로와 ToF 교차로 관측이 필요합니다.")
+    REWARD["tof_junction_preentry_brake_bonus"] = _preentry_brake_bonus
+    if _preentry_brake_bonus > 0.0:
+        print(f"ToF 교차로 진입 전 실제 감속 보상: 최대=+{_preentry_brake_bonus:g}/step")
+    REWARD["tof_junction_adaptive_brake_target"] = _args.tof_junction_adaptive_brake_target
+    if _args.tof_junction_adaptive_brake_target:
+        print("ToF 교차로 목표 감속도: 자차 속도와 진입까지 남은 거리 기준")
     REWARD["tof_junction_yield_preview"] = _args.tof_junction_yield_preview
     _yield_reaction_s = _args.tof_junction_yield_reaction_s
     if not isfinite(_yield_reaction_s) or _yield_reaction_s <= 0.0:
@@ -352,14 +384,20 @@ if __name__ == "__main__":
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
         json.dump({**{k: (list(v) if isinstance(v, tuple) else v) for k, v in HPARAMS.items()},
                    "init_accel_scale": _init_accel_scale,
+                   "ppo_accel_finetune": _args.ppo_accel_finetune,
+                   "ppo_accel_residual": _args.ppo_accel_residual,
+                   "init_model": _args.init_model,
                    "tof_junction_yield_weight": _yield_weight,
                    "tof_junction_entry_penalty": _entry_penalty,
                    "tof_junction_brake_weight": _brake_weight,
+                   "tof_junction_preentry_brake_bonus": _preentry_brake_bonus,
+                   "tof_junction_adaptive_brake_target": _args.tof_junction_adaptive_brake_target,
                    "tof_junction_brake_explore_std": _brake_explore_std,
                    "tof_junction_yield_preview": _args.tof_junction_yield_preview,
                    "tof_junction_yield_reaction_s": _yield_reaction_s,
                    "tof_junction_curriculum_share": _junction_share,
                    "tof_junction_curriculum_lane": _junction_lane,
+                   "tof_junction_warmup_jitter_s": _warmup_jitter_s,
                    "tof_junction_safe_pass_bonus": _safe_pass_bonus,
                    "tof_junction_diagnostics": _args.tof_junction_diagnostics,
                    "tof_junction_north_south_vph": TRAFFIC.get("routes", {}).get(
@@ -388,11 +426,13 @@ if __name__ == "__main__":
     if _junction_share > 0.0:
         training_env = JunctionCurriculum(
             env, share=_junction_share, seed=HPARAMS["seed"], target_lane=_junction_lane,
-            safe_pass_bonus=_safe_pass_bonus,
+            safe_pass_bonus=_safe_pass_bonus, warmup_jitter_s=_warmup_jitter_s,
         )
         print(f"ToF 교차로 집중 학습 스텝 목표: {_junction_share:.0%}")
         if _junction_lane:
             print(f"ToF 집중 학습 접근 차로: {_junction_lane}")
+        if _warmup_jitter_s:
+            print(f"ToF 집중 학습 배경 교통 예열시간 범위 확장: ±{_warmup_jitter_s:g}초")
         if _safe_pass_bonus > 0.0:
             print(f"ToF 교차로 양보 후 안전 통과 보너스: +{_safe_pass_bonus:g}/회")
 
@@ -418,6 +458,16 @@ if __name__ == "__main__":
             initial_model = os.path.join(run_dir, "model_init_scaled.pt")
             agent.save(initial_model)
             print(f"가감속 출력층 초기 배율: {_init_accel_scale:g}배 · 학습 전 모델: {initial_model}")
+    if _args.ppo_accel_finetune:
+        agent.policy.trunk.requires_grad_(False)
+        agent.policy.lane_head.requires_grad_(False)
+        if _args.ppo_accel_residual:
+            agent.enable_accel_residual(env.obs_dim - env.tof_observation_dims - 3)
+            agent.policy.mu_head.requires_grad_(False)
+        trainable = [parameter for parameter in agent.policy.parameters() if parameter.requires_grad]
+        agent.optimizer = torch.optim.Adam(trainable, **agent.optimizer.defaults)
+        head = "ToF 위험 가감속 보정층" if _args.ppo_accel_residual else "가감속 출력층"
+        print(f"PPO 업데이트 대상: {head}, 가감속 탐색 표준편차, 가치 출력층")
     if _brake_explore_std > 0.0:
         agent.policy.configure_brake_exploration(
             std_floor=_brake_explore_std,
