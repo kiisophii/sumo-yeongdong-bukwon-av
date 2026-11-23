@@ -22,8 +22,9 @@ export PYTHONIOENCODING=utf-8
 export TEAM14_SCENARIO=museum
 export TEAM14_TOF_OBS=1             # 주변 차·신호·교차로를 ToF 센서(가림 포함)로 본다
 export TEAM14_TOF_REAR_DENSITY=1    # 좌우 후방 ToF 밀도 2칸 사용
-export TEAM14_ROUTE_OBS=none        # 경로 차선 관측 5칸 제거 (+ 구간 제한속도 1칸) → 관측 34칸
+export TEAM14_ROUTE_OBS=none        # 경로 차선 관측 5칸 제거 (+ 구간 제한속도 1칸) → 관측 39칸 (차로 끝 5칸 포함)
 export TEAM14_DROP_SIGNAL_TIME=1      # 신호 남은 시간 칸 제거 (ToF로는 볼 수 없음)
+export TEAM14_LANE_END_OBS=1          # 차로 끝 5칸: 차로가 250 m 안에서 물리적으로 끝나는지 (경로 무관)
 export TEAM14_NO_SPEED_CAP=1        # 제한속도에서 자르지 않음 (차량 최고속도 120 km/h만)
 export TEAM14_REWARD=progress       # 보상 = 전진 거리 + 완주 + 실패(충돌·경로이탈·신호위반) + 과속 감점
 export PROGRESS_TOTAL=20            # 경로 끝까지 전진하면 받는 전진 보상 합

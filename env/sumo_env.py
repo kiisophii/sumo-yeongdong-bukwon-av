@@ -313,6 +313,15 @@ class SumoHighwayEnv(gym.Env):
                                  and self.junction_obs)
         if self.drop_signal_time:
             self.obs_dim -= 1
+        # ---- (팀14, 11/23) TEAM14_LANE_END_OBS=1: 센서로 보이는 차로 끝 5칸 ----
+        #   수업 원본 차로 연결성과 같은 뜻(경로와 무관, 물리적으로 끊기는지)을 ToF 범위(250 m)까지 본다.
+        #   _lane_end_observation 참고.
+        self.lane_end_obs = os.environ.get("TEAM14_LANE_END_OBS", "") == "1"
+        self.lane_end_range = float((self.tof or {}).get("range_m", 250.0))
+        self._lane_cont = {}
+        self._lane_end_prev = [1.0] * n_lanes_view
+        if self.lane_end_obs:
+            self.obs_dim += n_lanes_view
         # ---- (팀14) TEAM14_REWARD=progress: 주행 결과 기반 보상 (_progress_reward 참고) ----
         self.progress_reward = os.environ.get("TEAM14_REWARD", "") == "progress"
         self._prog_prev = None
@@ -583,6 +592,7 @@ class SumoHighwayEnv(gym.Env):
                 pass
 
         self.step_count = 0
+        self._lane_end_prev = [1.0] * len(self.obs_offsets)
         # (팀14) 전진 거리 보상 기준점: 이번 판 ego의 주행거리계(odometer)
         self._prog_prev = None
         self._prog_total = 0.0
@@ -1109,6 +1119,83 @@ class SumoHighwayEnv(gym.Env):
             self._tof_positions, self._tof_time = frame.positions, now
         return self._tof_scene
 
+    def _lane_continuation(self, lane):
+        """(팀14) 이 차로 시작점부터 차로변경 없이 갈 수 있는 최대 거리와 그 끝점.
+
+        경로와 무관하다: 다음 도로가 여러 갈래면 어느 쪽이든 가장 멀리 이어지는 쪽을 본다
+        (출구로 이어지는 차로도 "이어짐"). 승용차가 못 들어가는 차로로만 이어지면 거기서 끝.
+        반환 (길이 m, 끝점 (x, y) 또는 None). 길이는 lane_end_range + 200 m에서 자른다.
+        """
+        lane_id = lane.getID()
+        if lane_id in self._lane_cont:
+            return self._lane_cont[lane_id]
+        cap = self.lane_end_range + 200.0
+        self._lane_cont[lane_id] = (cap, None)        # 순환 도로 보호
+        best = (lane.getLength(), tuple(lane.getShape()[-1]))
+        for conn in lane.getOutgoing():
+            to = conn.getToLane()
+            if not to.allows("passenger"):
+                continue
+            via = conn.getViaLaneID()
+            via_len = self._road_net.getLane(via).getLength() if via else 0.0
+            rest, end = self._lane_continuation(to)
+            total = lane.getLength() + via_len + rest
+            if total > best[0]:
+                best = (total, end)
+        if best[0] >= cap:
+            best = (cap, None)
+        self._lane_cont[lane_id] = best
+        return best
+
+    @staticmethod
+    def _road_point_in_view(frame, point):
+        """도로 위 고정 지점(차로 끝)이 전방 센서 범위(250 m·120°) 안이고 건물에 가리지 않는가.
+        차로 끝은 노면 표시·표지판으로 알리는 고정 구조라 다른 차에 가리는 것은 따지지 않는다."""
+        from math import hypot
+        dx, dy = point[0] - frame.center[0], point[1] - frame.center[1]
+        dist = hypot(dx, dy)
+        hx, hy = frame.headings[0]
+        if dist > frame.range or dx * hx + dy * hy < dist * frame.cos_half_fov:
+            return False
+        return not frame.buildings.blocks(frame.center, point)
+
+    def _lane_end_observation(self, frame):
+        """(팀14, TEAM14_LANE_END_OBS=1) 5개 차선(좌2, 좌1, 현재, 우1, 우2)의 차로 끝.
+
+        -1 : 그 차선이 없음 (또는 승용차가 못 쓰는 차로)
+         1 : lane_end_range(250 m) 안에서 끝나지 않음, 또는 끝나는 지점이 센서 범위 밖·건물에 가림
+        0~1: 끝나는 지점까지 거리 / 250 m (끝점이 전방 센서 범위 안에 있을 때만)
+        경로 정보는 쓰지 않는다. 교차로 내부에서는 직전 값을 유지한다.
+        """
+        try:
+            edge = traci.vehicle.getRoadID(self.ego_id)
+            if edge.startswith(":"):
+                return list(self._lane_end_prev)
+            if self._outgoing is None:
+                self._build_lane_tables()
+            lanes = self._road_net.getEdge(edge).getLanes()
+            idx = traci.vehicle.getLaneIndex(self.ego_id)
+            pos = traci.vehicle.getLanePosition(self.ego_id)
+        except (traci.TraCIException, KeyError):
+            return list(self._lane_end_prev)
+        R = self.lane_end_range
+        out = []
+        for offset in self.obs_offsets:
+            i = idx + offset
+            if not 0 <= i < len(lanes) or not lanes[i].allows("passenger"):
+                out.append(-1.0)
+                continue
+            total, end = self._lane_continuation(lanes[i])
+            dist = total - min(pos, lanes[i].getLength())
+            if end is None or dist >= R:
+                out.append(1.0)
+            elif frame is not None and not self._road_point_in_view(frame, end):
+                out.append(1.0)                       # 센서 범위 밖·건물에 가림 = 모름
+            else:
+                out.append(float(np.clip(dist / R, 0.0, 1.0)))
+        self._lane_end_prev = out
+        return out
+
     def _progress_reward(self, ego_speed: float) -> float:
         """(팀14, TEAM14_REWARD=progress) 살아서 달리는 스텝의 보상.
 
@@ -1188,6 +1275,8 @@ class SumoHighwayEnv(gym.Env):
             #   (제한속도 자르기를 없애면 정책이 제한속도를 알아야 지킬 수 있음).
             lane_scores = self._coarse_route_observation()
         obs.extend(lane_scores)
+        if self.lane_end_obs:
+            obs.extend(self._lane_end_observation(frame if self.tof else None))
 
         # ----- 5개 차선의 전방 차량 밀도 (같은 순서) -----
         for offset in self.obs_offsets:
