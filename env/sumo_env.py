@@ -298,6 +298,18 @@ class SumoHighwayEnv(gym.Env):
             buildings = os.path.join(os.path.dirname(cfg_path), "tof.buildings.xml")
             self._tof_buildings = BuildingOccluders(buildings if self.osm_mode else None)
             self._tof_geometry = None
+        # ---- (팀14, 11/23 조교 답변 반영) TEAM14_ROUTE_OBS=none ----
+        #   경로 기준 차선 관측 5칸 [21..25]을 통째로 뺀다 (차선 단위 경로 정보 금지).
+        #   대신 1칸: 현재 구간 제한속도/vmax. 제한속도 자르기를 없앴으므로(TEAM14_NO_SPEED_CAP=1)
+        #   정책이 표지판처럼 제한속도를 봐야 과속 감점을 피할 수 있다.
+        #   ToF 관측이면 39 → 35칸. 기존 모델과 호환 안 됨 → 처음부터 학습.
+        self.route_obs_mode = os.environ.get("TEAM14_ROUTE_OBS", "")
+        if self.osm_mode and self.route_obs_mode == "none":
+            self.obs_dim += 1 - n_lanes_view
+        # ---- (팀14) TEAM14_REWARD=progress: 주행 결과 기반 보상 (_progress_reward 참고) ----
+        self.progress_reward = os.environ.get("TEAM14_REWARD", "") == "progress"
+        self._prog_prev = None
+        self._prog_total = 0.0
         self.observation_space = spaces.Box(-1.0, 1.0, shape=(self.obs_dim,),
                                             dtype=np.float32)
 
@@ -564,6 +576,14 @@ class SumoHighwayEnv(gym.Env):
                 pass
 
         self.step_count = 0
+        # (팀14) 전진 거리 보상 기준점: 이번 판 ego의 주행거리계(odometer)
+        self._prog_prev = None
+        self._prog_total = 0.0
+        if self.progress_reward:
+            try:
+                self._prog_prev = float(traci.vehicle.getDistance(self.ego_id))
+            except traci.TraCIException:
+                self._prog_prev = None
         info = {}
         if junction_focus:
             info["tof_junction_focus"] = True
@@ -1082,6 +1102,37 @@ class SumoHighwayEnv(gym.Env):
             self._tof_positions, self._tof_time = frame.positions, now
         return self._tof_scene
 
+    def _progress_reward(self, ego_speed: float) -> float:
+        """(팀14, TEAM14_REWARD=progress) 살아서 달리는 스텝의 보상.
+
+        = PROGRESS_TOTAL × (이번 스텝에 예정 경로를 따라 전진한 거리 / 경로 전체 길이)
+          - PROGRESS_OVERSPEED_W × max(0, 속도/구간 제한속도 - 1)
+
+        ego는 정해진 경로(route) 위에서만 움직이므로(경로를 벗어나는 차로로 가면
+        차로 끝에서 경로 이탈 실패로 끝남) 주행거리계 증가량 = 경로를 따라 전진한 거리.
+        완주(+arrival_bonus)와 실패(-collision_penalty)는 step()의 종료 처리에서 준다.
+        """
+        total = float(os.environ.get("PROGRESS_TOTAL", "20") or 20)
+        reward = 0.0
+        try:
+            d = float(traci.vehicle.getDistance(self.ego_id))
+        except traci.TraCIException:
+            d = None
+        if d is not None and d >= 0.0:
+            if self._prog_prev is not None and self._prog_prev >= 0.0:
+                delta = max(0.0, d - self._prog_prev)
+                self._prog_total += delta
+                reward += total * delta / max(self.road_length, 1.0)
+            self._prog_prev = d
+        w = float(os.environ.get("PROGRESS_OVERSPEED_W", "0.1") or 0)
+        if w > 0.0:
+            try:
+                limit = max(traci.vehicle.getAllowedSpeed(self.ego_id), 1.0)
+                reward -= w * max(0.0, ego_speed / limit - 1.0)
+            except traci.TraCIException:
+                pass
+        return reward
+
     def _get_obs(self, *, alive=None):
         # ego가 이미 사라졌다면(충돌/도착) 0벡터 반환 — 종료 직전 마지막 관측용
         if alive is None:
@@ -1114,8 +1165,15 @@ class SumoHighwayEnv(gym.Env):
                         float(np.clip((fv - v) / self.vmax, -1.0, 1.0))]
 
         # ----- 5개 차선의 연결성 (같은 순서) -----
-        lane_scores = (self._route_lane_observation() if self.osm_mode
-                       else [self._lane_connectivity(offset) for offset in self.obs_offsets])
+        if self.osm_mode and self.route_obs_mode == "none":
+            # (팀14, 11/23) 경로 차선 관측 없음. 현재 구간 제한속도 1칸만.
+            try:
+                lane_scores = [traci.vehicle.getAllowedSpeed(self.ego_id) / self.vmax]
+            except traci.TraCIException:
+                lane_scores = [1.0]
+        else:
+            lane_scores = (self._route_lane_observation() if self.osm_mode
+                           else [self._lane_connectivity(offset) for offset in self.obs_offsets])
         if self.osm_mode and os.environ.get("TEAM14_ROUTE_OBS", "") == "coarse":
             # (팀14, 11/23 조교 답변 반영) "경로를 따라가려면 차선을 몇 번 바꿔야 하는지"는 금지.
             #   허용된 정보만: 내 차로가 앞 50 m 안에 끝나는지, 다음 갈림길까지 거리·방향.
@@ -2400,6 +2458,21 @@ class SumoHighwayEnv(gym.Env):
         reward -= tof_yield_entry_penalty
         reward -= tof_yield_brake_penalty
 
+        # ---- (팀14, TEAM14_REWARD=progress) 주행 결과만으로 보상: 위에서 계산한 보상을 덮어쓴다 ----
+        #   실패(충돌·경로 이탈·순간이동·신호 위반): -collision_penalty, 종료
+        #   완주(정해진 경로 끝 도착 = 올바른 경로로 완주): +arrival_bonus, 종료
+        #   그 외 스텝: 전진 거리 보상 - 과속 감점 (_progress_reward)
+        #   속도·간격·TTC·막힘·차선변경·양보·ToF 보상 항은 쓰지 않는다.
+        if self.progress_reward:
+            if collided:
+                reward = -float(self.rw["collision_penalty"])
+            elif arrived:
+                reward = float(self.rw["arrival_bonus"])
+            elif not alive:
+                reward = 0.0
+            else:
+                reward = self._progress_reward(ego_speed)
+
         if self.step_count >= self.max_steps:
             truncated = True
 
@@ -2445,6 +2518,7 @@ class SumoHighwayEnv(gym.Env):
             "tof_merge_gap_penalty": tof_merge_gap_penalty,
             "tof_route_stall_penalty": tof_route_stall_penalty,
             "stop_penalty": float(getattr(self, "_stop_pen", 0.0)),
+            "progress_m": float(getattr(self, "_prog_total", 0.0)),
             "tof_unseen_speed_penalty": tof_unseen_penalty,
             "route_estimates": dict(self.route_estimates),
             "disrupted_route": (self.disrupted or {}).get("route"),
