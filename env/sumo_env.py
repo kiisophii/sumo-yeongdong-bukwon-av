@@ -876,6 +876,78 @@ class SumoHighwayEnv(gym.Env):
             scores.append(urgency_factor / (1.0 + changes))
         return scores
 
+    def _coarse_route_observation(self):
+        """(팀14) 조교님이 허용한 큰 틀의 경로 정보 5칸.
+
+        [0] 내 차로가 앞 50 m 안에서 끝나는지: 끝까지 남은 거리/50 (끝나지 않으면 1)
+        [1] 경로상 다음 갈림길까지 거리/600 (600 m 안에 없으면 1)
+        [2] 그 갈림길에서 경로 방향: 오른쪽 +1, 왼쪽 -1, 판단 불가·없음 0
+        [3] 현재 구간 제한속도/vmax
+        [4] (내 속도 - 제한속도)/vmax
+        교차로 내부에서는 직전 값을 유지한다.
+        """
+        ego = self.ego_id
+        prev = getattr(self, "_coarse_prev", None) or [1.0, 1.0, 0.0, 1.0, 0.0]
+        try:
+            v = traci.vehicle.getSpeed(ego)
+            limit = traci.vehicle.getAllowedSpeed(ego)
+        except traci.TraCIException:
+            return prev
+        speed_part = [limit / self.vmax, (v - limit) / self.vmax]
+        edge = traci.vehicle.getRoadID(ego)
+        if edge.startswith(":"):
+            return prev[:3] + speed_part
+        if self._outgoing is None:
+            self._build_lane_tables()
+        route = traci.vehicle.getRoute(ego)
+        index = traci.vehicle.getRouteIndex(ego)
+        if not 0 <= index < len(route) or route[index] != edge or edge not in self._edge_lanes:
+            return prev[:3] + speed_part
+        vclass = traci.vehicle.getVehicleClass(ego)
+        lane_id = traci.vehicle.getLaneID(ego)
+        pos = traci.vehicle.getLanePosition(ego)
+        remaining = max(0.0, traci.lane.getLength(lane_id) - pos)
+
+        # [0] 내 차로 끝: 50 m 안에서 이어지는 차로가 없으면 끝
+        end_score, d, cur = 1.0, remaining, lane_id
+        nxt_edge = route[index + 1] if index + 1 < len(route) else None
+        while d <= 50.0:
+            outs = self._outgoing_lanes(cur)
+            if not outs:
+                end_score = d / 50.0
+                break
+            pick = [o for o in outs if nxt_edge and o[0].rsplit("_", 1)[0] == nxt_edge] or outs
+            to_id, to_len, _, via_len = pick[0]
+            d += via_len + to_len
+            cur = to_id
+            k = route.index(to_id.rsplit("_", 1)[0]) if to_id.rsplit("_", 1)[0] in route[index:] else None
+            nxt_edge = route[k + 1] if k is not None and k + 1 < len(route) else None
+
+        # [1][2] 다음 갈림길: 경로상 도로 e에서 경로 밖 다른 도로로도 갈 수 있는 곳
+        fork_d, fork_dir, d = 1.0, 0.0, remaining
+        for k in range(index, len(route) - 1):
+            if d > 600.0:
+                break
+            e, e_next = route[k], route[k + 1]
+            lanes = [ln for ln in self._edge_lanes.get(e, []) if ln.allows(vclass)]
+            on, off = [], []
+            for ln in lanes:
+                tos = {o[0].rsplit("_", 1)[0] for o in self._outgoing_lanes(ln.getID())}
+                if e_next in tos:
+                    on.append(ln.getIndex())
+                if tos - {e_next}:
+                    off.append(ln.getIndex())
+            if on and off:
+                fork_d = d / 600.0
+                diff = float(np.mean(on)) - float(np.mean(off))
+                fork_dir = -1.0 if diff > 0.25 else (1.0 if diff < -0.25 else 0.0)
+                break
+            if k + 1 < len(route) and route[k + 1] in self._edge_lanes:
+                d += self._edge_lanes[route[k + 1]][0].getLength()
+        out = [end_score, fork_d, fork_dir] + speed_part
+        self._coarse_prev = out
+        return out
+
     def _speed_ref(self) -> float:
         """속도 보상/막힘 판정의 기준 속도."""
         if self.speed_ref == "lane":
@@ -1044,6 +1116,12 @@ class SumoHighwayEnv(gym.Env):
         # ----- 5개 차선의 연결성 (같은 순서) -----
         lane_scores = (self._route_lane_observation() if self.osm_mode
                        else [self._lane_connectivity(offset) for offset in self.obs_offsets])
+        if self.osm_mode and os.environ.get("TEAM14_ROUTE_OBS", "") == "coarse":
+            # (팀14, 11/23 조교 답변 반영) "경로를 따라가려면 차선을 몇 번 바꿔야 하는지"는 금지.
+            #   허용된 정보만: 내 차로가 앞 50 m 안에 끝나는지, 다음 갈림길까지 거리·방향.
+            #   남는 두 칸에는 현재 구간 제한속도와 제한속도 대비 내 속도를 넣는다
+            #   (제한속도 자르기를 없애면 정책이 제한속도를 알아야 지킬 수 있음).
+            lane_scores = self._coarse_route_observation()
         obs.extend(lane_scores)
 
         # ----- 5개 차선의 전방 차량 밀도 (같은 순서) -----
@@ -1287,17 +1365,76 @@ class SumoHighwayEnv(gym.Env):
             if not lane.startswith(":"):
                 ahead = (traci.lane.getLength(lane)
                          - traci.vehicle.getLanePosition(self.ego_id))
-                links = traci.vehicle.getNextLinks(self.ego_id) if ahead <= L else ()
-                if links:
+                inside = os.environ.get("TEAM14_JUN_INSIDE", "0") == "1"
+                links = traci.vehicle.getNextLinks(self.ego_id) if (ahead <= L or inside) else ()
+                if links and not inside:
                     lk = links[0]
                     # (다음 차선, 우선 여부, 진입 가능, 엇갈리는 차 있음, 교차로 내부 차선,
                     #  신호/우선 상태 문자, 방향, 길이)
                     signalized = lk[5] in "GgyYrRu"
                     if not signalized and not lk[1]:
                         jun = [ahead / L, 1.0, 1.0 if lk[3] else -1.0]
+                elif links and inside:
+                    # (팀14 실험 TEAM14_JUN_INSIDE=1)
+                    #  1) 바로 다음 교차로가 우선(양보 없음)이어도 L 안의 그다음 교차로까지 본다
+                    #     (예: 요금소 15 m 뒤 지퍼 합류는 예전엔 15 m 앞에서야 보였다).
+                    #  2) 지퍼 합류(상태 Z)는 우선 표시가 붙어도 서로 끼어드는 곳이라 양보로 본다.
+                    #  3) SUMO의 "엇갈리는 차 접근"은 이미 교차로 안에 들어간 차를 빼먹으므로 직접 확인.
+                    d, from_lane = ahead, lane
+                    for lk in links:
+                        if d > L or lk[5] in "GgyYrRu":
+                            break
+                        if not lk[1] or lk[5] == "Z":
+                            self._jun_yield_from = from_lane
+                            foe = bool(lk[3]) or (bool(lk[4]) and self._foe_inside(lk[4]))
+                            jun = [d / L, 1.0, 1.0 if foe else -1.0]
+                            break
+                        d += lk[7] + traci.lane.getLength(lk[0])
+                        from_lane = lk[0]
+                self._jun_yield_from = lane if jun[1] > 0 else None
+            elif (os.environ.get("TEAM14_JUN_INSIDE", "0") == "1"
+                  and getattr(self, "_jun_yield_from", None)):
+                # (팀14 실험) 교차로 안 관측: 양보 교차로에 들어간 뒤에도
+                #   [34]=0(교차로 안), [35]=+1(양보), [36]=엇갈리는 차 있음/없음 을 계속 보여 준다.
+                #   기존에는 교차로 내부 차선에 들어서는 순간 "교차로 없음, 차 없음"으로 바뀌어
+                #   합류 중에 멈췄다가 다시 가속해 부딪히는 충돌이 났다.
+                jun = [0.0, 1.0, 1.0 if self._foe_inside(lane) else -1.0]
         except traci.TraCIException:
             pass
         return jun
+
+    def _foe_inside(self, lane):
+        """교차로 내부 차선 lane과 엇갈리는 차가 교차로 안에 있거나 곧 들어오는가."""
+        foes = set(traci.lane.getInternalFoes(lane))
+        if not foes:
+            return False
+        for fl in foes:
+            for v in traci.lane.getLastStepVehicleIDs(fl):
+                if v != self.ego_id:
+                    return True
+        if lane.startswith(":"):
+            # 방금 합류를 마친 엇갈리는 차가 교차로 출구 바로 앞(15 m)에 있으면 아직 "있음".
+            #   (지퍼 합류에서 이 차가 빠지자마자 '없음'이 되어 가속 → 추돌하던 문제)
+            for lk in traci.lane.getLinks(lane):
+                for v in traci.lane.getLastStepVehicleIDs(lk[0]):
+                    if v != self.ego_id and traci.vehicle.getLanePosition(v) < 15.0:
+                        return True
+        jid = lane[1:].rsplit("_", 2)[0]
+        for e in traci.junction.getIncomingEdges(jid):
+            for i in range(traci.edge.getLaneNumber(e)):
+                il = f"{e}_{i}"
+                if il == self._jun_yield_from:
+                    continue
+                if not any(lk[4] in foes for lk in traci.lane.getLinks(il)):
+                    continue
+                ln = traci.lane.getLength(il)
+                for v in traci.lane.getLastStepVehicleIDs(il):
+                    if v == self.ego_id:
+                        continue
+                    rem = ln - traci.vehicle.getLanePosition(v)
+                    if rem <= max(10.0, traci.vehicle.getSpeed(v) * 4.0):
+                        return True
+        return False
 
     # ==================================================================
     # 1 스텝 진행: 행동 적용 → 시뮬레이션 1스텝 → 보상/종료 판정
@@ -1788,6 +1925,10 @@ class SumoHighwayEnv(gym.Env):
             # OSM 도로: 구간 제한속도(80/100 km/h)를 넘지 않는다 (규정속도 준수)
             v_cap = (min(self.vmax, traci.vehicle.getAllowedSpeed(self.ego_id))
                      if self.osm_mode else self.vmax)
+            if os.environ.get("TEAM14_NO_SPEED_CAP", "") == "1":
+                # (팀14, 11/23 조교 답변 반영) 제한속도에서 자르지 않는다. 차량 물리 최고속도만.
+                #   대신 보상에서 과속을 감점한다 (TEAM14_OVERSPEED_W).
+                v_cap = traci.vehicle.getMaxSpeed(self.ego_id)
             v_new = float(np.clip(v + dv, 0.0, v_cap))
             _v_policy = v_new   # (팀14) 보조 규칙이 속도를 바꾸기 전 값
             # (팀14 실험) MERGE_SPEEDMATCH=1: 직전 스텝에 꼭 필요한 차선변경이 안전 게이트에
@@ -2193,6 +2334,15 @@ class SumoHighwayEnv(gym.Env):
                     excess = max(0.0, speed_fraction - self.tof_unseen_speed_fraction)
                     tof_unseen_penalty = self.tof_unseen_speed_penalty * excess
                     reward -= tof_unseen_penalty
+            if os.environ.get("TEAM14_NO_SPEED_CAP", "") == "1":
+                # (팀14) 과속 감점: 구간 제한속도를 넘은 비율 × 가중치, 매 스텝
+                try:
+                    _lim = max(traci.vehicle.getAllowedSpeed(self.ego_id), 1.0)
+                except traci.TraCIException:
+                    _lim = v_ref
+                _over = max(0.0, ego_speed / _lim - 1.0)
+                self._overspeed_steps = getattr(self, "_overspeed_steps", 0) + (1 if _over > 0.02 else 0)
+                reward -= float(os.environ.get("TEAM14_OVERSPEED_W", "1.0")) * _over
             # (팀14 실험) STOP_SHAPING=w: 끊기는 차로 끝·빨간불 앞에서 "못 멈출 속도"면 매 스텝 최대 w 감점
             _sw = float(os.environ.get("STOP_SHAPING", "0") or 0)
             if _sw > 0:
