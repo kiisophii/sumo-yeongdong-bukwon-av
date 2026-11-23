@@ -314,10 +314,11 @@ class SumoHighwayEnv(gym.Env):
         if self.drop_signal_time:
             self.obs_dim -= 1
         # ---- (팀14, 11/23) TEAM14_LANE_END_OBS=1: 센서로 보이는 차로 끝 5칸 ----
-        #   수업 원본 차로 연결성과 같은 뜻(경로와 무관, 물리적으로 끊기는지)을 ToF 범위(250 m)까지 본다.
+        #   수업 원본 차로 연결성과 같은 뜻(경로와 무관, 물리적으로 끊기는지).
         #   _lane_end_observation 참고.
         self.lane_end_obs = os.environ.get("TEAM14_LANE_END_OBS", "") == "1"
-        self.lane_end_range = float((self.tof or {}).get("range_m", 250.0))
+        #   보는 거리: TEAM14_LANE_END_RANGE (m). 수업 원본 차로 연결성과 같은 50 m가 기본.
+        self.lane_end_range = float(os.environ.get("TEAM14_LANE_END_RANGE", "50") or 50)
         self._lane_cont = {}
         self._lane_end_prev = [1.0] * n_lanes_view
         if self.lane_end_obs:
@@ -1163,8 +1164,8 @@ class SumoHighwayEnv(gym.Env):
         """(팀14, TEAM14_LANE_END_OBS=1) 5개 차선(좌2, 좌1, 현재, 우1, 우2)의 차로 끝.
 
         -1 : 그 차선이 없음 (또는 승용차가 못 쓰는 차로)
-         1 : lane_end_range(250 m) 안에서 끝나지 않음, 또는 끝나는 지점이 센서 범위 밖·건물에 가림
-        0~1: 끝나는 지점까지 거리 / 250 m (끝점이 전방 센서 범위 안에 있을 때만)
+         1 : lane_end_range(기본 50 m) 안에서 끝나지 않음, 또는 끝나는 지점이 센서 범위 밖·건물에 가림
+        0~1: 끝나는 지점까지 거리 / lane_end_range (끝점이 전방 센서 범위 안에 있을 때만)
         경로 정보는 쓰지 않는다. 교차로 내부에서는 직전 값을 유지한다.
         """
         try:
