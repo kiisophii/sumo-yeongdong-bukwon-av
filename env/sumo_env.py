@@ -2577,6 +2577,8 @@ class SumoHighwayEnv(gym.Env):
                 #   판정은 SUMO 실제 상태 기준(보상에는 시뮬레이터 정보 사용 가능 — 조교 답변).
                 if yield_violation:
                     reward -= float(os.environ.get("PROGRESS_YIELD_PENALTY", "0") or 0)
+                # 시간 감점(결과 기준, 기본 0): 살아서 보내는 매 스텝 감점. 위험한 곳 앞에서 무한정 기다리는 것도 손해가 되게 한다.
+                reward -= float(os.environ.get("PROGRESS_TIME_PENALTY", "0") or 0)
 
         if self.step_count >= self.max_steps:
             truncated = True
