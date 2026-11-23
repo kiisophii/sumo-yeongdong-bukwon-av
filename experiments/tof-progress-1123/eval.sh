@@ -21,6 +21,7 @@ export TEAM14_SCENARIO=museum
 export TEAM14_TOF_OBS=1
 export TEAM14_TOF_REAR_DENSITY=1
 export TEAM14_ROUTE_OBS=none
+export TEAM14_DROP_SIGNAL_TIME=1      # 신호 남은 시간 칸 제거 (ToF로는 볼 수 없음)
 export TEAM14_NO_SPEED_CAP=1
 export TEAM14_REWARD=progress
 export SIM_REUSE=1                  # 평가는 판마다 SUMO를 새로 시작

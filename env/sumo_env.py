@@ -306,6 +306,13 @@ class SumoHighwayEnv(gym.Env):
         self.route_obs_mode = os.environ.get("TEAM14_ROUTE_OBS", "")
         if self.osm_mode and self.route_obs_mode == "none":
             self.obs_dim += 1 - n_lanes_view
+        # ---- (팀14, 11/23) TEAM14_DROP_SIGNAL_TIME=1: 신호 남은 시간 칸 제거 ----
+        #   ToF 관측에서는 남은 시간을 볼 수 없어 신호가 있으면 늘 -1, 없으면 1뿐이고,
+        #   그 구분은 신호 거리·색 칸으로도 된다 → 한 칸 뺀다.
+        self.drop_signal_time = (os.environ.get("TEAM14_DROP_SIGNAL_TIME", "") == "1"
+                                 and self.junction_obs)
+        if self.drop_signal_time:
+            self.obs_dim -= 1
         # ---- (팀14) TEAM14_REWARD=progress: 주행 결과 기반 보상 (_progress_reward 참고) ----
         self.progress_reward = os.environ.get("TEAM14_REWARD", "") == "progress"
         self._prog_prev = None
@@ -1187,6 +1194,7 @@ class SumoHighwayEnv(gym.Env):
             obs.append(front_density[offset] if self.tof else self._lane_density(offset))
 
         # ----- (팀14) 앞 신호·교차로 -----
+        junction_start = len(obs)
         if self.junction_obs:
             if self.tof:
                 route = traci.vehicle.getRoute(self.ego_id)
@@ -1212,6 +1220,8 @@ class SumoHighwayEnv(gym.Env):
             side_rear = (rear_density[1], rear_density[-1]) if self.tof.get("rear_density", True) else (0.0, 0.0)
             obs.extend(side_rear)
 
+        if getattr(self, "drop_signal_time", False):
+            del obs[junction_start + 2]    # 신호 남은 시간 칸
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
 
     def _add_ego(self, route_id, depart_lane, depart_speed, *, depart_pos="0"):
