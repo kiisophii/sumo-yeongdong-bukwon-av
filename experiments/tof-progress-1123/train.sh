@@ -31,6 +31,7 @@ export TEAM14_NO_SPEED_CAP=1        # 제한속도에서 자르지 않음 (차�
 export TEAM14_REWARD=progress       # 보상 = 전진 거리 + 완주 + 실패(충돌·경로이탈·신호위반) + 과속 감점
 export PROGRESS_TOTAL=20            # 경로 끝까지 전진하면 받는 전진 보상 합
 export PROGRESS_OVERSPEED_W=0.1     # 과속 감점: 스텝당 0.1 × (속도/제한속도 - 1)
+export PROGRESS_YIELD_PENALTY=2         # 양보 위반: 양보할 교차로에 엇갈리는 차가 오는데 진입하면 -2 (종료 안 함)
 export SIM_REUSE=5                  # 시뮬레이션 5판마다 새로 시작
 
 python -u train.py \

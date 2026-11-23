@@ -2561,8 +2561,8 @@ class SumoHighwayEnv(gym.Env):
         # ---- (팀14, TEAM14_REWARD=progress) 주행 결과만으로 보상: 위에서 계산한 보상을 덮어쓴다 ----
         #   실패(충돌·경로 이탈·순간이동·신호 위반): -collision_penalty, 종료
         #   완주(정해진 경로 끝 도착 = 올바른 경로로 완주): +arrival_bonus, 종료
-        #   그 외 스텝: 전진 거리 보상 - 과속 감점 (_progress_reward)
-        #   속도·간격·TTC·막힘·차선변경·양보·ToF 보상 항은 쓰지 않는다.
+        #   그 외 스텝: 전진 거리 보상 - 과속 감점 (_progress_reward) - 양보 위반 감점(PROGRESS_YIELD_PENALTY)
+        #   속도·간격·TTC·막힘·차선변경·ToF 보상 항은 쓰지 않는다.
         if self.progress_reward:
             if collided:
                 reward = -float(self.rw["collision_penalty"])
@@ -2572,6 +2572,11 @@ class SumoHighwayEnv(gym.Env):
                 reward = 0.0
             else:
                 reward = self._progress_reward(ego_speed)
+                # 양보 위반(결과 기준): 양보해야 하는 비신호 교차로에 엇갈리는 차가 다가오는데
+                #   이번 스텝에 교차로 안으로 들어갔으면 감점 (종료 안 함). 어떻게 피할지는 정책이 배운다.
+                #   판정은 SUMO 실제 상태 기준(보상에는 시뮬레이터 정보 사용 가능 — 조교 답변).
+                if yield_violation:
+                    reward -= float(os.environ.get("PROGRESS_YIELD_PENALTY", "0") or 0)
 
         if self.step_count >= self.max_steps:
             truncated = True
