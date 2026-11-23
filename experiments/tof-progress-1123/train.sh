@@ -4,6 +4,8 @@
 # 사용법 (Git Bash, 저장소 루트에서):
 #   bash experiments/tof-progress-1123/train.sh               # 기본: 시드 0, 100만 스텝
 #   bash experiments/tof-progress-1123/train.sh 1 1000000     # 시드 1 (PC마다 시드를 다르게)
+#   끊긴 학습을 체크포인트에서 이어가기 (같은 새 모델의 체크포인트일 때만):
+#   bash experiments/tof-progress-1123/train.sh 0 500000 --init-model results/<run>/checkpoints/model_51200.pt
 #
 # 결과: results/run_<날짜>_tof_progress_s<시드>/ (model.pt, checkpoints/, training_log.csv, eval_log.csv)
 set -euo pipefail
@@ -41,4 +43,5 @@ python -u train.py \
   --arrival-bonus 10 \
   --timesteps "$STEPS" \
   --ckpt-every 51200 \
-  --tag "tof_progress_s${SEED}"
+  --tag "tof_progress_s${SEED}" \
+  "${@:3}"
