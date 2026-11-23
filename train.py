@@ -233,6 +233,12 @@ if __name__ == "__main__":
     if globals().get("_args") is not None and getattr(_args, "init_model", None):
         agent.load(_args.init_model)
         print(f"이어서 학습: {_args.init_model}")
+        # (팀14, 11/24) TEAM14_RESET_LOGSTD=x: 이어서 학습할 때 탐색 폭 log_std를 x로 다시 키운다
+        #   (B의 std 0.29로는 정지 local optimum에서 못 벗어남 — D 실패)
+        _rls = os.environ.get("TEAM14_RESET_LOGSTD")
+        if _rls:
+            agent.policy.log_std.data.fill_(float(_rls))
+            print(f"log_std 재설정: {float(_rls)}")
     print(f"obs_dim={env.observation_space.shape[0]}, "
           f"act_dim={env.action_space.shape[0]}, device={agent.device}")
 

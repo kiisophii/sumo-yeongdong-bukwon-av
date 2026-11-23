@@ -32,3 +32,16 @@ env -u HARD_START_PROB -u STOP_SHAPING -u TEAM14_JUN_INSIDE PYTHONIOENCODING=utf
   TEAM14_ROUTE_OBS=coarse TEAM14_NO_SPEED_CAP=1 \
   python -u tools/evaluate.py --episodes 60 --seed 2026 --independent-seeds --no-baseline --model <model.pt> --out results/coarse_2026.json
 ```
+
+## 11/24 추가: 정지 local optimum 대응
+
+11/23 D(B에서 그대로 이어서, W=1, 40만): 300판 전부 출발점에서 정지 → teleport, 완주 0.
+- B의 첫 층이 바뀐 5칸을 예전 의미로 읽어 가속 출력이 음수로 포화 → 출발 안 함.
+- 정지하면 600스텝 뒤 teleport(-30)가 γ=0.995로 할인돼 약 -1.5 → "출발 안 하기"가 local optimum.
+
+대응 (둘 다 쓴다):
+1. `python tools/zero_route_inputs.py <B model.pt> B_zero5.pt` 로 만든 B_zero5.pt를 `--init-model`로 쓴다 (5칸 가중치 0 + bias 보정 → 바로 다시 달림).
+2. `TEAM14_IDLE_PEN=0.1`: 앞이 비어 있고(앞차 20 m 밖) 앞 60 m 신호가 빨강·노랑이 아닌데 1 m/s 미만이면 매 스텝 -0.1 (reward shaping). 처음부터 학습에도 켠다.
+3. (선택) `TEAM14_RESET_LOGSTD=-0.5`: 이어서 학습할 때 탐색 폭을 다시 키운다.
+
+정지 감점은 학습 때만 켜면 된다(평가 결과에는 영향 없음). TEAM14_ROUTE_OBS, TEAM14_NO_SPEED_CAP는 평가 때도 켠다.

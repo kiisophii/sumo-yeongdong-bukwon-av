@@ -1966,6 +1966,20 @@ class SumoHighwayEnv(gym.Env):
                 _over = max(0.0, ego_speed / _lim - 1.0)
                 self._overspeed_steps = getattr(self, "_overspeed_steps", 0) + (1 if _over > 0.02 else 0)
                 reward -= float(os.environ.get("TEAM14_OVERSPEED_W", "1.0")) * _over
+            # (팀14, 11/24) 정지 감점: 앞이 비어 있고(같은 차로 앞차 20 m 밖 또는 없음) 앞 60 m 안
+            #   신호가 빨강·노랑이 아닌데 1 m/s 미만으로 서 있으면 매 스텝 TEAM14_IDLE_PEN 감점.
+            #   정지 후 teleport(-30)가 할인돼 "출발 안 하기"가 local optimum이 되는 것을 막는다 (D 실패 원인).
+            _iw = float(os.environ.get("TEAM14_IDLE_PEN", "0") or 0)
+            if _iw > 0 and ego_speed < 1.0 and (ego_gap is None or ego_gap > 20.0):
+                _red = False
+                try:
+                    for _t, _li, _d, _st in traci.vehicle.getNextTLS(self.ego_id)[:1]:
+                        if _d < 60.0 and _st in "rRyYu":
+                            _red = True
+                except traci.TraCIException:
+                    pass
+                if not _red:
+                    reward -= _iw
             # (팀14 실험) STOP_SHAPING=w: 끊기는 차로 끝·빨간불 앞에서 "못 멈출 속도"면 매 스텝 최대 w 감점
             _sw = float(os.environ.get("STOP_SHAPING", "0") or 0)
             if _sw > 0:
