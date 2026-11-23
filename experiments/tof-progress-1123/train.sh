@@ -14,7 +14,8 @@ STEPS="${2:-1000000}"
 for v in ASSIST_PROB ROUTE_ASSIST_M ROUTE_SHIELD_M MERGE_SUMO MERGE_STOP MERGE_SPEEDMATCH MERGE_COOP \
          LC_REVERSE_COOLDOWN LC_COOLDOWN_EXEMPT LC_TRACK_SUMO RED_STOP JUNCTION_YIELD JUNCTION_ROW \
          ZIPPER_FOLLOW ROUNDABOUT_VMAX STOP_SHAPING STOP_SHAPING_YELLOW EXEC_ACTION_BUFFER \
-         TEAM14_JUN_INSIDE TEAM14_OVERSPEED_W TEAM14_TOF_LEAD_HOLD_S TEAM14_TOF_LEAD_GAP_WINDOW; do
+         TEAM14_JUN_INSIDE TEAM14_OVERSPEED_W TEAM14_TOF_LEAD_HOLD_S TEAM14_TOF_LEAD_GAP_WINDOW \
+         HARD_START_PROB HARD_START_TARGETS HARD_START_BACK_M; do   # 어려운 구간 출발 없이 항상 경로 처음부터 학습
   unset "$v"
 done
 
@@ -31,7 +32,6 @@ export TEAM14_REWARD=progress       # 보상 = 전진 거리 + 완주 + 실패(�
 export PROGRESS_TOTAL=20            # 경로 끝까지 전진하면 받는 전진 보상 합
 export PROGRESS_OVERSPEED_W=0.1     # 과속 감점: 스텝당 0.1 × (속도/제한속도 - 1)
 export SIM_REUSE=5                  # 시뮬레이션 5판마다 새로 시작
-export HARD_START_PROB=0.5          # 학습용: 판의 절반은 어려운 구간 500 m 앞에서 출발 (평가 때는 끔)
 
 python -u train.py \
   --seed "$SEED" \
