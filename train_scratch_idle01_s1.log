@@ -1,0 +1,596 @@
+보상: 충돌 -30.0, 완주 +30.0, 막힘 -0.0
+도로 생성 완료: /Users/JO/team14_idle01/env/sumo/museum/highway.sumocfg
+  길이 13556.150000000003m, 6차선, 교통량 9530.0대/시간
+하이퍼파라미터: lr=0.0001, gamma=0.995, n_steps=2048, 총 1,000,000 스텝
+결과 폴더: /Users/JO/team14_idle01/results/run_20261124_122521_scratch_idle01_s1
+obs_dim=37, act_dim=2, device=cpu
+[update    1] steps=   2048  ep_rew_mean=-132.9  std=0.6036  policy_loss=-0.007801  value_loss=126.9  entropy=1.987  approx_kl=0.007941  clip_frac=0.09224  p_lane_change=0.5627
+[update    2] steps=   4096  ep_rew_mean=-119.6  std=0.5993  policy_loss=-0.006285  value_loss=8.167  entropy=1.978  approx_kl=0.003813  clip_frac=0.0958  p_lane_change=0.5248
+[update    3] steps=   6144  ep_rew_mean=-105.9  std=0.5962  policy_loss=-0.001228  value_loss=6.293  entropy=1.974  approx_kl=0.003226  clip_frac=0.04683  p_lane_change=0.549
+[update    4] steps=   8192  ep_rew_mean=-97.94  std=0.5968  policy_loss=-0.002466  value_loss=2.185  entropy=1.959  approx_kl=0.005369  clip_frac=0.04966  p_lane_change=0.5299
+[update    5] steps=  10240  ep_rew_mean=-92.59  std=0.5973  policy_loss=-0.005612  value_loss=2.082  entropy=1.947  approx_kl=0.00378  clip_frac=0.04595  p_lane_change=0.5184
+    [eval @10240] 5ep  충돌률=100%  완주율=0%  평균속도=0.0m/s  평균차간=50.0m  최소차간=50.0m  차선변경=0.0회  보상=-90.0
+[update    6] steps=  12288  ep_rew_mean=-84.74  std=0.5942  policy_loss=-0.008564  value_loss=4.462  entropy=1.947  approx_kl=0.006073  clip_frac=0.07251  p_lane_change=0.5113
+[update    7] steps=  14336  ep_rew_mean=-77.04  std=0.5902  policy_loss=-0.002357  value_loss=3.344  entropy=1.946  approx_kl=0.005204  clip_frac=0.04521  p_lane_change=0.5257
+[update    8] steps=  16384  ep_rew_mean=-68.85  std=0.5875  policy_loss=-0.004372  value_loss=3.114  entropy=1.91  approx_kl=0.003496  clip_frac=0.04741  p_lane_change=0.465
+[update    9] steps=  18432  ep_rew_mean=-65.69  std=0.5911  policy_loss=-0.002852  value_loss=4.698  entropy=1.89  approx_kl=0.004323  clip_frac=0.04155  p_lane_change=0.4729
+[update   10] steps=  20480  ep_rew_mean=-60.46  std=0.5887  policy_loss=-0.008851  value_loss=3.774  entropy=1.916  approx_kl=0.01029  clip_frac=0.09634  p_lane_change=0.505
+    [eval @20480] 5ep  충돌률=100%  완주율=0%  평균속도=0.0m/s  평균차간=50.0m  최소차간=50.0m  차선변경=0.0회  보상=-90.0
+[update   11] steps=  22528  ep_rew_mean=-61.95  std=0.5864  policy_loss=-0.008271  value_loss=0.7746  entropy=1.955  approx_kl=0.01357  clip_frac=0.14  p_lane_change=0.5741
+[update   12] steps=  24576  ep_rew_mean=-63.71  std=0.583  policy_loss=-0.004522  value_loss=1.14  entropy=1.949  approx_kl=0.008272  clip_frac=0.05508  p_lane_change=0.5468
+[update   13] steps=  26624  ep_rew_mean=-62.45  std=0.5785  policy_loss=0.0009346  value_loss=1.568  entropy=1.927  approx_kl=0.001111  clip_frac=0.04409  p_lane_change=0.5394
+[update   14] steps=  28672  ep_rew_mean=-61.41  std=0.5809  policy_loss=-0.0009738  value_loss=0.9848  entropy=1.921  approx_kl=0.002716  clip_frac=0.03198  p_lane_change=0.5516
+[update   15] steps=  30720  ep_rew_mean=-61.24  std=0.5814  policy_loss=-0.004968  value_loss=2.925  entropy=1.946  approx_kl=0.003903  clip_frac=0.05488  p_lane_change=0.5764
+    [eval @30720] 5ep  충돌률=100%  완주율=0%  평균속도=0.0m/s  평균차간=50.0m  최소차간=50.0m  차선변경=0.0회  보상=-90.0
+[update   16] steps=  32768  ep_rew_mean=-64.23  std=0.5777  policy_loss=-0.006618  value_loss=2.561  entropy=1.922  approx_kl=0.008413  clip_frac=0.1356  p_lane_change=0.5561
+[update   17] steps=  34816  ep_rew_mean=-66.29  std=0.573  policy_loss=-0.003696  value_loss=2.241  entropy=1.885  approx_kl=0.007217  clip_frac=0.0356  p_lane_change=0.5238
+[update   18] steps=  36864  ep_rew_mean=-63.81  std=0.5716  policy_loss=-0.00652  value_loss=2.626  entropy=1.887  approx_kl=0.01562  clip_frac=0.1059  p_lane_change=0.5746
+[update   19] steps=  38912  ep_rew_mean=-60.46  std=0.5688  policy_loss=-0.005551  value_loss=1.829  entropy=1.863  approx_kl=0.008629  clip_frac=0.06304  p_lane_change=0.5283
+[update   20] steps=  40960  ep_rew_mean=-55.91  std=0.5708  policy_loss=-0.00417  value_loss=3.648  entropy=1.881  approx_kl=0.004339  clip_frac=0.05581  p_lane_change=0.5468
+    [eval @40960] 5ep  충돌률=100%  완주율=0%  평균속도=0.2m/s  평균차간=50.0m  최소차간=50.0m  차선변경=0.0회  보상=-115.7
+[update   21] steps=  43008  ep_rew_mean=-54.11  std=0.5693  policy_loss=-0.007945  value_loss=3.529  entropy=1.906  approx_kl=0.003994  clip_frac=0.0564  p_lane_change=0.5492
+[update   22] steps=  45056  ep_rew_mean=-54.39  std=0.5656  policy_loss=-0.00857  value_loss=1.591  entropy=1.902  approx_kl=0.01461  clip_frac=0.1348  p_lane_change=0.5259
+[update   23] steps=  47104  ep_rew_mean=-59.81  std=0.5631  policy_loss=0.00149  value_loss=3.794  entropy=1.91  approx_kl=0.006078  clip_frac=0.04961  p_lane_change=0.5545
+[update   24] steps=  49152  ep_rew_mean=-58.95  std=0.5615  policy_loss=-0.007673  value_loss=3.459  entropy=1.901  approx_kl=0.005266  clip_frac=0.04116  p_lane_change=0.5508
+[update   25] steps=  51200  ep_rew_mean=-56.06  std=0.5642  policy_loss=-0.002196  value_loss=1.25  entropy=1.913  approx_kl=0.007548  clip_frac=0.06011  p_lane_change=0.5425
+    [eval @51200] 5ep  충돌률=100%  완주율=0%  평균속도=0.0m/s  평균차간=50.0m  최소차간=50.0m  차선변경=0.0회  보상=-90.0
+[update   26] steps=  53248  ep_rew_mean=-56.95  std=0.5668  policy_loss=-0.009195  value_loss=1.42  entropy=1.88  approx_kl=0.00753  clip_frac=0.04521  p_lane_change=0.4982
+[update   27] steps=  55296  ep_rew_mean=-61.61  std=0.5667  policy_loss=-0.002476  value_loss=2.174  entropy=1.861  approx_kl=0.003553  clip_frac=0.03711  p_lane_change=0.5155
+[update   28] steps=  57344  ep_rew_mean=-63.03  std=0.5667  policy_loss=-0.009979  value_loss=2.161  entropy=1.899  approx_kl=0.009243  clip_frac=0.08188  p_lane_change=0.5443
+[update   29] steps=  59392  ep_rew_mean=-64.65  std=0.5672  policy_loss=0.0005171  value_loss=1.941  entropy=1.906  approx_kl=0.003728  clip_frac=0.03076  p_lane_change=0.5738
+[update   30] steps=  61440  ep_rew_mean=-67.78  std=0.5679  policy_loss=-0.003684  value_loss=1.215  entropy=1.899  approx_kl=0.003434  clip_frac=0.05322  p_lane_change=0.5446
+    [eval @61440] 5ep  충돌률=100%  완주율=0%  평균속도=1.4m/s  평균차간=25.7m  최소차간=2.0m  차선변경=0.0회  보상=-81.0
+[update   31] steps=  63488  ep_rew_mean=-67.5  std=0.5654  policy_loss=-0.001838  value_loss=2.414  entropy=1.899  approx_kl=0.005851  clip_frac=0.07373  p_lane_change=0.5767
+[update   32] steps=  65536  ep_rew_mean=-62.76  std=0.5701  policy_loss=-0.006633  value_loss=3.327  entropy=1.916  approx_kl=0.01079  clip_frac=0.1076  p_lane_change=0.6177
+[update   33] steps=  67584  ep_rew_mean=-64.46  std=0.5671  policy_loss=-0.002935  value_loss=2.255  entropy=1.906  approx_kl=0.00931  clip_frac=0.06377  p_lane_change=0.6751
+[update   34] steps=  69632  ep_rew_mean=-65.14  std=0.5668  policy_loss=-0.007649  value_loss=1.542  entropy=1.886  approx_kl=0.01067  clip_frac=0.1308  p_lane_change=0.6667
+[update   35] steps=  71680  ep_rew_mean=-60.37  std=0.5632  policy_loss=-0.0003661  value_loss=1.602  entropy=1.893  approx_kl=0.004943  clip_frac=0.03042  p_lane_change=0.6773
+    [eval @71680] 5ep  충돌률=100%  완주율=0%  평균속도=0.9m/s  평균차간=44.2m  최소차간=34.9m  차선변경=0.0회  보상=-100.5
+[update   36] steps=  73728  ep_rew_mean=-57.09  std=0.5594  policy_loss=-0.003992  value_loss=3.868  entropy=1.907  approx_kl=0.009015  clip_frac=0.05474  p_lane_change=0.6316
+[update   37] steps=  75776  ep_rew_mean=-52.7  std=0.5568  policy_loss=-0.007885  value_loss=2.123  entropy=1.908  approx_kl=0.00982  clip_frac=0.08433  p_lane_change=0.6437
+[update   38] steps=  77824  ep_rew_mean=-49.89  std=0.5567  policy_loss=-0.003796  value_loss=2.838  entropy=1.914  approx_kl=0.004222  clip_frac=0.06899  p_lane_change=0.6349
+[update   39] steps=  79872  ep_rew_mean=-46.28  std=0.5556  policy_loss=-0.003713  value_loss=3.113  entropy=1.918  approx_kl=0.01066  clip_frac=0.06699  p_lane_change=0.6217
+[update   40] steps=  81920  ep_rew_mean=-46.25  std=0.5512  policy_loss=-0.003317  value_loss=1.51  entropy=1.905  approx_kl=0.005556  clip_frac=0.04473  p_lane_change=0.585
+    [eval @81920] 5ep  충돌률=100%  완주율=0%  평균속도=1.0m/s  평균차간=41.0m  최소차간=33.0m  차선변경=0.0회  보상=-91.4
+[update   41] steps=  83968  ep_rew_mean=-45.5  std=0.5473  policy_loss=-0.004268  value_loss=1.256  entropy=1.906  approx_kl=0.01116  clip_frac=0.09966  p_lane_change=0.5904
+[update   42] steps=  86016  ep_rew_mean=-43.22  std=0.5469  policy_loss=-0.005436  value_loss=3.148  entropy=1.886  approx_kl=0.00639  clip_frac=0.07095  p_lane_change=0.5894
+[update   43] steps=  88064  ep_rew_mean=-40.62  std=0.5468  policy_loss=-0.004809  value_loss=5.196  entropy=1.88  approx_kl=0.004276  clip_frac=0.05884  p_lane_change=0.6137
+[update   44] steps=  90112  ep_rew_mean=-37.16  std=0.5485  policy_loss=-0.003169  value_loss=1.624  entropy=1.868  approx_kl=0.0108  clip_frac=0.09165  p_lane_change=0.6025
+[update   45] steps=  92160  ep_rew_mean=-33.58  std=0.5496  policy_loss=-0.004214  value_loss=2.82  entropy=1.878  approx_kl=0.008178  clip_frac=0.09087  p_lane_change=0.6207
+    [eval @92160] 5ep  충돌률=100%  완주율=0%  평균속도=0.8m/s  평균차간=39.1m  최소차간=6.5m  차선변경=0.0회  보상=-166.8
+[update   46] steps=  94208  ep_rew_mean=-31.75  std=0.5509  policy_loss=-0.00892  value_loss=2.331  entropy=1.89  approx_kl=0.01299  clip_frac=0.1534  p_lane_change=0.5783
+[update   47] steps=  96256  ep_rew_mean=-31.86  std=0.5475  policy_loss=-0.004825  value_loss=2.046  entropy=1.872  approx_kl=0.007518  clip_frac=0.09448  p_lane_change=0.5632
+[update   48] steps=  98304  ep_rew_mean=-30.8  std=0.5409  policy_loss=-0.002139  value_loss=2.808  entropy=1.857  approx_kl=0.003984  clip_frac=0.0603  p_lane_change=0.5906
+[update   49] steps= 100352  ep_rew_mean=-29.83  std=0.5417  policy_loss=-0.007818  value_loss=2.632  entropy=1.876  approx_kl=0.01537  clip_frac=0.1019  p_lane_change=0.6096
+[update   50] steps= 102400  ep_rew_mean=-31.02  std=0.5393  policy_loss=-0.003836  value_loss=1.665  entropy=1.863  approx_kl=0.00495  clip_frac=0.09375  p_lane_change=0.5563
+    [eval @102400] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=27.9m  최소차간=0.0m  차선변경=0.0회  보상=-88.3
+[update   51] steps= 104448  ep_rew_mean=-32.01  std=0.5377  policy_loss=-0.006522  value_loss=2.355  entropy=1.812  approx_kl=0.01051  clip_frac=0.09644  p_lane_change=0.4974
+[update   52] steps= 106496  ep_rew_mean=-36.06  std=0.5355  policy_loss=-0.004949  value_loss=1.813  entropy=1.797  approx_kl=0.01009  clip_frac=0.08179  p_lane_change=0.4978
+[update   53] steps= 108544  ep_rew_mean=-37.42  std=0.5333  policy_loss=-0.0008153  value_loss=5.123  entropy=1.8  approx_kl=0.005573  clip_frac=0.04717  p_lane_change=0.5047
+[update   54] steps= 110592  ep_rew_mean=-39.7  std=0.5326  policy_loss=-0.007763  value_loss=0.8923  entropy=1.8  approx_kl=0.01277  clip_frac=0.1235  p_lane_change=0.5124
+[update   55] steps= 112640  ep_rew_mean=-39.39  std=0.5344  policy_loss=-0.003627  value_loss=1.768  entropy=1.839  approx_kl=0.005376  clip_frac=0.07754  p_lane_change=0.5495
+    [eval @112640] 5ep  충돌률=100%  완주율=0%  평균속도=0.8m/s  평균차간=29.9m  최소차간=0.2m  차선변경=0.0회  보상=-114.7
+[update   56] steps= 114688  ep_rew_mean=-38.3  std=0.5336  policy_loss=-0.003177  value_loss=0.425  entropy=1.865  approx_kl=0.005055  clip_frac=0.08989  p_lane_change=0.5801
+[update   57] steps= 116736  ep_rew_mean=-39.49  std=0.535  policy_loss=-0.003761  value_loss=1.776  entropy=1.814  approx_kl=0.01171  clip_frac=0.09468  p_lane_change=0.5318
+[update   58] steps= 118784  ep_rew_mean=-37.48  std=0.5348  policy_loss=-0.003627  value_loss=3.783  entropy=1.845  approx_kl=0.006327  clip_frac=0.1005  p_lane_change=0.5446
+[update   59] steps= 120832  ep_rew_mean=-38.08  std=0.5341  policy_loss=-0.006136  value_loss=2.185  entropy=1.86  approx_kl=0.006176  clip_frac=0.08687  p_lane_change=0.5793
+[update   60] steps= 122880  ep_rew_mean=-37.62  std=0.5309  policy_loss=-0.00124  value_loss=4.165  entropy=1.844  approx_kl=0.0008592  clip_frac=0.03311  p_lane_change=0.5615
+    [eval @122880] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=24.5m  최소차간=0.0m  차선변경=0.0회  보상=-102.1
+[update   61] steps= 124928  ep_rew_mean=-35.66  std=0.527  policy_loss=-0.003452  value_loss=3.132  entropy=1.858  approx_kl=0.01353  clip_frac=0.09902  p_lane_change=0.6128
+[update   62] steps= 126976  ep_rew_mean=-30.37  std=0.5258  policy_loss=-0.004127  value_loss=3.068  entropy=1.852  approx_kl=0.007566  clip_frac=0.08159  p_lane_change=0.6122
+[update   63] steps= 129024  ep_rew_mean=-34.02  std=0.5232  policy_loss=-0.004085  value_loss=2.322  entropy=1.85  approx_kl=0.007587  clip_frac=0.05508  p_lane_change=0.6623
+[update   64] steps= 131072  ep_rew_mean=-31.04  std=0.5244  policy_loss=-0.0009765  value_loss=1.581  entropy=1.851  approx_kl=0.003292  clip_frac=0.0626  p_lane_change=0.6335
+[update   65] steps= 133120  ep_rew_mean=-31.34  std=0.5245  policy_loss=-0.002624  value_loss=4.958  entropy=1.851  approx_kl=0.006583  clip_frac=0.04834  p_lane_change=0.6393
+    [eval @133120] 5ep  충돌률=100%  완주율=0%  평균속도=1.2m/s  평균차간=31.9m  최소차간=1.0m  차선변경=0.0회  보상=-86.3
+[update   66] steps= 135168  ep_rew_mean=-27.51  std=0.5283  policy_loss=-0.008711  value_loss=1.666  entropy=1.864  approx_kl=0.007674  clip_frac=0.08921  p_lane_change=0.6351
+[update   67] steps= 137216  ep_rew_mean=-30.15  std=0.5238  policy_loss=-0.00811  value_loss=2.873  entropy=1.856  approx_kl=0.008063  clip_frac=0.1211  p_lane_change=0.6674
+[update   68] steps= 139264  ep_rew_mean=-29.51  std=0.5162  policy_loss=-0.001812  value_loss=0.7337  entropy=1.85  approx_kl=0.006221  clip_frac=0.1209  p_lane_change=0.6315
+[update   69] steps= 141312  ep_rew_mean=-28.65  std=0.5176  policy_loss=-0.007269  value_loss=1.648  entropy=1.844  approx_kl=0.004513  clip_frac=0.052  p_lane_change=0.6052
+[update   70] steps= 143360  ep_rew_mean=-29.1  std=0.5151  policy_loss=-0.006057  value_loss=2.824  entropy=1.849  approx_kl=0.009521  clip_frac=0.08511  p_lane_change=0.6392
+    [eval @143360] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=33.2m  최소차간=6.4m  차선변경=0.0회  보상=-68.0
+[update   71] steps= 145408  ep_rew_mean=-31.48  std=0.5168  policy_loss=-0.0009782  value_loss=1.804  entropy=1.84  approx_kl=0.006636  clip_frac=0.07148  p_lane_change=0.6074
+[update   72] steps= 147456  ep_rew_mean=-29.6  std=0.5206  policy_loss=-0.002274  value_loss=0.6578  entropy=1.844  approx_kl=0.01263  clip_frac=0.1113  p_lane_change=0.6032
+[update   73] steps= 149504  ep_rew_mean=-30.12  std=0.5209  policy_loss=-0.001049  value_loss=2.506  entropy=1.843  approx_kl=0.006155  clip_frac=0.05518  p_lane_change=0.6087
+[update   74] steps= 151552  ep_rew_mean=-27.05  std=0.518  policy_loss=-0.002727  value_loss=1.94  entropy=1.814  approx_kl=0.007309  clip_frac=0.08057  p_lane_change=0.5319
+[update   75] steps= 153600  ep_rew_mean=-26.52  std=0.5145  policy_loss=-0.003074  value_loss=3.195  entropy=1.812  approx_kl=0.005712  clip_frac=0.03179  p_lane_change=0.5497
+    [eval @153600] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=35.6m  최소차간=1.2m  차선변경=0.0회  보상=-88.9
+[update   76] steps= 155648  ep_rew_mean=-25.49  std=0.5133  policy_loss=-0.00537  value_loss=0.4976  entropy=1.785  approx_kl=0.01229  clip_frac=0.1387  p_lane_change=0.5333
+[update   77] steps= 157696  ep_rew_mean=-21.21  std=0.5127  policy_loss=-0.005941  value_loss=0.5452  entropy=1.807  approx_kl=0.01135  clip_frac=0.1297  p_lane_change=0.5755
+[update   78] steps= 159744  ep_rew_mean=-22.63  std=0.5127  policy_loss=-0.01045  value_loss=3.871  entropy=1.824  approx_kl=0.01323  clip_frac=0.1339  p_lane_change=0.6258
+[update   79] steps= 161792  ep_rew_mean=-20.53  std=0.513  policy_loss=-0.004207  value_loss=2.597  entropy=1.778  approx_kl=0.007857  clip_frac=0.09819  p_lane_change=0.5251
+[update   80] steps= 163840  ep_rew_mean=-16.4  std=0.508  policy_loss=-0.007715  value_loss=0.4491  entropy=1.782  approx_kl=0.008175  clip_frac=0.1061  p_lane_change=0.5527
+    [eval @163840] 5ep  충돌률=100%  완주율=0%  평균속도=0.9m/s  평균차간=37.4m  최소차간=5.7m  차선변경=0.0회  보상=-164.5
+[update   81] steps= 165888  ep_rew_mean=-16.93  std=0.5053  policy_loss=-0.008744  value_loss=0.5462  entropy=1.776  approx_kl=0.008186  clip_frac=0.1062  p_lane_change=0.5829
+[update   82] steps= 167936  ep_rew_mean=-18.2  std=0.5062  policy_loss=-0.004762  value_loss=6.391  entropy=1.762  approx_kl=0.01241  clip_frac=0.1209  p_lane_change=0.618
+[update   83] steps= 169984  ep_rew_mean=-18.66  std=0.5072  policy_loss=-0.001728  value_loss=1.534  entropy=1.771  approx_kl=0.008307  clip_frac=0.09961  p_lane_change=0.5789
+[update   84] steps= 172032  ep_rew_mean=-19.66  std=0.5085  policy_loss=-0.002897  value_loss=1.718  entropy=1.762  approx_kl=0.003732  clip_frac=0.05366  p_lane_change=0.5759
+[update   85] steps= 174080  ep_rew_mean=-19.46  std=0.5077  policy_loss=-0.005334  value_loss=1.367  entropy=1.761  approx_kl=0.01075  clip_frac=0.07305  p_lane_change=0.5911
+    [eval @174080] 5ep  충돌률=100%  완주율=0%  평균속도=1.6m/s  평균차간=34.9m  최소차간=13.6m  차선변경=0.0회  보상=-77.1
+[update   86] steps= 176128  ep_rew_mean=-15.26  std=0.5047  policy_loss=-0.003499  value_loss=1.998  entropy=1.77  approx_kl=0.008018  clip_frac=0.0938  p_lane_change=0.5511
+[update   87] steps= 178176  ep_rew_mean=-17.21  std=0.502  policy_loss=-0.005709  value_loss=3.549  entropy=1.767  approx_kl=0.007919  clip_frac=0.05698  p_lane_change=0.5623
+[update   88] steps= 180224  ep_rew_mean=-19.64  std=0.5009  policy_loss=0.001246  value_loss=1.71  entropy=1.774  approx_kl=0.007896  clip_frac=0.0771  p_lane_change=0.5874
+[update   89] steps= 182272  ep_rew_mean=-15.37  std=0.4948  policy_loss=-0.0104  value_loss=0.2904  entropy=1.77  approx_kl=0.01019  clip_frac=0.1498  p_lane_change=0.59
+[update   90] steps= 184320  ep_rew_mean=-14.1  std=0.4947  policy_loss=-0.003759  value_loss=3.911  entropy=1.767  approx_kl=0.002859  clip_frac=0.03213  p_lane_change=0.6758
+    [eval @184320] 5ep  충돌률=100%  완주율=0%  평균속도=1.6m/s  평균차간=33.3m  최소차간=0.8m  차선변경=0.0회  보상=-77.1
+[update   91] steps= 186368  ep_rew_mean=-13.62  std=0.4946  policy_loss=-0.0004242  value_loss=0.3781  entropy=1.78  approx_kl=0.009662  clip_frac=0.07461  p_lane_change=0.6532
+[update   92] steps= 188416  ep_rew_mean=-16.15  std=0.4943  policy_loss=-0.002196  value_loss=2.823  entropy=1.779  approx_kl=0.008892  clip_frac=0.07461  p_lane_change=0.6942
+[update   93] steps= 190464  ep_rew_mean=-16.33  std=0.4901  policy_loss=-0.001083  value_loss=0.9548  entropy=1.782  approx_kl=0.005062  clip_frac=0.06924  p_lane_change=0.6651
+[update   94] steps= 192512  ep_rew_mean=-17.26  std=0.4889  policy_loss=-0.002848  value_loss=1.075  entropy=1.769  approx_kl=0.008244  clip_frac=0.06152  p_lane_change=0.6617
+[update   95] steps= 194560  ep_rew_mean=-16.29  std=0.4846  policy_loss=-0.00464  value_loss=0.4648  entropy=1.763  approx_kl=0.01258  clip_frac=0.1035  p_lane_change=0.6624
+    [eval @194560] 5ep  충돌률=100%  완주율=0%  평균속도=3.6m/s  평균차간=29.5m  최소차간=2.5m  차선변경=50.2회  보상=5.7
+[update   96] steps= 196608  ep_rew_mean=-13.47  std=0.4845  policy_loss=-0.004647  value_loss=0.7043  entropy=1.768  approx_kl=0.00852  clip_frac=0.09697  p_lane_change=0.6553
+[update   97] steps= 198656  ep_rew_mean=-15.42  std=0.4812  policy_loss=-0.0005914  value_loss=0.8144  entropy=1.764  approx_kl=0.008611  clip_frac=0.09375  p_lane_change=0.6223
+[update   98] steps= 200704  ep_rew_mean=-14.83  std=0.4824  policy_loss=-0.00375  value_loss=2.212  entropy=1.749  approx_kl=0.006682  clip_frac=0.06226  p_lane_change=0.602
+[update   99] steps= 202752  ep_rew_mean=-12.2  std=0.4836  policy_loss=-0.00201  value_loss=1.177  entropy=1.742  approx_kl=0.009178  clip_frac=0.1089  p_lane_change=0.6125
+[update  100] steps= 204800  ep_rew_mean=-14.42  std=0.4854  policy_loss=-0.001247  value_loss=3.215  entropy=1.754  approx_kl=0.0107  clip_frac=0.1486  p_lane_change=0.6122
+    [eval @204800] 5ep  충돌률=100%  완주율=0%  평균속도=1.1m/s  평균차간=34.7m  최소차간=0.6m  차선변경=0.0회  보상=-141.4
+[update  101] steps= 206848  ep_rew_mean=-15.58  std=0.4841  policy_loss=-0.002324  value_loss=2.671  entropy=1.752  approx_kl=0.006629  clip_frac=0.0728  p_lane_change=0.5875
+[update  102] steps= 208896  ep_rew_mean=-18.98  std=0.4839  policy_loss=-0.002065  value_loss=2.727  entropy=1.747  approx_kl=0.009902  clip_frac=0.08545  p_lane_change=0.5718
+[update  103] steps= 210944  ep_rew_mean=-18.26  std=0.4818  policy_loss=-0.004537  value_loss=3.554  entropy=1.749  approx_kl=0.004124  clip_frac=0.07656  p_lane_change=0.6116
+[update  104] steps= 212992  ep_rew_mean=-23.33  std=0.4792  policy_loss=-1.687e-05  value_loss=2.571  entropy=1.746  approx_kl=0.004557  clip_frac=0.07402  p_lane_change=0.6376
+[update  105] steps= 215040  ep_rew_mean=-24.11  std=0.4763  policy_loss=-0.002558  value_loss=2.02  entropy=1.743  approx_kl=0.006735  clip_frac=0.06216  p_lane_change=0.6414
+    [eval @215040] 5ep  충돌률=60%  완주율=0%  평균속도=0.7m/s  평균차간=34.8m  최소차간=4.0m  차선변경=0.0회  보상=-224.0
+[update  106] steps= 217088  ep_rew_mean=-24.99  std=0.4729  policy_loss=-4.44e-05  value_loss=2.58  entropy=1.722  approx_kl=0.009545  clip_frac=0.1189  p_lane_change=0.5504
+[update  107] steps= 219136  ep_rew_mean=-20.57  std=0.4743  policy_loss=0.00108  value_loss=2.393  entropy=1.736  approx_kl=0.009134  clip_frac=0.07656  p_lane_change=0.6067
+[update  108] steps= 221184  ep_rew_mean=-14.47  std=0.4705  policy_loss=-0.001845  value_loss=0.2749  entropy=1.72  approx_kl=0.01113  clip_frac=0.09927  p_lane_change=0.5814
+[update  109] steps= 223232  ep_rew_mean=-15.81  std=0.4707  policy_loss=-0.002665  value_loss=3.738  entropy=1.729  approx_kl=0.004761  clip_frac=0.04824  p_lane_change=0.6252
+[update  110] steps= 225280  ep_rew_mean=-13.14  std=0.4716  policy_loss=-0.00473  value_loss=2.736  entropy=1.725  approx_kl=0.006451  clip_frac=0.06548  p_lane_change=0.5997
+    [eval @225280] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=35.5m  최소차간=1.5m  차선변경=267.4회  보상=-66.0
+[update  111] steps= 227328  ep_rew_mean=-7.76  std=0.4765  policy_loss=-0.004087  value_loss=0.5104  entropy=1.72  approx_kl=0.006594  clip_frac=0.08311  p_lane_change=0.5734
+[update  112] steps= 229376  ep_rew_mean=-6.468  std=0.4723  policy_loss=-0.003973  value_loss=0.1734  entropy=1.72  approx_kl=0.02056  clip_frac=0.1947  p_lane_change=0.5913
+[update  113] steps= 231424  ep_rew_mean=-6.457  std=0.4727  policy_loss=-0.004922  value_loss=0.4689  entropy=1.718  approx_kl=0.009994  clip_frac=0.1067  p_lane_change=0.5889
+[update  114] steps= 233472  ep_rew_mean=-8.538  std=0.4725  policy_loss=-0.008672  value_loss=0.689  entropy=1.718  approx_kl=0.01456  clip_frac=0.1052  p_lane_change=0.6225
+[update  115] steps= 235520  ep_rew_mean=-4.683  std=0.47  policy_loss=-0.006563  value_loss=0.3315  entropy=1.706  approx_kl=0.007269  clip_frac=0.1113  p_lane_change=0.6117
+    [eval @235520] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=32.8m  최소차간=4.1m  차선변경=1.0회  보상=-79.3
+[update  116] steps= 237568  ep_rew_mean=-8.066  std=0.4694  policy_loss=-0.003222  value_loss=1.058  entropy=1.686  approx_kl=0.004903  clip_frac=0.05889  p_lane_change=0.6376
+[update  117] steps= 239616  ep_rew_mean=-5.441  std=0.4659  policy_loss=-0.004395  value_loss=0.2853  entropy=1.692  approx_kl=0.003628  clip_frac=0.07124  p_lane_change=0.6287
+[update  118] steps= 241664  ep_rew_mean=-9.111  std=0.4619  policy_loss=-0.006061  value_loss=1.39  entropy=1.662  approx_kl=0.009437  clip_frac=0.08467  p_lane_change=0.6766
+[update  119] steps= 243712  ep_rew_mean=-7.212  std=0.4612  policy_loss=0.000656  value_loss=4.944  entropy=1.679  approx_kl=0.01118  clip_frac=0.1184  p_lane_change=0.6505
+[update  120] steps= 245760  ep_rew_mean=-10.09  std=0.4623  policy_loss=-0.001679  value_loss=2.072  entropy=1.638  approx_kl=0.006296  clip_frac=0.06802  p_lane_change=0.6795
+    [eval @245760] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=31.7m  최소차간=0.6m  차선변경=0.8회  보상=-72.7
+[update  121] steps= 247808  ep_rew_mean=-10.91  std=0.46  policy_loss=-0.000633  value_loss=1.079  entropy=1.671  approx_kl=0.005593  clip_frac=0.0498  p_lane_change=0.6669
+[update  122] steps= 249856  ep_rew_mean=-14  std=0.4561  policy_loss=-0.003687  value_loss=0.3639  entropy=1.676  approx_kl=0.009527  clip_frac=0.1224  p_lane_change=0.6761
+[update  123] steps= 251904  ep_rew_mean=-12.65  std=0.4526  policy_loss=-0.004793  value_loss=0.2878  entropy=1.64  approx_kl=0.0106  clip_frac=0.1011  p_lane_change=0.7182
+[update  124] steps= 253952  ep_rew_mean=-12.99  std=0.4541  policy_loss=-0.005193  value_loss=0.409  entropy=1.676  approx_kl=0.00544  clip_frac=0.1173  p_lane_change=0.7006
+[update  125] steps= 256000  ep_rew_mean=-12.06  std=0.4507  policy_loss=-0.001763  value_loss=0.4025  entropy=1.691  approx_kl=0.004032  clip_frac=0.09722  p_lane_change=0.6801
+    [eval @256000] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=28.5m  최소차간=2.9m  차선변경=1.0회  보상=-69.9
+[update  126] steps= 258048  ep_rew_mean=-12.07  std=0.4518  policy_loss=-0.004907  value_loss=0.1462  entropy=1.704  approx_kl=0.008843  clip_frac=0.08281  p_lane_change=0.6262
+[update  127] steps= 260096  ep_rew_mean=-7.234  std=0.4518  policy_loss=-0.004158  value_loss=0.2667  entropy=1.703  approx_kl=0.004335  clip_frac=0.08823  p_lane_change=0.6237
+[update  128] steps= 262144  ep_rew_mean=-7.004  std=0.4522  policy_loss=-0.004606  value_loss=1.848  entropy=1.703  approx_kl=0.008182  clip_frac=0.09258  p_lane_change=0.6032
+[update  129] steps= 264192  ep_rew_mean=-5.153  std=0.4527  policy_loss=-0.006578  value_loss=0.5513  entropy=1.698  approx_kl=0.01344  clip_frac=0.1316  p_lane_change=0.6537
+[update  130] steps= 266240  ep_rew_mean=-5.066  std=0.452  policy_loss=-0.002548  value_loss=0.4793  entropy=1.696  approx_kl=0.006644  clip_frac=0.0623  p_lane_change=0.6923
+    [eval @266240] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=37.6m  최소차간=5.8m  차선변경=1.0회  보상=-75.5
+[update  131] steps= 268288  ep_rew_mean=-1.689  std=0.4467  policy_loss=-0.004036  value_loss=0.1459  entropy=1.704  approx_kl=0.003863  clip_frac=0.07051  p_lane_change=0.6866
+[update  132] steps= 270336  ep_rew_mean=-2.473  std=0.4451  policy_loss=-0.005715  value_loss=0.3762  entropy=1.697  approx_kl=0.006881  clip_frac=0.0981  p_lane_change=0.6618
+[update  133] steps= 272384  ep_rew_mean=-4.443  std=0.4472  policy_loss=-0.006095  value_loss=0.4066  entropy=1.688  approx_kl=0.006767  clip_frac=0.07534  p_lane_change=0.6372
+[update  134] steps= 274432  ep_rew_mean=-4.148  std=0.4441  policy_loss=-0.004909  value_loss=0.3132  entropy=1.684  approx_kl=0.009326  clip_frac=0.1053  p_lane_change=0.6174
+[update  135] steps= 276480  ep_rew_mean=-3.936  std=0.4423  policy_loss=-0.005273  value_loss=0.2903  entropy=1.679  approx_kl=0.008176  clip_frac=0.0731  p_lane_change=0.6271
+    [eval @276480] 5ep  충돌률=100%  완주율=0%  평균속도=3.3m/s  평균차간=32.0m  최소차간=7.3m  차선변경=2.0회  보상=5.0
+[update  136] steps= 278528  ep_rew_mean=-0.6952  std=0.4381  policy_loss=-0.004314  value_loss=0.09449  entropy=1.673  approx_kl=0.007939  clip_frac=0.09351  p_lane_change=0.6173
+[update  137] steps= 280576  ep_rew_mean=-4.218  std=0.4386  policy_loss=-0.002643  value_loss=0.5074  entropy=1.672  approx_kl=0.005088  clip_frac=0.077  p_lane_change=0.66
+[update  138] steps= 282624  ep_rew_mean=-3.392  std=0.4361  policy_loss=-0.001213  value_loss=0.09921  entropy=1.676  approx_kl=0.009273  clip_frac=0.1066  p_lane_change=0.6456
+[update  139] steps= 284672  ep_rew_mean=-2.419  std=0.4359  policy_loss=-0.004666  value_loss=0.2924  entropy=1.65  approx_kl=0.009255  clip_frac=0.08979  p_lane_change=0.6767
+[update  140] steps= 286720  ep_rew_mean=-4.943  std=0.4355  policy_loss=-0.0008828  value_loss=3.599  entropy=1.671  approx_kl=0.004983  clip_frac=0.07178  p_lane_change=0.6918
+    [eval @286720] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=37.4m  최소차간=1.2m  차선변경=1.0회  보상=-74.9
+[update  141] steps= 288768  ep_rew_mean=-6.245  std=0.4346  policy_loss=-0.0006764  value_loss=0.2087  entropy=1.649  approx_kl=0.001996  clip_frac=0.06084  p_lane_change=0.6964
+[update  142] steps= 290816  ep_rew_mean=-8.802  std=0.4331  policy_loss=-0.002728  value_loss=0.2888  entropy=1.624  approx_kl=0.007209  clip_frac=0.07646  p_lane_change=0.7273
+[update  143] steps= 292864  ep_rew_mean=-9.201  std=0.4318  policy_loss=-0.002903  value_loss=0.1078  entropy=1.644  approx_kl=0.004276  clip_frac=0.09971  p_lane_change=0.6914
+[update  144] steps= 294912  ep_rew_mean=-8.759  std=0.4298  policy_loss=-0.001728  value_loss=1.513  entropy=1.606  approx_kl=0.01149  clip_frac=0.09116  p_lane_change=0.699
+[update  145] steps= 296960  ep_rew_mean=-11.13  std=0.4316  policy_loss=-0.006085  value_loss=0.2311  entropy=1.641  approx_kl=0.00772  clip_frac=0.09585  p_lane_change=0.7035
+    [eval @296960] 5ep  충돌률=100%  완주율=0%  평균속도=2.5m/s  평균차간=38.3m  최소차간=10.5m  차선변경=32.4회  보상=-29.9
+[update  146] steps= 299008  ep_rew_mean=-13.08  std=0.4304  policy_loss=0.0008772  value_loss=4.155  entropy=1.654  approx_kl=0.008118  clip_frac=0.08555  p_lane_change=0.716
+[update  147] steps= 301056  ep_rew_mean=-8.619  std=0.4295  policy_loss=-0.006786  value_loss=0.2354  entropy=1.638  approx_kl=0.01197  clip_frac=0.09907  p_lane_change=0.7009
+[update  148] steps= 303104  ep_rew_mean=-3.032  std=0.4291  policy_loss=-0.001858  value_loss=0.3445  entropy=1.612  approx_kl=0.008824  clip_frac=0.07168  p_lane_change=0.7235
+[update  149] steps= 305152  ep_rew_mean=-7.963  std=0.43  policy_loss=-0.008677  value_loss=2.132  entropy=1.646  approx_kl=0.009709  clip_frac=0.08975  p_lane_change=0.7044
+[update  150] steps= 307200  ep_rew_mean=-12.43  std=0.4302  policy_loss=-0.005588  value_loss=0.9417  entropy=1.649  approx_kl=0.02016  clip_frac=0.2149  p_lane_change=0.6814
+    [eval @307200] 5ep  충돌률=100%  완주율=0%  평균속도=3.4m/s  평균차간=34.6m  최소차간=9.2m  차선변경=12.0회  보상=2.5
+[update  151] steps= 309248  ep_rew_mean=-12.13  std=0.4309  policy_loss=-0.001015  value_loss=1.808  entropy=1.652  approx_kl=0.002899  clip_frac=0.09111  p_lane_change=0.633
+[update  152] steps= 311296  ep_rew_mean=-8.753  std=0.4284  policy_loss=-0.00437  value_loss=0.1391  entropy=1.653  approx_kl=0.01265  clip_frac=0.1505  p_lane_change=0.6428
+[update  153] steps= 313344  ep_rew_mean=-10.59  std=0.4286  policy_loss=-0.00166  value_loss=1.615  entropy=1.638  approx_kl=0.007056  clip_frac=0.05996  p_lane_change=0.603
+[update  154] steps= 315392  ep_rew_mean=-11.46  std=0.4286  policy_loss=-0.004386  value_loss=1.021  entropy=1.648  approx_kl=0.01049  clip_frac=0.08926  p_lane_change=0.6021
+[update  155] steps= 317440  ep_rew_mean=-11.34  std=0.4268  policy_loss=-0.003823  value_loss=1.844  entropy=1.642  approx_kl=0.005196  clip_frac=0.06152  p_lane_change=0.5966
+    [eval @317440] 5ep  충돌률=100%  완주율=0%  평균속도=4.5m/s  평균차간=25.1m  최소차간=0.3m  차선변경=6.4회  보상=-7.3
+[update  156] steps= 319488  ep_rew_mean=-14.35  std=0.4237  policy_loss=-0.005843  value_loss=3.311  entropy=1.636  approx_kl=0.006568  clip_frac=0.1009  p_lane_change=0.6006
+[update  157] steps= 321536  ep_rew_mean=-13.56  std=0.4209  policy_loss=-0.002376  value_loss=2.351  entropy=1.636  approx_kl=0.006795  clip_frac=0.08569  p_lane_change=0.5893
+[update  158] steps= 323584  ep_rew_mean=-16.21  std=0.4201  policy_loss=-0.00309  value_loss=2.098  entropy=1.624  approx_kl=0.01023  clip_frac=0.1097  p_lane_change=0.6134
+[update  159] steps= 325632  ep_rew_mean=-14.83  std=0.4177  policy_loss=-0.002419  value_loss=4.786  entropy=1.635  approx_kl=0.007111  clip_frac=0.0665  p_lane_change=0.6253
+[update  160] steps= 327680  ep_rew_mean=-14.38  std=0.4185  policy_loss=-0.003308  value_loss=3.229  entropy=1.626  approx_kl=0.005164  clip_frac=0.08208  p_lane_change=0.6524
+    [eval @327680] 5ep  충돌률=100%  완주율=0%  평균속도=1.9m/s  평균차간=22.1m  최소차간=0.0m  차선변경=347.4회  보상=-55.7
+[update  161] steps= 329728  ep_rew_mean=-14.16  std=0.4183  policy_loss=0.001009  value_loss=3.496  entropy=1.628  approx_kl=0.008743  clip_frac=0.06475  p_lane_change=0.6941
+[update  162] steps= 331776  ep_rew_mean=-11.06  std=0.4181  policy_loss=0.0004703  value_loss=2.293  entropy=1.626  approx_kl=0.008718  clip_frac=0.08838  p_lane_change=0.7075
+[update  163] steps= 333824  ep_rew_mean=-5.359  std=0.4174  policy_loss=-0.001736  value_loss=1.304  entropy=1.621  approx_kl=0.009356  clip_frac=0.09551  p_lane_change=0.7202
+[update  164] steps= 335872  ep_rew_mean=-3.798  std=0.4164  policy_loss=-0.005787  value_loss=1.933  entropy=1.625  approx_kl=0.006231  clip_frac=0.1101  p_lane_change=0.7093
+[update  165] steps= 337920  ep_rew_mean=-5.038  std=0.4164  policy_loss=-0.005901  value_loss=4.63  entropy=1.6  approx_kl=0.007542  clip_frac=0.1567  p_lane_change=0.7291
+    [eval @337920] 5ep  충돌률=100%  완주율=0%  평균속도=0.9m/s  평균차간=27.2m  최소차간=0.4m  차선변경=921.0회  보상=-155.0
+[update  166] steps= 339968  ep_rew_mean=-3.773  std=0.4081  policy_loss=-0.003533  value_loss=0.1728  entropy=1.604  approx_kl=0.009732  clip_frac=0.1311  p_lane_change=0.7033
+[update  167] steps= 342016  ep_rew_mean=-2.332  std=0.4054  policy_loss=-0.00678  value_loss=0.7736  entropy=1.59  approx_kl=0.01093  clip_frac=0.1338  p_lane_change=0.7078
+[update  168] steps= 344064  ep_rew_mean=-1.648  std=0.4053  policy_loss=0.0001182  value_loss=2.9  entropy=1.599  approx_kl=0.00534  clip_frac=0.1134  p_lane_change=0.666
+[update  169] steps= 346112  ep_rew_mean=-3.316  std=0.403  policy_loss=-0.004336  value_loss=1.029  entropy=1.596  approx_kl=0.01002  clip_frac=0.1187  p_lane_change=0.6503
+[update  170] steps= 348160  ep_rew_mean=-1.719  std=0.4033  policy_loss=-0.005519  value_loss=0.7771  entropy=1.581  approx_kl=0.009397  clip_frac=0.08691  p_lane_change=0.6753
+    [eval @348160] 5ep  충돌률=100%  완주율=0%  평균속도=2.2m/s  평균차간=30.5m  최소차간=1.4m  차선변경=64.4회  보상=-21.9
+[update  171] steps= 350208  ep_rew_mean=-3.309  std=0.4023  policy_loss=-0.001197  value_loss=1.979  entropy=1.585  approx_kl=0.002244  clip_frac=0.05044  p_lane_change=0.6922
+[update  172] steps= 352256  ep_rew_mean=-3.396  std=0.4008  policy_loss=-0.002504  value_loss=2.764  entropy=1.577  approx_kl=0.005044  clip_frac=0.08262  p_lane_change=0.6829
+[update  173] steps= 354304  ep_rew_mean=-4.195  std=0.3983  policy_loss=-0.004429  value_loss=1.162  entropy=1.575  approx_kl=0.008819  clip_frac=0.09219  p_lane_change=0.6697
+[update  174] steps= 356352  ep_rew_mean=-3.734  std=0.3998  policy_loss=-0.002555  value_loss=3.192  entropy=1.548  approx_kl=0.01265  clip_frac=0.1217  p_lane_change=0.6724
+[update  175] steps= 358400  ep_rew_mean=-3.067  std=0.4004  policy_loss=-0.005101  value_loss=2.322  entropy=1.551  approx_kl=0.008735  clip_frac=0.1166  p_lane_change=0.6152
+    [eval @358400] 5ep  충돌률=100%  완주율=0%  평균속도=1.9m/s  평균차간=31.0m  최소차간=0.4m  차선변경=5.8회  보상=-45.0
+[update  176] steps= 360448  ep_rew_mean=-1.265  std=0.3962  policy_loss=-0.002152  value_loss=0.1928  entropy=1.542  approx_kl=0.01451  clip_frac=0.1462  p_lane_change=0.5531
+[update  177] steps= 362496  ep_rew_mean=-1.164  std=0.3974  policy_loss=-0.004352  value_loss=1.211  entropy=1.512  approx_kl=0.009148  clip_frac=0.08833  p_lane_change=0.5175
+[update  178] steps= 364544  ep_rew_mean=-1.745  std=0.3985  policy_loss=-0.001923  value_loss=2.537  entropy=1.488  approx_kl=0.007258  clip_frac=0.09302  p_lane_change=0.5188
+[update  179] steps= 366592  ep_rew_mean=-3.735  std=0.3974  policy_loss=-0.003505  value_loss=3.551  entropy=1.489  approx_kl=0.006554  clip_frac=0.06665  p_lane_change=0.5222
+[update  180] steps= 368640  ep_rew_mean=-7.915  std=0.3959  policy_loss=-0.0002219  value_loss=1.338  entropy=1.509  approx_kl=0.009833  clip_frac=0.1209  p_lane_change=0.5424
+    [eval @368640] 5ep  충돌률=100%  완주율=0%  평균속도=0.9m/s  평균차간=33.1m  최소차간=0.0m  차선변경=0.0회  보상=-155.8
+[update  181] steps= 370688  ep_rew_mean=-8.836  std=0.3944  policy_loss=0.0007089  value_loss=0.2225  entropy=1.509  approx_kl=0.008686  clip_frac=0.1288  p_lane_change=0.5412
+[update  182] steps= 372736  ep_rew_mean=-10.98  std=0.396  policy_loss=-0.003595  value_loss=2.126  entropy=1.488  approx_kl=0.008047  clip_frac=0.1112  p_lane_change=0.5669
+[update  183] steps= 374784  ep_rew_mean=-15.68  std=0.3997  policy_loss=-0.003368  value_loss=1.261  entropy=1.503  approx_kl=0.005563  clip_frac=0.08022  p_lane_change=0.5456
+[update  184] steps= 376832  ep_rew_mean=-15.78  std=0.4015  policy_loss=-2.667e-05  value_loss=1.062  entropy=1.506  approx_kl=0.008208  clip_frac=0.1159  p_lane_change=0.5259
+[update  185] steps= 378880  ep_rew_mean=-24.67  std=0.4007  policy_loss=-0.004566  value_loss=3.443  entropy=1.503  approx_kl=0.01117  clip_frac=0.1233  p_lane_change=0.5592
+    [eval @378880] 5ep  충돌률=100%  완주율=0%  평균속도=1.4m/s  평균차간=34.1m  최소차간=0.1m  차선변경=0.8회  보상=-78.6
+[update  186] steps= 380928  ep_rew_mean=-27.78  std=0.4011  policy_loss=-0.008876  value_loss=1.34  entropy=1.51  approx_kl=0.0129  clip_frac=0.1337  p_lane_change=0.5197
+[update  187] steps= 382976  ep_rew_mean=-29.81  std=0.3981  policy_loss=-0.002387  value_loss=1.259  entropy=1.537  approx_kl=0.009468  clip_frac=0.09067  p_lane_change=0.5451
+[update  188] steps= 385024  ep_rew_mean=-25  std=0.3935  policy_loss=-0.002762  value_loss=0.2822  entropy=1.537  approx_kl=0.01208  clip_frac=0.15  p_lane_change=0.5917
+[update  189] steps= 387072  ep_rew_mean=-21.19  std=0.3894  policy_loss=-0.002526  value_loss=0.6149  entropy=1.515  approx_kl=0.008822  clip_frac=0.1153  p_lane_change=0.5685
+[update  190] steps= 389120  ep_rew_mean=-17.95  std=0.3888  policy_loss=-0.000456  value_loss=3.485  entropy=1.471  approx_kl=0.006488  clip_frac=0.0979  p_lane_change=0.5181
+    [eval @389120] 5ep  충돌률=100%  완주율=0%  평균속도=2.7m/s  평균차간=28.4m  최소차간=0.6m  차선변경=5.6회  보상=-14.1
+[update  191] steps= 391168  ep_rew_mean=-13.17  std=0.3893  policy_loss=-0.003266  value_loss=0.4686  entropy=1.507  approx_kl=0.01025  clip_frac=0.1183  p_lane_change=0.5709
+[update  192] steps= 393216  ep_rew_mean=-13.55  std=0.3893  policy_loss=-0.002466  value_loss=4.487  entropy=1.47  approx_kl=0.007266  clip_frac=0.09717  p_lane_change=0.5318
+[update  193] steps= 395264  ep_rew_mean=-3.954  std=0.3867  policy_loss=-0.001181  value_loss=0.1783  entropy=1.486  approx_kl=0.01213  clip_frac=0.1304  p_lane_change=0.5481
+[update  194] steps= 397312  ep_rew_mean=-5.864  std=0.3864  policy_loss=-0.00284  value_loss=4.504  entropy=1.437  approx_kl=0.006228  clip_frac=0.07983  p_lane_change=0.5143
+[update  195] steps= 399360  ep_rew_mean=-5.249  std=0.3861  policy_loss=-0.009425  value_loss=2.539  entropy=1.494  approx_kl=0.01398  clip_frac=0.1249  p_lane_change=0.6278
+    [eval @399360] 5ep  충돌률=100%  완주율=0%  평균속도=2.0m/s  평균차간=22.0m  최소차간=0.1m  차선변경=4.6회  보상=-74.3
+[update  196] steps= 401408  ep_rew_mean=-6.734  std=0.3865  policy_loss=-0.001295  value_loss=2.341  entropy=1.479  approx_kl=0.001306  clip_frac=0.06787  p_lane_change=0.5891
+[update  197] steps= 403456  ep_rew_mean=-10.18  std=0.3868  policy_loss=-0.001333  value_loss=3.308  entropy=1.475  approx_kl=0.004904  clip_frac=0.08281  p_lane_change=0.5995
+[update  198] steps= 405504  ep_rew_mean=-10.14  std=0.3865  policy_loss=-0.002049  value_loss=2.697  entropy=1.488  approx_kl=0.008049  clip_frac=0.08647  p_lane_change=0.6354
+[update  199] steps= 407552  ep_rew_mean=-9.543  std=0.3856  policy_loss=-0.002275  value_loss=4.7  entropy=1.465  approx_kl=0.008304  clip_frac=0.09712  p_lane_change=0.7082
+[update  200] steps= 409600  ep_rew_mean=-12.96  std=0.3842  policy_loss=-0.003064  value_loss=4.328  entropy=1.489  approx_kl=0.007922  clip_frac=0.1391  p_lane_change=0.6488
+    [eval @409600] 5ep  충돌률=100%  완주율=0%  평균속도=2.3m/s  평균차간=19.4m  최소차간=0.1m  차선변경=4.4회  보상=-36.1
+[update  201] steps= 411648  ep_rew_mean=-10.71  std=0.3807  policy_loss=-0.002269  value_loss=2.262  entropy=1.489  approx_kl=0.008769  clip_frac=0.1066  p_lane_change=0.6695
+[update  202] steps= 413696  ep_rew_mean=-11.06  std=0.3799  policy_loss=-0.001675  value_loss=3.338  entropy=1.465  approx_kl=0.003488  clip_frac=0.07607  p_lane_change=0.6932
+[update  203] steps= 415744  ep_rew_mean=-8.53  std=0.3807  policy_loss=-0.002844  value_loss=4.439  entropy=1.459  approx_kl=0.009451  clip_frac=0.09209  p_lane_change=0.6531
+[update  204] steps= 417792  ep_rew_mean=-9.281  std=0.3803  policy_loss=-0.002268  value_loss=4.359  entropy=1.471  approx_kl=0.008687  clip_frac=0.1241  p_lane_change=0.5967
+[update  205] steps= 419840  ep_rew_mean=-7.33  std=0.3809  policy_loss=0.001249  value_loss=2.93  entropy=1.494  approx_kl=0.0104  clip_frac=0.0959  p_lane_change=0.5973
+    [eval @419840] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=16.7m  최소차간=0.0m  차선변경=0.8회  보상=-115.3
+[update  206] steps= 421888  ep_rew_mean=-8.546  std=0.3779  policy_loss=-0.003242  value_loss=5.188  entropy=1.468  approx_kl=0.007219  clip_frac=0.09565  p_lane_change=0.6128
+[update  207] steps= 423936  ep_rew_mean=-8.471  std=0.3779  policy_loss=-0.0004425  value_loss=4.806  entropy=1.474  approx_kl=0.006988  clip_frac=0.1029  p_lane_change=0.5823
+[update  208] steps= 425984  ep_rew_mean=-6.982  std=0.3781  policy_loss=-0.0002892  value_loss=4.403  entropy=1.48  approx_kl=0.01078  clip_frac=0.08687  p_lane_change=0.563
+[update  209] steps= 428032  ep_rew_mean=-8.47  std=0.3764  policy_loss=-0.00159  value_loss=3.728  entropy=1.454  approx_kl=0.009673  clip_frac=0.1348  p_lane_change=0.5521
+[update  210] steps= 430080  ep_rew_mean=-6.809  std=0.3753  policy_loss=-0.0063  value_loss=2.591  entropy=1.463  approx_kl=0.01563  clip_frac=0.1692  p_lane_change=0.5832
+    [eval @430080] 5ep  충돌률=80%  완주율=0%  평균속도=1.5m/s  평균차간=20.7m  최소차간=0.0m  차선변경=0.4회  보상=-124.1
+[update  211] steps= 432128  ep_rew_mean=-8.364  std=0.3746  policy_loss=-0.006568  value_loss=2.255  entropy=1.461  approx_kl=0.009915  clip_frac=0.103  p_lane_change=0.5763
+[update  212] steps= 434176  ep_rew_mean=-11.12  std=0.3767  policy_loss=-0.002132  value_loss=2.256  entropy=1.439  approx_kl=0.007826  clip_frac=0.08198  p_lane_change=0.5853
+[update  213] steps= 436224  ep_rew_mean=-13.1  std=0.3779  policy_loss=-0.0004162  value_loss=2.375  entropy=1.45  approx_kl=0.01188  clip_frac=0.1209  p_lane_change=0.5652
+[update  214] steps= 438272  ep_rew_mean=-11.54  std=0.377  policy_loss=-0.005167  value_loss=1.741  entropy=1.442  approx_kl=0.01639  clip_frac=0.1346  p_lane_change=0.5603
+[update  215] steps= 440320  ep_rew_mean=-14.79  std=0.3728  policy_loss=-0.002343  value_loss=1.288  entropy=1.377  approx_kl=0.009736  clip_frac=0.09263  p_lane_change=0.5711
+    [eval @440320] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=22.0m  최소차간=0.2m  차선변경=0.0회  보상=-63.8
+[update  216] steps= 442368  ep_rew_mean=-13.76  std=0.3701  policy_loss=0.004402  value_loss=2.024  entropy=1.411  approx_kl=0.006492  clip_frac=0.07266  p_lane_change=0.5499
+[update  217] steps= 444416  ep_rew_mean=-16.83  std=0.3698  policy_loss=-0.001205  value_loss=2.369  entropy=1.369  approx_kl=0.006313  clip_frac=0.09648  p_lane_change=0.5458
+[update  218] steps= 446464  ep_rew_mean=-21.97  std=0.3691  policy_loss=-0.002208  value_loss=1.568  entropy=1.327  approx_kl=0.01046  clip_frac=0.09966  p_lane_change=0.5732
+[update  219] steps= 448512  ep_rew_mean=-28.1  std=0.3688  policy_loss=-0.004825  value_loss=2.668  entropy=1.329  approx_kl=0.006908  clip_frac=0.1009  p_lane_change=0.6409
+[update  220] steps= 450560  ep_rew_mean=-29.89  std=0.368  policy_loss=-0.002231  value_loss=2.87  entropy=1.377  approx_kl=0.0065  clip_frac=0.07251  p_lane_change=0.6027
+    [eval @450560] 5ep  충돌률=80%  완주율=0%  평균속도=1.7m/s  평균차간=22.9m  최소차간=0.1m  차선변경=0.4회  보상=-79.6
+[update  221] steps= 452608  ep_rew_mean=-33.39  std=0.3679  policy_loss=-0.00302  value_loss=1.24  entropy=1.368  approx_kl=0.005743  clip_frac=0.08384  p_lane_change=0.6429
+[update  222] steps= 454656  ep_rew_mean=-39.78  std=0.3676  policy_loss=0.0003403  value_loss=0.8597  entropy=1.347  approx_kl=0.0135  clip_frac=0.1162  p_lane_change=0.6101
+[update  223] steps= 456704  ep_rew_mean=-39.78  std=0.3686  policy_loss=-0.002443  value_loss=0.5374  entropy=1.311  approx_kl=0.01082  clip_frac=0.1009  p_lane_change=0.6117
+[update  224] steps= 458752  ep_rew_mean=-47.19  std=0.3708  policy_loss=-0.003605  value_loss=0.82  entropy=1.317  approx_kl=0.008636  clip_frac=0.1192  p_lane_change=0.6579
+[update  225] steps= 460800  ep_rew_mean=-56.74  std=0.3722  policy_loss=-0.001518  value_loss=0.9778  entropy=1.268  approx_kl=0.008485  clip_frac=0.09546  p_lane_change=0.7347
+    [eval @460800] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=25.0m  최소차간=0.0m  차선변경=0.0회  보상=-81.4
+[update  226] steps= 462848  ep_rew_mean=-57.53  std=0.3688  policy_loss=-0.006019  value_loss=0.1565  entropy=1.362  approx_kl=0.01397  clip_frac=0.1383  p_lane_change=0.6594
+[update  227] steps= 464896  ep_rew_mean=-63.1  std=0.3703  policy_loss=-0.006523  value_loss=1.189  entropy=1.232  approx_kl=0.01101  clip_frac=0.1193  p_lane_change=0.7055
+[update  228] steps= 466944  ep_rew_mean=-71.28  std=0.3699  policy_loss=-0.00338  value_loss=1.102  entropy=1.182  approx_kl=0.01489  clip_frac=0.1242  p_lane_change=0.7443
+[update  229] steps= 468992  ep_rew_mean=-70.86  std=0.3684  policy_loss=-0.00108  value_loss=0.9488  entropy=1.284  approx_kl=0.009401  clip_frac=0.1118  p_lane_change=0.6336
+[update  230] steps= 471040  ep_rew_mean=-79.12  std=0.3713  policy_loss=-2.11e-05  value_loss=0.7767  entropy=1.264  approx_kl=0.01114  clip_frac=0.1062  p_lane_change=0.6822
+    [eval @471040] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=22.5m  최소차간=0.1m  차선변경=0.0회  보상=-63.8
+[update  231] steps= 473088  ep_rew_mean=-82.15  std=0.3705  policy_loss=-0.002392  value_loss=1.463  entropy=1.327  approx_kl=0.007945  clip_frac=0.09951  p_lane_change=0.6589
+[update  232] steps= 475136  ep_rew_mean=-83.79  std=0.3713  policy_loss=-0.002468  value_loss=1.336  entropy=1.304  approx_kl=0.009122  clip_frac=0.09946  p_lane_change=0.6144
+[update  233] steps= 477184  ep_rew_mean=-83.52  std=0.373  policy_loss=0.001398  value_loss=2.518  entropy=1.364  approx_kl=0.01473  clip_frac=0.1287  p_lane_change=0.6254
+[update  234] steps= 479232  ep_rew_mean=-87.31  std=0.3745  policy_loss=-0.003029  value_loss=1.343  entropy=1.246  approx_kl=0.01063  clip_frac=0.1021  p_lane_change=0.6912
+[update  235] steps= 481280  ep_rew_mean=-85.5  std=0.3748  policy_loss=-0.003034  value_loss=2.387  entropy=1.376  approx_kl=0.01197  clip_frac=0.1019  p_lane_change=0.6261
+    [eval @481280] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=16.2m  최소차간=0.0m  차선변경=1.0회  보상=-106.3
+[update  236] steps= 483328  ep_rew_mean=-81.28  std=0.3773  policy_loss=0.001448  value_loss=1.408  entropy=1.38  approx_kl=0.01354  clip_frac=0.1247  p_lane_change=0.6547
+[update  237] steps= 485376  ep_rew_mean=-74.48  std=0.3792  policy_loss=-0.003685  value_loss=2.071  entropy=1.36  approx_kl=0.009523  clip_frac=0.1126  p_lane_change=0.6661
+[update  238] steps= 487424  ep_rew_mean=-77.12  std=0.3775  policy_loss=-0.0003225  value_loss=2.361  entropy=1.302  approx_kl=0.008664  clip_frac=0.1498  p_lane_change=0.6851
+[update  239] steps= 489472  ep_rew_mean=-81.7  std=0.3786  policy_loss=-0.002303  value_loss=1.301  entropy=1.331  approx_kl=0.005376  clip_frac=0.1085  p_lane_change=0.6891
+[update  240] steps= 491520  ep_rew_mean=-76.14  std=0.3801  policy_loss=-0.0007171  value_loss=2.871  entropy=1.417  approx_kl=0.009108  clip_frac=0.09946  p_lane_change=0.6615
+    [eval @491520] 5ep  충돌률=100%  완주율=0%  평균속도=2.6m/s  평균차간=22.8m  최소차간=0.2m  차선변경=2.0회  보상=-69.5
+[update  241] steps= 493568  ep_rew_mean=-51.6  std=0.3778  policy_loss=-0.003978  value_loss=2.127  entropy=1.441  approx_kl=0.008346  clip_frac=0.07847  p_lane_change=0.6559
+[update  242] steps= 495616  ep_rew_mean=-39.8  std=0.377  policy_loss=-0.002998  value_loss=2.886  entropy=1.439  approx_kl=0.006008  clip_frac=0.1016  p_lane_change=0.6347
+[update  243] steps= 497664  ep_rew_mean=-26.76  std=0.377  policy_loss=-0.002725  value_loss=3.753  entropy=1.409  approx_kl=0.009778  clip_frac=0.1017  p_lane_change=0.6465
+[update  244] steps= 499712  ep_rew_mean=-24.35  std=0.3794  policy_loss=-0.002694  value_loss=2.685  entropy=1.363  approx_kl=0.009116  clip_frac=0.0896  p_lane_change=0.6201
+[update  245] steps= 501760  ep_rew_mean=-27.28  std=0.3807  policy_loss=-0.003861  value_loss=1.216  entropy=1.358  approx_kl=0.006972  clip_frac=0.1045  p_lane_change=0.6406
+    [eval @501760] 5ep  충돌률=100%  완주율=0%  평균속도=2.5m/s  평균차간=23.9m  최소차간=0.4m  차선변경=2.0회  보상=-61.6
+[update  246] steps= 503808  ep_rew_mean=-29.03  std=0.3839  policy_loss=-0.001865  value_loss=2.958  entropy=1.412  approx_kl=0.006715  clip_frac=0.07632  p_lane_change=0.6329
+[update  247] steps= 505856  ep_rew_mean=-20.7  std=0.3795  policy_loss=-0.001106  value_loss=1.994  entropy=1.385  approx_kl=0.005652  clip_frac=0.0771  p_lane_change=0.6417
+[update  248] steps= 507904  ep_rew_mean=-19.66  std=0.3777  policy_loss=-0.002071  value_loss=2.001  entropy=1.356  approx_kl=0.01203  clip_frac=0.09873  p_lane_change=0.6263
+[update  249] steps= 509952  ep_rew_mean=-21.02  std=0.3741  policy_loss=-0.001682  value_loss=1.75  entropy=1.357  approx_kl=0.01196  clip_frac=0.1294  p_lane_change=0.6
+[update  250] steps= 512000  ep_rew_mean=-19.25  std=0.3736  policy_loss=0.001599  value_loss=4.192  entropy=1.42  approx_kl=0.008674  clip_frac=0.08906  p_lane_change=0.5733
+    [eval @512000] 5ep  충돌률=100%  완주율=0%  평균속도=2.0m/s  평균차간=28.2m  최소차간=0.4m  차선변경=2.0회  보상=-70.7
+[update  251] steps= 514048  ep_rew_mean=-24.12  std=0.3744  policy_loss=-4.424e-05  value_loss=2.173  entropy=1.375  approx_kl=0.008154  clip_frac=0.1119  p_lane_change=0.5867
+[update  252] steps= 516096  ep_rew_mean=-24.06  std=0.375  policy_loss=-0.003578  value_loss=4.693  entropy=1.403  approx_kl=0.004886  clip_frac=0.1124  p_lane_change=0.5518
+[update  253] steps= 518144  ep_rew_mean=-22.03  std=0.377  policy_loss=0.001914  value_loss=2.572  entropy=1.401  approx_kl=0.01019  clip_frac=0.09678  p_lane_change=0.5687
+[update  254] steps= 520192  ep_rew_mean=-20.58  std=0.376  policy_loss=-0.002078  value_loss=4.077  entropy=1.422  approx_kl=0.006689  clip_frac=0.07422  p_lane_change=0.603
+[update  255] steps= 522240  ep_rew_mean=-14.9  std=0.378  policy_loss=-0.0008935  value_loss=2.977  entropy=1.468  approx_kl=0.008075  clip_frac=0.07588  p_lane_change=0.6145
+    [eval @522240] 5ep  충돌률=100%  완주율=0%  평균속도=3.1m/s  평균차간=28.3m  최소차간=2.7m  차선변경=1.8회  보상=-51.7
+[update  256] steps= 524288  ep_rew_mean=-15.01  std=0.3782  policy_loss=-0.002593  value_loss=4.303  entropy=1.43  approx_kl=0.006811  clip_frac=0.09741  p_lane_change=0.6059
+[update  257] steps= 526336  ep_rew_mean=-14.55  std=0.3776  policy_loss=-0.001356  value_loss=3.507  entropy=1.385  approx_kl=0.008643  clip_frac=0.09893  p_lane_change=0.5691
+[update  258] steps= 528384  ep_rew_mean=-15.51  std=0.3765  policy_loss=-0.003  value_loss=3.403  entropy=1.381  approx_kl=0.01261  clip_frac=0.1209  p_lane_change=0.527
+[update  259] steps= 530432  ep_rew_mean=-15.16  std=0.3747  policy_loss=-0.003015  value_loss=3.794  entropy=1.426  approx_kl=0.006616  clip_frac=0.1011  p_lane_change=0.5667
+[update  260] steps= 532480  ep_rew_mean=-14.55  std=0.3733  policy_loss=-0.003111  value_loss=2.864  entropy=1.401  approx_kl=0.01055  clip_frac=0.09438  p_lane_change=0.536
+    [eval @532480] 5ep  충돌률=100%  완주율=0%  평균속도=5.5m/s  평균차간=27.2m  최소차간=0.0m  차선변경=0.4회  보상=6.1
+[update  261] steps= 534528  ep_rew_mean=-16.58  std=0.3714  policy_loss=0.001103  value_loss=2.541  entropy=1.432  approx_kl=0.007962  clip_frac=0.107  p_lane_change=0.5449
+[update  262] steps= 536576  ep_rew_mean=-15.92  std=0.3703  policy_loss=-0.004005  value_loss=4.016  entropy=1.364  approx_kl=0.009572  clip_frac=0.1321  p_lane_change=0.4927
+[update  263] steps= 538624  ep_rew_mean=-19.31  std=0.3709  policy_loss=-0.001864  value_loss=4.313  entropy=1.38  approx_kl=0.01231  clip_frac=0.1179  p_lane_change=0.5307
+[update  264] steps= 540672  ep_rew_mean=-13.76  std=0.3711  policy_loss=-0.003248  value_loss=2.792  entropy=1.404  approx_kl=0.0131  clip_frac=0.1418  p_lane_change=0.5227
+[update  265] steps= 542720  ep_rew_mean=-9.438  std=0.3725  policy_loss=0.001806  value_loss=6.02  entropy=1.387  approx_kl=0.01414  clip_frac=0.1507  p_lane_change=0.4659
+    [eval @542720] 5ep  충돌률=80%  완주율=0%  평균속도=4.0m/s  평균차간=33.7m  최소차간=13.6m  차선변경=0.0회  보상=-22.9
+[update  266] steps= 544768  ep_rew_mean=-6.901  std=0.3733  policy_loss=-0.003172  value_loss=3.198  entropy=1.427  approx_kl=0.01021  clip_frac=0.1288  p_lane_change=0.5446
+[update  267] steps= 546816  ep_rew_mean=-5.618  std=0.374  policy_loss=-0.003665  value_loss=3.751  entropy=1.412  approx_kl=0.009942  clip_frac=0.1064  p_lane_change=0.5084
+[update  268] steps= 548864  ep_rew_mean=-3.739  std=0.3754  policy_loss=-0.002795  value_loss=5.595  entropy=1.416  approx_kl=0.0103  clip_frac=0.1011  p_lane_change=0.5196
+[update  269] steps= 550912  ep_rew_mean=-2.834  std=0.3744  policy_loss=-0.005893  value_loss=7.614  entropy=1.412  approx_kl=0.005261  clip_frac=0.1152  p_lane_change=0.5279
+[update  270] steps= 552960  ep_rew_mean=-2.452  std=0.3741  policy_loss=-0.0007826  value_loss=5.147  entropy=1.437  approx_kl=0.008698  clip_frac=0.08647  p_lane_change=0.5605
+    [eval @552960] 5ep  충돌률=60%  완주율=0%  평균속도=2.5m/s  평균차간=22.2m  최소차간=0.0m  차선변경=0.0회  보상=-101.9
+[update  271] steps= 555008  ep_rew_mean=-1.084  std=0.3743  policy_loss=-0.002121  value_loss=1.32  entropy=1.404  approx_kl=0.01116  clip_frac=0.1136  p_lane_change=0.5402
+[update  272] steps= 557056  ep_rew_mean=-2.474  std=0.3725  policy_loss=-0.002183  value_loss=3.388  entropy=1.385  approx_kl=0.007804  clip_frac=0.1163  p_lane_change=0.4983
+[update  273] steps= 559104  ep_rew_mean=-3.19  std=0.3712  policy_loss=-0.005135  value_loss=4.3  entropy=1.387  approx_kl=0.00774  clip_frac=0.07905  p_lane_change=0.5181
+[update  274] steps= 561152  ep_rew_mean=-4.625  std=0.3714  policy_loss=0.001302  value_loss=3.471  entropy=1.295  approx_kl=0.005315  clip_frac=0.07207  p_lane_change=0.4092
+[update  275] steps= 563200  ep_rew_mean=-6.43  std=0.3697  policy_loss=-0.001755  value_loss=3.059  entropy=1.284  approx_kl=0.0078  clip_frac=0.1158  p_lane_change=0.4187
+    [eval @563200] 5ep  충돌률=100%  완주율=0%  평균속도=2.5m/s  평균차간=29.2m  최소차간=0.3m  차선변경=0.0회  보상=-93.8
+[update  276] steps= 565248  ep_rew_mean=-8.024  std=0.3686  policy_loss=0.003509  value_loss=2.915  entropy=1.334  approx_kl=0.008047  clip_frac=0.116  p_lane_change=0.4673
+[update  277] steps= 567296  ep_rew_mean=-8.024  std=0.368  policy_loss=0.006307  value_loss=3.344  entropy=1.135  approx_kl=0.00932  clip_frac=0.1125  p_lane_change=0.291
+[update  278] steps= 569344  ep_rew_mean=-10.6  std=0.3683  policy_loss=0.00132  value_loss=2.684  entropy=1.21  approx_kl=0.01055  clip_frac=0.09189  p_lane_change=0.3949
+[update  279] steps= 571392  ep_rew_mean=-14.07  std=0.3694  policy_loss=-0.001611  value_loss=5.414  entropy=1.249  approx_kl=0.01095  clip_frac=0.1355  p_lane_change=0.4082
+[update  280] steps= 573440  ep_rew_mean=-14.23  std=0.3692  policy_loss=-0.004595  value_loss=2.515  entropy=1.233  approx_kl=0.01021  clip_frac=0.1118  p_lane_change=0.3826
+    [eval @573440] 5ep  충돌률=40%  완주율=0%  평균속도=2.4m/s  평균차간=31.0m  최소차간=0.2m  차선변경=0.0회  보상=-107.2
+[update  281] steps= 575488  ep_rew_mean=-14.83  std=0.3688  policy_loss=-0.001596  value_loss=4.302  entropy=1.283  approx_kl=0.01307  clip_frac=0.1499  p_lane_change=0.4388
+[update  282] steps= 577536  ep_rew_mean=-15.98  std=0.3676  policy_loss=-2.175e-05  value_loss=3.108  entropy=1.244  approx_kl=0.009412  clip_frac=0.09155  p_lane_change=0.3537
+[update  283] steps= 579584  ep_rew_mean=-18.1  std=0.3672  policy_loss=-0.002455  value_loss=2.611  entropy=1.241  approx_kl=0.01832  clip_frac=0.1352  p_lane_change=0.3903
+[update  284] steps= 581632  ep_rew_mean=-20.11  std=0.3689  policy_loss=0.00212  value_loss=4.277  entropy=1.29  approx_kl=0.008064  clip_frac=0.0918  p_lane_change=0.4344
+[update  285] steps= 583680  ep_rew_mean=-20.54  std=0.3702  policy_loss=-0.0008181  value_loss=5.706  entropy=1.186  approx_kl=0.0127  clip_frac=0.1397  p_lane_change=0.3326
+    [eval @583680] 5ep  충돌률=100%  완주율=0%  평균속도=2.0m/s  평균차간=25.7m  최소차간=1.5m  차선변경=0.0회  보상=-83.9
+[update  286] steps= 585728  ep_rew_mean=-20.54  std=0.366  policy_loss=0.0006088  value_loss=0.891  entropy=1.164  approx_kl=0.01056  clip_frac=0.1437  p_lane_change=0.3044
+[update  287] steps= 587776  ep_rew_mean=-20.25  std=0.3667  policy_loss=0.0026  value_loss=2.055  entropy=1.227  approx_kl=0.01038  clip_frac=0.1125  p_lane_change=0.3726
+[update  288] steps= 589824  ep_rew_mean=-19.11  std=0.3666  policy_loss=0.0001214  value_loss=4.013  entropy=1.199  approx_kl=0.007563  clip_frac=0.09595  p_lane_change=0.344
+[update  289] steps= 591872  ep_rew_mean=-18.94  std=0.3692  policy_loss=-0.003153  value_loss=1.653  entropy=1.277  approx_kl=0.007448  clip_frac=0.08232  p_lane_change=0.4071
+[update  290] steps= 593920  ep_rew_mean=-17.29  std=0.3688  policy_loss=-0.002626  value_loss=4.6  entropy=1.244  approx_kl=0.003864  clip_frac=0.06221  p_lane_change=0.3824
+    [eval @593920] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=32.3m  최소차간=3.1m  차선변경=0.0회  보상=-93.6
+[update  291] steps= 595968  ep_rew_mean=-18.68  std=0.37  policy_loss=-0.004587  value_loss=1.892  entropy=1.235  approx_kl=0.01147  clip_frac=0.1752  p_lane_change=0.3469
+[update  292] steps= 598016  ep_rew_mean=-18.85  std=0.369  policy_loss=0.001129  value_loss=6.175  entropy=1.21  approx_kl=0.00453  clip_frac=0.1219  p_lane_change=0.3504
+[update  293] steps= 600064  ep_rew_mean=-18.85  std=0.3673  policy_loss=-0.00163  value_loss=4.356  entropy=1.073  approx_kl=0.00656  clip_frac=0.09067  p_lane_change=0.2366
+[update  294] steps= 602112  ep_rew_mean=-19.41  std=0.3695  policy_loss=4.161e-06  value_loss=1.219  entropy=0.8838  approx_kl=0.01387  clip_frac=0.1489  p_lane_change=0.1925
+[update  295] steps= 604160  ep_rew_mean=-20.98  std=0.3672  policy_loss=-0.002329  value_loss=1.739  entropy=1.164  approx_kl=0.01142  clip_frac=0.1217  p_lane_change=0.3141
+    [eval @604160] 5ep  충돌률=80%  완주율=0%  평균속도=1.3m/s  평균차간=20.0m  최소차간=0.0m  차선변경=0.0회  보상=-120.0
+[update  296] steps= 606208  ep_rew_mean=-22.2  std=0.366  policy_loss=-7.722e-06  value_loss=1.566  entropy=1.219  approx_kl=0.007795  clip_frac=0.09092  p_lane_change=0.3479
+[update  297] steps= 608256  ep_rew_mean=-24.41  std=0.3663  policy_loss=0.0001504  value_loss=2.23  entropy=1.176  approx_kl=0.008902  clip_frac=0.1358  p_lane_change=0.3434
+[update  298] steps= 610304  ep_rew_mean=-25.38  std=0.3674  policy_loss=-0.004208  value_loss=1.75  entropy=1.041  approx_kl=0.006001  clip_frac=0.09116  p_lane_change=0.2372
+[update  299] steps= 612352  ep_rew_mean=-27.36  std=0.371  policy_loss=-0.004138  value_loss=3.621  entropy=1.032  approx_kl=0.01567  clip_frac=0.1281  p_lane_change=0.2296
+[update  300] steps= 614400  ep_rew_mean=-28.37  std=0.3706  policy_loss=-0.001046  value_loss=1.544  entropy=1.228  approx_kl=0.009661  clip_frac=0.0957  p_lane_change=0.3403
+    [eval @614400] 5ep  충돌률=100%  완주율=0%  평균속도=1.2m/s  평균차간=24.0m  최소차간=0.1m  차선변경=0.0회  보상=-87.9
+[update  301] steps= 616448  ep_rew_mean=-28.37  std=0.3717  policy_loss=-0.006186  value_loss=0.3017  entropy=1.07  approx_kl=0.01144  clip_frac=0.1593  p_lane_change=0.2455
+[update  302] steps= 618496  ep_rew_mean=-33.08  std=0.3722  policy_loss=-0.00195  value_loss=2.887  entropy=1.144  approx_kl=0.01029  clip_frac=0.1027  p_lane_change=0.2792
+[update  303] steps= 620544  ep_rew_mean=-33.08  std=0.3685  policy_loss=-0.002903  value_loss=3.492  entropy=0.9279  approx_kl=0.003104  clip_frac=0.07915  p_lane_change=0.166
+[update  304] steps= 622592  ep_rew_mean=-36.85  std=0.3683  policy_loss=-0.002982  value_loss=0.9656  entropy=1.159  approx_kl=0.01137  clip_frac=0.1301  p_lane_change=0.3302
+[update  305] steps= 624640  ep_rew_mean=-36.2  std=0.3648  policy_loss=-0.005205  value_loss=0.121  entropy=1.301  approx_kl=0.008195  clip_frac=0.1138  p_lane_change=0.4294
+    [eval @624640] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=23.2m  최소차간=0.4m  차선변경=0.0회  보상=-80.1
+[update  306] steps= 626688  ep_rew_mean=-34.74  std=0.3654  policy_loss=-0.002871  value_loss=4.876  entropy=1.272  approx_kl=0.007118  clip_frac=0.07539  p_lane_change=0.3912
+[update  307] steps= 628736  ep_rew_mean=-33.66  std=0.3658  policy_loss=-0.003238  value_loss=3.473  entropy=1.186  approx_kl=0.01063  clip_frac=0.1113  p_lane_change=0.3371
+[update  308] steps= 630784  ep_rew_mean=-33.18  std=0.3652  policy_loss=-0.004155  value_loss=2.585  entropy=1.206  approx_kl=0.007926  clip_frac=0.0874  p_lane_change=0.345
+[update  309] steps= 632832  ep_rew_mean=-31.95  std=0.3668  policy_loss=-0.0007747  value_loss=3.754  entropy=1.089  approx_kl=0.009219  clip_frac=0.09346  p_lane_change=0.2715
+[update  310] steps= 634880  ep_rew_mean=-31.95  std=0.3667  policy_loss=0.001733  value_loss=2.334  entropy=0.7944  approx_kl=0.005362  clip_frac=0.09688  p_lane_change=0.1213
+    [eval @634880] 5ep  충돌률=100%  완주율=0%  평균속도=1.9m/s  평균차간=31.6m  최소차간=1.2m  차선변경=0.0회  보상=-69.4
+[update  311] steps= 636928  ep_rew_mean=-25.12  std=0.369  policy_loss=-0.004224  value_loss=0.1373  entropy=1.318  approx_kl=0.006629  clip_frac=0.1577  p_lane_change=0.3961
+[update  312] steps= 638976  ep_rew_mean=-22.25  std=0.3698  policy_loss=0.0001761  value_loss=3.118  entropy=1.231  approx_kl=0.008716  clip_frac=0.08228  p_lane_change=0.3695
+[update  313] steps= 641024  ep_rew_mean=-16.83  std=0.3698  policy_loss=-0.0009014  value_loss=4.729  entropy=1.203  approx_kl=0.006413  clip_frac=0.06982  p_lane_change=0.3346
+[update  314] steps= 643072  ep_rew_mean=-12.75  std=0.3693  policy_loss=-0.001966  value_loss=5.763  entropy=1.158  approx_kl=0.005037  clip_frac=0.07061  p_lane_change=0.302
+[update  315] steps= 645120  ep_rew_mean=-9.079  std=0.3712  policy_loss=0.002382  value_loss=2.512  entropy=1.115  approx_kl=0.01519  clip_frac=0.1187  p_lane_change=0.2721
+    [eval @645120] 5ep  충돌률=100%  완주율=0%  평균속도=2.2m/s  평균차간=18.5m  최소차간=0.3m  차선변경=0.0회  보상=-96.9
+[update  316] steps= 647168  ep_rew_mean=-7.654  std=0.3696  policy_loss=-0.001846  value_loss=1.572  entropy=1.237  approx_kl=0.007689  clip_frac=0.1036  p_lane_change=0.3695
+[update  317] steps= 649216  ep_rew_mean=-7.654  std=0.3669  policy_loss=-0.001191  value_loss=1.025  entropy=0.8247  approx_kl=0.01286  clip_frac=0.09907  p_lane_change=0.1231
+[update  318] steps= 651264  ep_rew_mean=-6.51  std=0.3662  policy_loss=-0.001425  value_loss=2.755  entropy=1.192  approx_kl=0.007788  clip_frac=0.1154  p_lane_change=0.3482
+[update  319] steps= 653312  ep_rew_mean=-6.597  std=0.3661  policy_loss=-0.003375  value_loss=3.646  entropy=1.268  approx_kl=0.004057  clip_frac=0.06987  p_lane_change=0.3731
+[update  320] steps= 655360  ep_rew_mean=-7.191  std=0.3643  policy_loss=-0.001803  value_loss=3.379  entropy=1.217  approx_kl=0.009043  clip_frac=0.09077  p_lane_change=0.3514
+    [eval @655360] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=24.4m  최소차간=0.7m  차선변경=1.0회  보상=-70.3
+[update  321] steps= 657408  ep_rew_mean=-7.572  std=0.3635  policy_loss=0.0004602  value_loss=2.413  entropy=1.251  approx_kl=0.006072  clip_frac=0.1063  p_lane_change=0.3866
+[update  322] steps= 659456  ep_rew_mean=-10.47  std=0.3628  policy_loss=0.0006142  value_loss=2.897  entropy=1.246  approx_kl=0.01242  clip_frac=0.1366  p_lane_change=0.361
+[update  323] steps= 661504  ep_rew_mean=-12.61  std=0.3617  policy_loss=0.002025  value_loss=4.461  entropy=1.167  approx_kl=0.007794  clip_frac=0.1086  p_lane_change=0.3048
+[update  324] steps= 663552  ep_rew_mean=-12.38  std=0.3606  policy_loss=-0.0005335  value_loss=2.045  entropy=1.183  approx_kl=0.01282  clip_frac=0.1419  p_lane_change=0.3058
+[update  325] steps= 665600  ep_rew_mean=-13.44  std=0.3596  policy_loss=-0.003435  value_loss=2.408  entropy=1.144  approx_kl=0.01086  clip_frac=0.1135  p_lane_change=0.275
+    [eval @665600] 5ep  충돌률=100%  완주율=0%  평균속도=2.2m/s  평균차간=23.5m  최소차간=0.3m  차선변경=0.4회  보상=-56.0
+[update  326] steps= 667648  ep_rew_mean=-13.15  std=0.3592  policy_loss=0.0007612  value_loss=3.881  entropy=1.15  approx_kl=0.01093  clip_frac=0.1334  p_lane_change=0.2823
+[update  327] steps= 669696  ep_rew_mean=-13.15  std=0.3546  policy_loss=0.002661  value_loss=2.172  entropy=0.8363  approx_kl=0.007417  clip_frac=0.1002  p_lane_change=0.148
+[update  328] steps= 671744  ep_rew_mean=-10.31  std=0.3555  policy_loss=-0.000184  value_loss=1.869  entropy=0.9362  approx_kl=0.006336  clip_frac=0.07549  p_lane_change=0.1898
+[update  329] steps= 673792  ep_rew_mean=-14.27  std=0.3561  policy_loss=-0.002256  value_loss=6.406  entropy=1.206  approx_kl=0.007583  clip_frac=0.09795  p_lane_change=0.3404
+[update  330] steps= 675840  ep_rew_mean=-13.69  std=0.355  policy_loss=-0.001172  value_loss=2.427  entropy=1.109  approx_kl=0.006731  clip_frac=0.1193  p_lane_change=0.2712
+    [eval @675840] 5ep  충돌률=100%  완주율=0%  평균속도=2.1m/s  평균차간=30.9m  최소차간=0.7m  차선변경=0.2회  보상=-66.0
+[update  331] steps= 677888  ep_rew_mean=-14.34  std=0.3552  policy_loss=-0.005671  value_loss=2.879  entropy=1.172  approx_kl=0.009361  clip_frac=0.1167  p_lane_change=0.3143
+[update  332] steps= 679936  ep_rew_mean=-12.32  std=0.3547  policy_loss=-0.0005861  value_loss=2.283  entropy=1.202  approx_kl=0.01095  clip_frac=0.1102  p_lane_change=0.3295
+[update  333] steps= 681984  ep_rew_mean=-12.04  std=0.3532  policy_loss=0.002182  value_loss=2.861  entropy=1.155  approx_kl=0.01249  clip_frac=0.1291  p_lane_change=0.3058
+[update  334] steps= 684032  ep_rew_mean=-11.49  std=0.3522  policy_loss=0.001845  value_loss=3.066  entropy=1.192  approx_kl=0.007694  clip_frac=0.1227  p_lane_change=0.3112
+[update  335] steps= 686080  ep_rew_mean=-11.49  std=0.3518  policy_loss=-0.004941  value_loss=2.076  entropy=0.9454  approx_kl=0.01776  clip_frac=0.1818  p_lane_change=0.1914
+    [eval @686080] 5ep  충돌률=80%  완주율=0%  평균속도=2.6m/s  평균차간=27.4m  최소차간=0.4m  차선변경=0.2회  보상=-73.6
+[update  336] steps= 688128  ep_rew_mean=-9.407  std=0.3512  policy_loss=-0.0034  value_loss=8.114  entropy=1.15  approx_kl=0.008578  clip_frac=0.1209  p_lane_change=0.3187
+[update  337] steps= 690176  ep_rew_mean=-6.881  std=0.3512  policy_loss=-0.002052  value_loss=6.321  entropy=1.166  approx_kl=0.006582  clip_frac=0.08364  p_lane_change=0.3335
+[update  338] steps= 692224  ep_rew_mean=-7.684  std=0.3514  policy_loss=0.0006587  value_loss=6.976  entropy=1.167  approx_kl=0.01404  clip_frac=0.148  p_lane_change=0.3313
+[update  339] steps= 694272  ep_rew_mean=-7.684  std=0.353  policy_loss=0.001135  value_loss=2.517  entropy=0.8605  approx_kl=0.009596  clip_frac=0.128  p_lane_change=0.1594
+[update  340] steps= 696320  ep_rew_mean=-1.917  std=0.3538  policy_loss=-0.002547  value_loss=1.007  entropy=0.9059  approx_kl=0.01067  clip_frac=0.1362  p_lane_change=0.2022
+    [eval @696320] 5ep  충돌률=100%  완주율=0%  평균속도=2.5m/s  평균차간=38.4m  최소차간=21.3m  차선변경=0.0회  보상=-60.4
+[update  341] steps= 698368  ep_rew_mean=-0.7182  std=0.3528  policy_loss=-0.005427  value_loss=4.997  entropy=1.233  approx_kl=0.007038  clip_frac=0.07925  p_lane_change=0.3592
+[update  342] steps= 700416  ep_rew_mean=-0.7182  std=0.3525  policy_loss=-0.002912  value_loss=1.713  entropy=0.9301  approx_kl=0.01069  clip_frac=0.1226  p_lane_change=0.1836
+[update  343] steps= 702464  ep_rew_mean=5.309  std=0.3533  policy_loss=-0.004981  value_loss=2.641  entropy=0.9559  approx_kl=0.01155  clip_frac=0.1253  p_lane_change=0.2093
+[update  344] steps= 704512  ep_rew_mean=4.89  std=0.3545  policy_loss=-0.006554  value_loss=4.023  entropy=1.154  approx_kl=0.009593  clip_frac=0.1035  p_lane_change=0.3048
+[update  345] steps= 706560  ep_rew_mean=10.35  std=0.3549  policy_loss=0.0008655  value_loss=5.532  entropy=1.214  approx_kl=0.008255  clip_frac=0.118  p_lane_change=0.3619
+    [eval @706560] 5ep  충돌률=80%  완주율=0%  평균속도=2.2m/s  평균차간=25.4m  최소차간=2.1m  차선변경=0.0회  보상=-88.0
+[update  346] steps= 708608  ep_rew_mean=11.96  std=0.3534  policy_loss=-0.00315  value_loss=4.369  entropy=1.198  approx_kl=0.01388  clip_frac=0.1276  p_lane_change=0.3401
+[update  347] steps= 710656  ep_rew_mean=12.84  std=0.3535  policy_loss=-0.005481  value_loss=3.827  entropy=1.112  approx_kl=0.007336  clip_frac=0.0877  p_lane_change=0.2826
+[update  348] steps= 712704  ep_rew_mean=13.4  std=0.3538  policy_loss=0.0007232  value_loss=1.684  entropy=0.8963  approx_kl=0.01038  clip_frac=0.1312  p_lane_change=0.1807
+[update  349] steps= 714752  ep_rew_mean=14.16  std=0.3537  policy_loss=-0.002502  value_loss=8.881  entropy=1.235  approx_kl=0.0107  clip_frac=0.1127  p_lane_change=0.3641
+[update  350] steps= 716800  ep_rew_mean=13.89  std=0.3534  policy_loss=0.0001881  value_loss=7.468  entropy=1.206  approx_kl=0.007198  clip_frac=0.0585  p_lane_change=0.3566
+    [eval @716800] 5ep  충돌률=80%  완주율=0%  평균속도=2.7m/s  평균차간=26.6m  최소차간=0.0m  차선변경=0.2회  보상=-77.7
+[update  351] steps= 718848  ep_rew_mean=7.81  std=0.3518  policy_loss=0.001074  value_loss=8.133  entropy=1.293  approx_kl=0.008694  clip_frac=0.1006  p_lane_change=0.4067
+[update  352] steps= 720896  ep_rew_mean=6.581  std=0.3522  policy_loss=0.00245  value_loss=5.638  entropy=1.202  approx_kl=0.01177  clip_frac=0.1499  p_lane_change=0.3433
+[update  353] steps= 722944  ep_rew_mean=9.817  std=0.3509  policy_loss=-0.00798  value_loss=0.7337  entropy=0.8452  approx_kl=0.02437  clip_frac=0.1746  p_lane_change=0.1587
+[update  354] steps= 724992  ep_rew_mean=9.817  std=0.3532  policy_loss=-0.006138  value_loss=0.6045  entropy=1.337  approx_kl=0.01662  clip_frac=0.1969  p_lane_change=0.4675
+[update  355] steps= 727040  ep_rew_mean=3.658  std=0.3518  policy_loss=-0.003902  value_loss=0.8391  entropy=1.184  approx_kl=0.007655  clip_frac=0.1339  p_lane_change=0.3487
+    [eval @727040] 5ep  충돌률=100%  완주율=0%  평균속도=1.3m/s  평균차간=28.8m  최소차간=0.0m  차선변경=0.0회  보상=-132.8
+[update  356] steps= 729088  ep_rew_mean=1.687  std=0.3525  policy_loss=-0.003989  value_loss=1.81  entropy=1.332  approx_kl=0.01108  clip_frac=0.168  p_lane_change=0.4757
+[update  357] steps= 731136  ep_rew_mean=-0.5453  std=0.3542  policy_loss=-0.002798  value_loss=6.489  entropy=1.286  approx_kl=0.008218  clip_frac=0.08979  p_lane_change=0.4524
+[update  358] steps= 733184  ep_rew_mean=-1.458  std=0.3533  policy_loss=-0.003817  value_loss=2.157  entropy=1.348  approx_kl=0.01372  clip_frac=0.1708  p_lane_change=0.5376
+[update  359] steps= 735232  ep_rew_mean=-3.9  std=0.3547  policy_loss=-0.007486  value_loss=3.131  entropy=1.37  approx_kl=0.0126  clip_frac=0.1172  p_lane_change=0.5416
+[update  360] steps= 737280  ep_rew_mean=-5.814  std=0.3525  policy_loss=-0.002543  value_loss=3.088  entropy=1.342  approx_kl=0.007123  clip_frac=0.08735  p_lane_change=0.4958
+    [eval @737280] 5ep  충돌률=80%  완주율=0%  평균속도=2.1m/s  평균차간=29.3m  최소차간=3.2m  차선변경=0.0회  보상=-92.2
+[update  361] steps= 739328  ep_rew_mean=-5.661  std=0.3515  policy_loss=-0.005239  value_loss=3.383  entropy=1.373  approx_kl=0.004919  clip_frac=0.08145  p_lane_change=0.5642
+[update  362] steps= 741376  ep_rew_mean=-4.86  std=0.3502  policy_loss=-0.000199  value_loss=3.448  entropy=1.33  approx_kl=0.009815  clip_frac=0.1207  p_lane_change=0.5088
+[update  363] steps= 743424  ep_rew_mean=-6.068  std=0.35  policy_loss=-0.0004948  value_loss=4.068  entropy=1.359  approx_kl=0.01021  clip_frac=0.1114  p_lane_change=0.5576
+[update  364] steps= 745472  ep_rew_mean=-5.734  std=0.3496  policy_loss=-0.001809  value_loss=4.541  entropy=1.397  approx_kl=0.007703  clip_frac=0.1502  p_lane_change=0.5981
+[update  365] steps= 747520  ep_rew_mean=-4.979  std=0.3491  policy_loss=-0.001056  value_loss=4.393  entropy=1.378  approx_kl=0.004678  clip_frac=0.09053  p_lane_change=0.5604
+    [eval @747520] 5ep  충돌률=100%  완주율=0%  평균속도=1.8m/s  평균차간=25.0m  최소차간=2.2m  차선변경=0.0회  보상=-87.8
+[update  366] steps= 749568  ep_rew_mean=-7.095  std=0.3486  policy_loss=-0.0004523  value_loss=5.642  entropy=1.381  approx_kl=0.007106  clip_frac=0.1007  p_lane_change=0.5762
+[update  367] steps= 751616  ep_rew_mean=-4.618  std=0.3481  policy_loss=0.0002265  value_loss=2.139  entropy=1.382  approx_kl=0.005005  clip_frac=0.07388  p_lane_change=0.5809
+[update  368] steps= 753664  ep_rew_mean=-3.476  std=0.3493  policy_loss=0.003054  value_loss=2.123  entropy=1.341  approx_kl=0.01161  clip_frac=0.1735  p_lane_change=0.5073
+[update  369] steps= 755712  ep_rew_mean=-4.31  std=0.3504  policy_loss=-0.001854  value_loss=6.346  entropy=1.356  approx_kl=0.01641  clip_frac=0.1149  p_lane_change=0.5256
+[update  370] steps= 757760  ep_rew_mean=-3.244  std=0.3531  policy_loss=-0.002874  value_loss=3.264  entropy=1.377  approx_kl=0.009638  clip_frac=0.1186  p_lane_change=0.5569
+    [eval @757760] 5ep  충돌률=40%  완주율=0%  평균속도=2.5m/s  평균차간=24.1m  최소차간=0.0m  차선변경=2.0회  보상=-67.9
+[update  371] steps= 759808  ep_rew_mean=-3.762  std=0.3539  policy_loss=-0.004661  value_loss=4.43  entropy=1.392  approx_kl=0.01343  clip_frac=0.1243  p_lane_change=0.5879
+[update  372] steps= 761856  ep_rew_mean=-4.594  std=0.3542  policy_loss=-0.001117  value_loss=3.024  entropy=1.382  approx_kl=0.007392  clip_frac=0.127  p_lane_change=0.5506
+[update  373] steps= 763904  ep_rew_mean=-4.594  std=0.3506  policy_loss=0.005103  value_loss=2.516  entropy=1.16  approx_kl=0.01195  clip_frac=0.1571  p_lane_change=0.3351
+[update  374] steps= 765952  ep_rew_mean=-8.571  std=0.3523  policy_loss=-0.003678  value_loss=2.572  entropy=1.342  approx_kl=0.01191  clip_frac=0.14  p_lane_change=0.5389
+[update  375] steps= 768000  ep_rew_mean=-8.625  std=0.3515  policy_loss=-0.005151  value_loss=3.816  entropy=1.316  approx_kl=0.01128  clip_frac=0.147  p_lane_change=0.4754
+    [eval @768000] 5ep  충돌률=60%  완주율=0%  평균속도=2.1m/s  평균차간=25.9m  최소차간=0.1m  차선변경=0.4회  보상=-91.3
+[update  376] steps= 770048  ep_rew_mean=-8.771  std=0.3538  policy_loss=-0.0002926  value_loss=3.497  entropy=1.325  approx_kl=0.01161  clip_frac=0.1322  p_lane_change=0.4692
+[update  377] steps= 772096  ep_rew_mean=-9.685  std=0.3537  policy_loss=0.00207  value_loss=6.519  entropy=1.377  approx_kl=0.008335  clip_frac=0.1166  p_lane_change=0.5388
+[update  378] steps= 774144  ep_rew_mean=-9.54  std=0.3561  policy_loss=-5.321e-05  value_loss=2.119  entropy=1.334  approx_kl=0.008742  clip_frac=0.1091  p_lane_change=0.4922
+[update  379] steps= 776192  ep_rew_mean=-9.54  std=0.3546  policy_loss=-0.001236  value_loss=2.126  entropy=1.138  approx_kl=0.008931  clip_frac=0.1039  p_lane_change=0.2935
+[update  380] steps= 778240  ep_rew_mean=-6.44  std=0.3552  policy_loss=-0.00331  value_loss=2.928  entropy=1.304  approx_kl=0.01767  clip_frac=0.1496  p_lane_change=0.4574
+    [eval @778240] 5ep  충돌률=80%  완주율=0%  평균속도=2.5m/s  평균차간=22.2m  최소차간=0.0m  차선변경=0.2회  보상=-74.6
+[update  381] steps= 780288  ep_rew_mean=-6.44  std=0.3547  policy_loss=-0.003262  value_loss=1.661  entropy=1.237  approx_kl=0.01105  clip_frac=0.1131  p_lane_change=0.4038
+[update  382] steps= 782336  ep_rew_mean=-6.34  std=0.352  policy_loss=-0.006177  value_loss=0.4775  entropy=1.115  approx_kl=0.0131  clip_frac=0.1253  p_lane_change=0.3178
+[update  383] steps= 784384  ep_rew_mean=-5.025  std=0.3523  policy_loss=-0.003456  value_loss=2.684  entropy=1.315  approx_kl=0.007542  clip_frac=0.1089  p_lane_change=0.4401
+[update  384] steps= 786432  ep_rew_mean=-2.548  std=0.3526  policy_loss=-0.008683  value_loss=5.057  entropy=1.341  approx_kl=0.009105  clip_frac=0.09116  p_lane_change=0.4713
+[update  385] steps= 788480  ep_rew_mean=-0.2005  std=0.3519  policy_loss=0.001625  value_loss=5.471  entropy=1.345  approx_kl=0.01065  clip_frac=0.1059  p_lane_change=0.494
+    [eval @788480] 5ep  충돌률=100%  완주율=0%  평균속도=2.4m/s  평균차간=26.6m  최소차간=11.1m  차선변경=0.0회  보상=-66.5
+[update  386] steps= 790528  ep_rew_mean=5.207  std=0.3503  policy_loss=-0.0007209  value_loss=5.342  entropy=1.394  approx_kl=0.007827  clip_frac=0.1297  p_lane_change=0.5203
+[update  387] steps= 792576  ep_rew_mean=5.207  std=0.3523  policy_loss=-0.003933  value_loss=1.586  entropy=1.348  approx_kl=0.01052  clip_frac=0.1273  p_lane_change=0.4725
+[update  388] steps= 794624  ep_rew_mean=9.936  std=0.3531  policy_loss=-0.00328  value_loss=0.9647  entropy=1.229  approx_kl=0.0124  clip_frac=0.1218  p_lane_change=0.4552
+[update  389] steps= 796672  ep_rew_mean=9.936  std=0.3551  policy_loss=-0.003706  value_loss=1.031  entropy=1.256  approx_kl=0.01217  clip_frac=0.1357  p_lane_change=0.5084
+[update  390] steps= 798720  ep_rew_mean=13.54  std=0.3554  policy_loss=-0.004709  value_loss=2.468  entropy=1.282  approx_kl=0.01676  clip_frac=0.1712  p_lane_change=0.4907
+    [eval @798720] 5ep  충돌률=100%  완주율=0%  평균속도=2.5m/s  평균차간=21.9m  최소차간=2.3m  차선변경=0.0회  보상=-57.0
+[update  391] steps= 800768  ep_rew_mean=10.1  std=0.3555  policy_loss=-0.002113  value_loss=7.321  entropy=1.32  approx_kl=0.01305  clip_frac=0.1359  p_lane_change=0.3971
+[update  392] steps= 802816  ep_rew_mean=7.316  std=0.357  policy_loss=-0.005951  value_loss=7.361  entropy=1.291  approx_kl=0.009113  clip_frac=0.1085  p_lane_change=0.3851
+[update  393] steps= 804864  ep_rew_mean=7.138  std=0.3565  policy_loss=-0.002148  value_loss=5.642  entropy=1.27  approx_kl=0.008745  clip_frac=0.1212  p_lane_change=0.3997
+[update  394] steps= 806912  ep_rew_mean=7.138  std=0.3557  policy_loss=-0.002273  value_loss=0.2855  entropy=1.25  approx_kl=0.01088  clip_frac=0.1273  p_lane_change=0.5635
+[update  395] steps= 808960  ep_rew_mean=9.976  std=0.3556  policy_loss=-0.0003143  value_loss=4.911  entropy=1.3  approx_kl=0.005427  clip_frac=0.1023  p_lane_change=0.419
+    [eval @808960] 5ep  충돌률=80%  완주율=0%  평균속도=3.2m/s  평균차간=27.5m  최소차간=0.1m  차선변경=3.6회  보상=-36.8
+[update  396] steps= 811008  ep_rew_mean=8.757  std=0.3559  policy_loss=-0.001016  value_loss=3.765  entropy=1.326  approx_kl=0.007601  clip_frac=0.13  p_lane_change=0.4123
+[update  397] steps= 813056  ep_rew_mean=2.695  std=0.3551  policy_loss=0.005116  value_loss=8.28  entropy=1.32  approx_kl=0.007901  clip_frac=0.1075  p_lane_change=0.4165
+[update  398] steps= 815104  ep_rew_mean=-0.009813  std=0.3536  policy_loss=0.0007617  value_loss=8.923  entropy=1.237  approx_kl=0.01186  clip_frac=0.1597  p_lane_change=0.3566
+[update  399] steps= 817152  ep_rew_mean=0.2045  std=0.3532  policy_loss=-0.002653  value_loss=4.6  entropy=1.241  approx_kl=0.01516  clip_frac=0.1492  p_lane_change=0.375
+[update  400] steps= 819200  ep_rew_mean=-0.2739  std=0.3517  policy_loss=6.376e-05  value_loss=5.386  entropy=1.257  approx_kl=0.01139  clip_frac=0.1015  p_lane_change=0.391
+    [eval @819200] 5ep  충돌률=60%  완주율=0%  평균속도=3.4m/s  평균차간=27.6m  최소차간=0.0m  차선변경=1.2회  보상=-15.9
+[update  401] steps= 821248  ep_rew_mean=-1.819  std=0.3533  policy_loss=-0.00307  value_loss=3.314  entropy=1.213  approx_kl=0.006016  clip_frac=0.08296  p_lane_change=0.3475
+[update  402] steps= 823296  ep_rew_mean=-4.26  std=0.3523  policy_loss=-0.004924  value_loss=5.331  entropy=1.229  approx_kl=0.0137  clip_frac=0.1256  p_lane_change=0.3525
+[update  403] steps= 825344  ep_rew_mean=-4.803  std=0.3515  policy_loss=-0.0009954  value_loss=5.656  entropy=1.19  approx_kl=0.01337  clip_frac=0.1388  p_lane_change=0.3393
+[update  404] steps= 827392  ep_rew_mean=-3.087  std=0.3498  policy_loss=0.002305  value_loss=6.447  entropy=1.226  approx_kl=0.002424  clip_frac=0.1186  p_lane_change=0.3465
+[update  405] steps= 829440  ep_rew_mean=-2.477  std=0.3479  policy_loss=-0.002507  value_loss=5.784  entropy=1.248  approx_kl=0.008924  clip_frac=0.09204  p_lane_change=0.359
+    [eval @829440] 5ep  충돌률=80%  완주율=0%  평균속도=3.0m/s  평균차간=27.5m  최소차간=0.0m  차선변경=0.6회  보상=-52.4
+[update  406] steps= 831488  ep_rew_mean=-2.19  std=0.3477  policy_loss=-0.0028  value_loss=4.983  entropy=1.124  approx_kl=0.007499  clip_frac=0.132  p_lane_change=0.2735
+[update  407] steps= 833536  ep_rew_mean=-0.2258  std=0.3495  policy_loss=-0.004523  value_loss=5.851  entropy=1.202  approx_kl=0.01374  clip_frac=0.1024  p_lane_change=0.3305
+[update  408] steps= 835584  ep_rew_mean=1.265  std=0.3486  policy_loss=-0.001541  value_loss=5.489  entropy=1.181  approx_kl=0.007181  clip_frac=0.06924  p_lane_change=0.3283
+[update  409] steps= 837632  ep_rew_mean=4.535  std=0.3493  policy_loss=-0.002882  value_loss=5.667  entropy=1.211  approx_kl=0.01528  clip_frac=0.1399  p_lane_change=0.3402
+[update  410] steps= 839680  ep_rew_mean=3.334  std=0.3473  policy_loss=0.001041  value_loss=3.827  entropy=1.21  approx_kl=0.01063  clip_frac=0.1562  p_lane_change=0.3758
+    [eval @839680] 5ep  충돌률=100%  완주율=0%  평균속도=1.7m/s  평균차간=28.9m  최소차간=0.9m  차선변경=0.0회  보상=-95.3
+[update  411] steps= 841728  ep_rew_mean=2.12  std=0.3488  policy_loss=-0.00169  value_loss=3.765  entropy=1.212  approx_kl=0.01611  clip_frac=0.204  p_lane_change=0.3335
+[update  412] steps= 843776  ep_rew_mean=0.6784  std=0.3508  policy_loss=0.002955  value_loss=6.025  entropy=1.223  approx_kl=0.01196  clip_frac=0.1518  p_lane_change=0.3561
+[update  413] steps= 845824  ep_rew_mean=0.6784  std=0.3516  policy_loss=0.0008288  value_loss=0.9784  entropy=1.299  approx_kl=0.01673  clip_frac=0.1826  p_lane_change=0.5687
+[update  414] steps= 847872  ep_rew_mean=-2.548  std=0.3517  policy_loss=0.000761  value_loss=4.019  entropy=1.295  approx_kl=0.01042  clip_frac=0.1343  p_lane_change=0.4701
+[update  415] steps= 849920  ep_rew_mean=-3.38  std=0.3518  policy_loss=-0.0002371  value_loss=4.768  entropy=1.305  approx_kl=0.008461  clip_frac=0.07358  p_lane_change=0.4643
+    [eval @849920] 5ep  충돌률=60%  완주율=0%  평균속도=2.2m/s  평균차간=30.8m  최소차간=0.2m  차선변경=1.2회  보상=-111.4
+[update  416] steps= 851968  ep_rew_mean=-6.756  std=0.3514  policy_loss=-0.001225  value_loss=5.175  entropy=1.282  approx_kl=0.01136  clip_frac=0.1167  p_lane_change=0.4215
+[update  417] steps= 854016  ep_rew_mean=-7.296  std=0.3514  policy_loss=-0.001245  value_loss=4.786  entropy=1.271  approx_kl=0.008092  clip_frac=0.0897  p_lane_change=0.4248
+[update  418] steps= 856064  ep_rew_mean=-6.885  std=0.3537  policy_loss=-0.002815  value_loss=2.025  entropy=1.295  approx_kl=0.02059  clip_frac=0.1757  p_lane_change=0.4555
+[update  419] steps= 858112  ep_rew_mean=-6.491  std=0.3545  policy_loss=-0.007137  value_loss=1.751  entropy=1.29  approx_kl=0.01641  clip_frac=0.1508  p_lane_change=0.4575
+[update  420] steps= 860160  ep_rew_mean=-6.491  std=0.3546  policy_loss=-0.001851  value_loss=1.732  entropy=1.338  approx_kl=0.01305  clip_frac=0.1679  p_lane_change=0.6285
+    [eval @860160] 5ep  충돌률=100%  완주율=0%  평균속도=2.4m/s  평균차간=30.2m  최소차간=1.4m  차선변경=0.0회  보상=-79.5
+[update  421] steps= 862208  ep_rew_mean=-5.931  std=0.3545  policy_loss=-0.003098  value_loss=3.38  entropy=1.355  approx_kl=0.009996  clip_frac=0.07256  p_lane_change=0.5405
+[update  422] steps= 864256  ep_rew_mean=-5.154  std=0.3542  policy_loss=-0.002318  value_loss=6.777  entropy=1.324  approx_kl=0.009897  clip_frac=0.09546  p_lane_change=0.4997
+[update  423] steps= 866304  ep_rew_mean=-1.837  std=0.3542  policy_loss=-0.00291  value_loss=8.306  entropy=1.324  approx_kl=0.01495  clip_frac=0.1952  p_lane_change=0.521
+[update  424] steps= 868352  ep_rew_mean=-2.221  std=0.3526  policy_loss=-0.0003423  value_loss=4.77  entropy=1.347  approx_kl=0.009926  clip_frac=0.1253  p_lane_change=0.5262
+[update  425] steps= 870400  ep_rew_mean=-1.835  std=0.3529  policy_loss=-0.004758  value_loss=4.075  entropy=1.336  approx_kl=0.01131  clip_frac=0.1442  p_lane_change=0.529
+    [eval @870400] 5ep  충돌률=100%  완주율=0%  평균속도=2.0m/s  평균차간=37.4m  최소차간=23.2m  차선변경=0.0회  보상=-113.7
+[update  426] steps= 872448  ep_rew_mean=-0.3581  std=0.3521  policy_loss=-0.01158  value_loss=2.143  entropy=1.386  approx_kl=0.01567  clip_frac=0.1416  p_lane_change=0.6083
+[update  427] steps= 874496  ep_rew_mean=-0.3581  std=0.3516  policy_loss=0.003016  value_loss=2.345  entropy=1.33  approx_kl=0.009027  clip_frac=0.1588  p_lane_change=0.6682
+[update  428] steps= 876544  ep_rew_mean=0.8507  std=0.3525  policy_loss=-0.00153  value_loss=3.573  entropy=1.309  approx_kl=0.0141  clip_frac=0.1441  p_lane_change=0.6002
+[update  429] steps= 878592  ep_rew_mean=-2.034  std=0.3526  policy_loss=-0.003571  value_loss=7.796  entropy=1.346  approx_kl=0.007606  clip_frac=0.12  p_lane_change=0.5099
+[update  430] steps= 880640  ep_rew_mean=-3.643  std=0.3512  policy_loss=-0.000645  value_loss=2.284  entropy=1.373  approx_kl=0.0146  clip_frac=0.134  p_lane_change=0.534
+    [eval @880640] 5ep  충돌률=80%  완주율=0%  평균속도=4.5m/s  평균차간=27.7m  최소차간=0.0m  차선변경=0.6회  보상=-30.8
+[update  431] steps= 882688  ep_rew_mean=-4.041  std=0.3536  policy_loss=-0.001548  value_loss=3.138  entropy=1.316  approx_kl=0.01019  clip_frac=0.1187  p_lane_change=0.6689
+[update  432] steps= 884736  ep_rew_mean=1.025  std=0.3544  policy_loss=-0.0003528  value_loss=0.5864  entropy=1.072  approx_kl=0.01484  clip_frac=0.1623  p_lane_change=0.817
+[update  433] steps= 886784  ep_rew_mean=1.025  std=0.3548  policy_loss=-0.0001306  value_loss=1.382  entropy=1.257  approx_kl=0.004625  clip_frac=0.07231  p_lane_change=0.7116
+[update  434] steps= 888832  ep_rew_mean=7.176  std=0.3555  policy_loss=-0.004915  value_loss=1.199  entropy=1.215  approx_kl=0.006675  clip_frac=0.0667  p_lane_change=0.7528
+[update  435] steps= 890880  ep_rew_mean=7.176  std=0.3552  policy_loss=-0.002324  value_loss=0.7909  entropy=1.316  approx_kl=0.007953  clip_frac=0.09185  p_lane_change=0.7212
+    [eval @890880] 5ep  충돌률=80%  완주율=0%  평균속도=4.1m/s  평균차간=27.2m  최소차간=0.0m  차선변경=0.6회  보상=-35.5
+[update  436] steps= 892928  ep_rew_mean=8.617  std=0.3559  policy_loss=-0.003178  value_loss=6.803  entropy=1.403  approx_kl=0.007853  clip_frac=0.1212  p_lane_change=0.6046
+[update  437] steps= 894976  ep_rew_mean=8.059  std=0.3563  policy_loss=0.0009693  value_loss=7.908  entropy=1.405  approx_kl=0.007781  clip_frac=0.09155  p_lane_change=0.6123
+[update  438] steps= 897024  ep_rew_mean=8.059  std=0.3586  policy_loss=0.003099  value_loss=1.401  entropy=1.271  approx_kl=0.0111  clip_frac=0.1288  p_lane_change=0.7364
+[update  439] steps= 899072  ep_rew_mean=10.18  std=0.3592  policy_loss=0.01186  value_loss=3.145  entropy=1.342  approx_kl=0.01898  clip_frac=0.2144  p_lane_change=0.659
+[update  440] steps= 901120  ep_rew_mean=9.812  std=0.3581  policy_loss=0.003384  value_loss=3.654  entropy=1.373  approx_kl=0.006337  clip_frac=0.1102  p_lane_change=0.6211
+    [eval @901120] 5ep  충돌률=100%  완주율=0%  평균속도=5.1m/s  평균차간=27.9m  최소차간=0.3m  차선변경=1.4회  보상=-36.3
+[update  441] steps= 903168  ep_rew_mean=9.812  std=0.3519  policy_loss=-0.002185  value_loss=0.9835  entropy=1.325  approx_kl=0.007063  clip_frac=0.09453  p_lane_change=0.6661
+[update  442] steps= 905216  ep_rew_mean=15.07  std=0.3516  policy_loss=-0.002779  value_loss=6.059  entropy=1.3  approx_kl=0.006113  clip_frac=0.1475  p_lane_change=0.5438
+[update  443] steps= 907264  ep_rew_mean=15.07  std=0.349  policy_loss=-0.004238  value_loss=1.6  entropy=1.255  approx_kl=0.01036  clip_frac=0.1398  p_lane_change=0.6641
+[update  444] steps= 909312  ep_rew_mean=14  std=0.3494  policy_loss=-0.002153  value_loss=5.082  entropy=1.327  approx_kl=0.01036  clip_frac=0.1323  p_lane_change=0.5212
+[update  445] steps= 911360  ep_rew_mean=14  std=0.3488  policy_loss=0.0008188  value_loss=2.688  entropy=1.238  approx_kl=0.008384  clip_frac=0.08589  p_lane_change=0.656
+    [eval @911360] 5ep  충돌률=80%  완주율=0%  평균속도=5.3m/s  평균차간=27.9m  최소차간=0.0m  차선변경=1.2회  보상=-9.1
+[update  446] steps= 913408  ep_rew_mean=8.219  std=0.3502  policy_loss=-0.002079  value_loss=4.896  entropy=1.286  approx_kl=0.01142  clip_frac=0.1949  p_lane_change=0.45
+[update  447] steps= 915456  ep_rew_mean=6.844  std=0.3508  policy_loss=0.0001685  value_loss=6.505  entropy=1.303  approx_kl=0.01168  clip_frac=0.1324  p_lane_change=0.4376
+[update  448] steps= 917504  ep_rew_mean=6.844  std=0.3485  policy_loss=-0.002915  value_loss=0.5948  entropy=1.186  approx_kl=0.005772  clip_frac=0.1051  p_lane_change=0.7389
+[update  449] steps= 919552  ep_rew_mean=10.84  std=0.348  policy_loss=0.003456  value_loss=7.411  entropy=1.334  approx_kl=0.007828  clip_frac=0.09248  p_lane_change=0.5097
+[update  450] steps= 921600  ep_rew_mean=10.84  std=0.3479  policy_loss=-0.005486  value_loss=0.402  entropy=1.198  approx_kl=0.00686  clip_frac=0.1052  p_lane_change=0.7254
+    [eval @921600] 5ep  충돌률=100%  완주율=0%  평균속도=5.6m/s  평균차간=29.2m  최소차간=0.2m  차선변경=1.2회  보상=-29.1
+[update  451] steps= 923648  ep_rew_mean=7.09  std=0.3474  policy_loss=-0.002992  value_loss=4.902  entropy=1.323  approx_kl=0.009664  clip_frac=0.1038  p_lane_change=0.4772
+[update  452] steps= 925696  ep_rew_mean=12.21  std=0.3484  policy_loss=-0.007972  value_loss=4.99  entropy=1.266  approx_kl=0.007275  clip_frac=0.1258  p_lane_change=0.5136
+[update  453] steps= 927744  ep_rew_mean=8.763  std=0.3483  policy_loss=-0.00376  value_loss=9.213  entropy=1.286  approx_kl=0.008148  clip_frac=0.1072  p_lane_change=0.4133
+[update  454] steps= 929792  ep_rew_mean=8.763  std=0.3472  policy_loss=-0.003458  value_loss=0.9831  entropy=1.238  approx_kl=0.009685  clip_frac=0.1218  p_lane_change=0.5727
+[update  455] steps= 931840  ep_rew_mean=11.73  std=0.3492  policy_loss=-0.003471  value_loss=1.314  entropy=1.275  approx_kl=0.01213  clip_frac=0.1044  p_lane_change=0.5112
+    [eval @931840] 5ep  충돌률=100%  완주율=0%  평균속도=4.2m/s  평균차간=27.7m  최소차간=0.8m  차선변경=0.6회  보상=-50.1
+[update  456] steps= 933888  ep_rew_mean=8.563  std=0.3481  policy_loss=-0.003665  value_loss=2.236  entropy=1.254  approx_kl=0.007524  clip_frac=0.08931  p_lane_change=0.397
+[update  457] steps= 935936  ep_rew_mean=11.66  std=0.3488  policy_loss=-0.00104  value_loss=2.076  entropy=1.229  approx_kl=0.006628  clip_frac=0.09082  p_lane_change=0.5523
+[update  458] steps= 937984  ep_rew_mean=9.667  std=0.3487  policy_loss=0.002161  value_loss=8.718  entropy=1.213  approx_kl=0.009295  clip_frac=0.116  p_lane_change=0.3605
+[update  459] steps= 940032  ep_rew_mean=9.834  std=0.3492  policy_loss=-0.002235  value_loss=3.806  entropy=1.282  approx_kl=0.01521  clip_frac=0.1489  p_lane_change=0.504
+[update  460] steps= 942080  ep_rew_mean=13.96  std=0.3511  policy_loss=-0.004967  value_loss=5.84  entropy=1.223  approx_kl=0.01015  clip_frac=0.1175  p_lane_change=0.4918
+    [eval @942080] 5ep  충돌률=100%  완주율=0%  평균속도=2.6m/s  평균차간=33.1m  최소차간=0.0m  차선변경=0.0회  보상=-80.3
+[update  461] steps= 944128  ep_rew_mean=10.37  std=0.3515  policy_loss=-0.003232  value_loss=9.138  entropy=1.214  approx_kl=0.01352  clip_frac=0.1472  p_lane_change=0.4033
+[update  462] steps= 946176  ep_rew_mean=9.305  std=0.3504  policy_loss=-0.002286  value_loss=5.113  entropy=1.237  approx_kl=0.01425  clip_frac=0.1313  p_lane_change=0.5156
+[update  463] steps= 948224  ep_rew_mean=8.85  std=0.3502  policy_loss=-0.00229  value_loss=5.819  entropy=1.272  approx_kl=0.01163  clip_frac=0.1497  p_lane_change=0.4836
+[update  464] steps= 950272  ep_rew_mean=9.859  std=0.3486  policy_loss=0.001275  value_loss=8.988  entropy=1.208  approx_kl=0.009846  clip_frac=0.1387  p_lane_change=0.3758
+[update  465] steps= 952320  ep_rew_mean=4.545  std=0.3487  policy_loss=0.0003849  value_loss=6.694  entropy=1.231  approx_kl=0.007557  clip_frac=0.1167  p_lane_change=0.4377
+    [eval @952320] 5ep  충돌률=100%  완주율=0%  평균속도=6.4m/s  평균차간=29.5m  최소차간=0.8m  차선변경=1.2회  보상=-25.2
+[update  466] steps= 954368  ep_rew_mean=2.424  std=0.3503  policy_loss=0.001583  value_loss=6.901  entropy=1.223  approx_kl=0.009408  clip_frac=0.1635  p_lane_change=0.3902
+[update  467] steps= 956416  ep_rew_mean=6.832  std=0.3486  policy_loss=-0.008252  value_loss=1.333  entropy=1.202  approx_kl=0.01247  clip_frac=0.1434  p_lane_change=0.4662
+[update  468] steps= 958464  ep_rew_mean=10.27  std=0.3487  policy_loss=-0.002526  value_loss=1.242  entropy=1.254  approx_kl=0.007982  clip_frac=0.1083  p_lane_change=0.469
+[update  469] steps= 960512  ep_rew_mean=6.044  std=0.3473  policy_loss=-0.0009349  value_loss=5.534  entropy=1.182  approx_kl=0.006849  clip_frac=0.1539  p_lane_change=0.3738
+[update  470] steps= 962560  ep_rew_mean=6.928  std=0.3473  policy_loss=-0.005365  value_loss=6.865  entropy=1.263  approx_kl=0.01101  clip_frac=0.1538  p_lane_change=0.4612
+    [eval @962560] 5ep  충돌률=100%  완주율=0%  평균속도=4.2m/s  평균차간=26.5m  최소차간=0.7m  차선변경=0.6회  보상=-58.0
+[update  471] steps= 964608  ep_rew_mean=6.802  std=0.347  policy_loss=-0.0004431  value_loss=3.35  entropy=1.274  approx_kl=0.0186  clip_frac=0.1712  p_lane_change=0.4948
+[update  472] steps= 966656  ep_rew_mean=10.29  std=0.3466  policy_loss=0.0005429  value_loss=1.196  entropy=1.25  approx_kl=0.01064  clip_frac=0.1172  p_lane_change=0.5025
+[update  473] steps= 968704  ep_rew_mean=7.123  std=0.3473  policy_loss=-0.003511  value_loss=8.752  entropy=1.224  approx_kl=0.01237  clip_frac=0.1023  p_lane_change=0.4792
+[update  474] steps= 970752  ep_rew_mean=7.123  std=0.3487  policy_loss=-0.006164  value_loss=0.8171  entropy=1.297  approx_kl=0.009224  clip_frac=0.1323  p_lane_change=0.5304
+[update  475] steps= 972800  ep_rew_mean=11.13  std=0.3471  policy_loss=-0.003009  value_loss=3.247  entropy=1.285  approx_kl=0.007071  clip_frac=0.1033  p_lane_change=0.4915
+    [eval @972800] 5ep  충돌률=100%  완주율=0%  평균속도=4.5m/s  평균차간=28.6m  최소차간=0.0m  차선변경=0.6회  보상=-41.8
+[update  476] steps= 974848  ep_rew_mean=11.22  std=0.3469  policy_loss=-0.002206  value_loss=6.604  entropy=1.179  approx_kl=0.009668  clip_frac=0.07852  p_lane_change=0.4072
+[update  477] steps= 976896  ep_rew_mean=11.22  std=0.3454  policy_loss=-0.006788  value_loss=0.7885  entropy=1.287  approx_kl=0.009652  clip_frac=0.1282  p_lane_change=0.4885
+[update  478] steps= 978944  ep_rew_mean=14.84  std=0.3451  policy_loss=0.006141  value_loss=4.974  entropy=1.226  approx_kl=0.01702  clip_frac=0.1296  p_lane_change=0.4376
+[update  479] steps= 980992  ep_rew_mean=18.78  std=0.345  policy_loss=0.0008422  value_loss=3.953  entropy=1.239  approx_kl=0.007093  clip_frac=0.08359  p_lane_change=0.4826
+[update  480] steps= 983040  ep_rew_mean=15.49  std=0.3446  policy_loss=-0.002737  value_loss=9.469  entropy=1.188  approx_kl=0.01139  clip_frac=0.1321  p_lane_change=0.4019
+    [eval @983040] 5ep  충돌률=100%  완주율=0%  평균속도=2.2m/s  평균차간=31.5m  최소차간=14.9m  차선변경=0.0회  보상=-89.9
+[update  481] steps= 985088  ep_rew_mean=10.64  std=0.3427  policy_loss=-0.007753  value_loss=6.706  entropy=1.202  approx_kl=0.01027  clip_frac=0.2091  p_lane_change=0.4032
+[update  482] steps= 987136  ep_rew_mean=10.02  std=0.3401  policy_loss=0.001347  value_loss=6.576  entropy=1.154  approx_kl=0.01082  clip_frac=0.1163  p_lane_change=0.3764
+[update  483] steps= 989184  ep_rew_mean=14.36  std=0.3399  policy_loss=-0.002542  value_loss=1.976  entropy=1.265  approx_kl=0.01132  clip_frac=0.1028  p_lane_change=0.4683
+[update  484] steps= 991232  ep_rew_mean=12.7  std=0.3398  policy_loss=-0.008969  value_loss=2.537  entropy=1.252  approx_kl=0.007972  clip_frac=0.1364  p_lane_change=0.5095
+[update  485] steps= 993280  ep_rew_mean=12.86  std=0.3376  policy_loss=0.0003354  value_loss=3.858  entropy=1.238  approx_kl=0.006915  clip_frac=0.1086  p_lane_change=0.4335
+    [eval @993280] 5ep  충돌률=100%  완주율=0%  평균속도=4.5m/s  평균차간=25.8m  최소차간=1.0m  차선변경=0.6회  보상=-35.4
+[update  486] steps= 995328  ep_rew_mean=12.17  std=0.3367  policy_loss=-0.001454  value_loss=4.496  entropy=1.224  approx_kl=0.01157  clip_frac=0.2137  p_lane_change=0.4573
+[update  487] steps= 997376  ep_rew_mean=9.735  std=0.3373  policy_loss=-0.007915  value_loss=1.729  entropy=1.244  approx_kl=0.01207  clip_frac=0.1249  p_lane_change=0.5668
+[update  488] steps= 999424  ep_rew_mean=13.56  std=0.3387  policy_loss=-0.004606  value_loss=1.657  entropy=1.251  approx_kl=0.0142  clip_frac=0.1187  p_lane_change=0.5526
+[update  489] steps=1001472  ep_rew_mean=9.368  std=0.34  policy_loss=-0.002037  value_loss=5.902  entropy=1.123  approx_kl=0.009583  clip_frac=0.1587  p_lane_change=0.3512
+
+저장 완료: /Users/JO/team14_idle01/results/run_20261124_122521_scratch_idle01_s1/model.pt
+재생 방법:      python test.py results/run_20261124_122521_scratch_idle01_s1/model.pt
+학습 곡선 보기: tensorboard --logdir results  → http://localhost:6006
