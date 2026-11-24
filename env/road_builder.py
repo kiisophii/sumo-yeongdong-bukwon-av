@@ -703,6 +703,16 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
             ego_edges = repair(list(_json.load(_f)["route_edges"]))
     else:
         ego_edges = path(*road["ego_route"])
+
+    # (팀14) ego 경로를 이 edge에서 끝낸다 (그 뒤 구간을 잘라냄). 없으면 원래대로.
+    end_edge = road.get("ego_route_end_edge")
+
+    def cut(edges):
+        if end_edge and end_edge in edges:
+            return edges[:edges.index(end_edge) + 1]
+        return edges
+
+    ego_edges = cut(ego_edges)
     road["length"] = sum(net.getEdge(e).getLength() for e in ego_edges)
     road["num_lanes"] = max(net.getEdge(e).getLaneNumber() for e in ego_edges)
 
@@ -719,7 +729,7 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         with open(_resolve(rc["file"]), encoding="utf-8") as _f:
             alts = _json.load(_f)
         for name, a in alts["alternatives"].items():
-            a = {**a, "edges": repair(list(a["edges"]))}
+            a = {**a, "edges": cut(repair(list(a["edges"])))}
             route_lines.append(f'    <route id="r_alt_{name}" edges="{" ".join(a["edges"])}"/>')
             alt_meta[name] = {
                 "route_id": f"r_alt_{name}",
@@ -762,6 +772,18 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
         used = set()
         for line in route_lines:
             used.update(line.split('edges="', 1)[1].split('"', 1)[0].split())
+        # (팀14, 11/24) ego 경로에서 바로 이어지는 도로(첫 구간)는 남긴다.
+        #   지우면 그쪽으로 가던 차로 연결이 끊겨, 실제로는 이어지는 차로가 시뮬레이션에서
+        #   "끝나는 차로"가 된다 (예: 영동고속도로 377057231의 본선 차로 3개, 부곡중앙로 우회전 차로).
+        #   남긴 도로에는 흐름이 없어 차는 다니지 않는다.
+        ego_route_edges = set(ego_edges)
+        for meta in alt_meta.values():
+            ego_route_edges.update(next(l for l in route_lines if f'id="{meta["route_id"]}"' in l)
+                                   .split('edges="', 1)[1].split('"', 1)[0].split())
+        for eid in ego_route_edges:
+            for ln in net.getEdge(eid).getLanes():
+                for c in ln.getOutgoing():
+                    used.add(c.getTo().getID())
         keep_file = os.path.join(out_dir, "kept_edges.txt")
         with open(keep_file, "w", encoding="utf-8") as f:
             f.write("\n".join(sorted(used)))
