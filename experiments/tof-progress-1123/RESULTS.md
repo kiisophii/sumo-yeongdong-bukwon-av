@@ -16,9 +16,9 @@
 | C1 | `results/run_20261123_192921_tof_progress_p100_s0` | 전진 보상 합 20 → 100 (`PROGRESS_TOTAL=100`) | 35만 → 65만 | 신협오거리를 건너기 시작, 약 1~1.2 km에서 실패 |
 | C2 | `results/run_20261123_203116_tof_progress_p100_s0` | 전진 보상 합 100 | 65만 → 95만 | 아래 평가 |
 
-C로 다시 돌리려면:
+C로 다시 돌리려면 (11/24부터 train.sh 기본값이 100):
 ```bash
-PROGRESS_TOTAL=100 bash experiments/tof-progress-1123/train.sh 0 300000 --init-model results/run_20261123_203116_tof_progress_p100_s0/model.pt --tag tof_progress_p100_s0
+bash experiments/tof-progress-1123/train.sh 0 300000 --init-model results/run_20261123_203116_tof_progress_p100_s0/model.pt --tag tof_progress_p100_s0
 ```
 
 ## C2 공식 평가 (`eval.sh`, 20판, 시드 2026, 결정적 정책)
