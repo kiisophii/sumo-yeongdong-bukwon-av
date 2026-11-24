@@ -1,0 +1,38 @@
+{
+  "results/run_20261123_203116_tof_progress_p100_s0/model.pt": {
+    "collision_rate": 0.0,
+    "teleport_rate": 1.0,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 1.0,
+    "episodes": 20,
+    "transitions": [],
+    "failure_end_lanes": {
+      "-472043938#7_0": 4,
+      "-40839116#3_0": 3,
+      ":1681517629_1_0": 3,
+      "496583281#0_1": 8,
+      ":4582364294_0_1": 1,
+      "-40839116#4_0": 1
+    },
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {
+      "-472043938#7_0": 4,
+      "-40839116#3_0": 3,
+      ":1681517629_1_0": 3,
+      "496583281#0_1": 8,
+      ":4582364294_0_1": 1,
+      "-40839116#4_0": 1
+    },
+    "mean_speed_mps": 1.8309018329149744,
+    "mean_return": -4.029002778366978,
+    "mean_length_steps": 902.8,
+    "mean_travel_time_s": 451.4,
+    "lane_changes_per_ep": 0.45,
+    "min_gap_median_m": 14.996468166294303,
+    "wall_time_s": 120.43960046768188
+  }
+}
