@@ -114,13 +114,14 @@ def main():
 
     configure(training, args.hard_start_prob if training else 0.0)
     sys.path.insert(0, str(root))
-    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -10 | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']}",
+    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']}",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)
         script = root / "train.py"
         options = [
-            "--seed", str(args.seed), "--gamma", "0.995", "--collision-penalty", "10",
+            "--seed", str(args.seed), "--gamma", "0.995",
+            "--collision-penalty", os.environ.get("COLLISION_PENALTY_OVERRIDE", "10"),
             "--arrival-bonus", "10", "--blocked-penalty", "0",
             "--timesteps", str(args.steps), "--ckpt-every", str(min(51200, args.steps)),
             "--init-model", str(model), "--tag", f"{TAG}_s{args.seed}",
