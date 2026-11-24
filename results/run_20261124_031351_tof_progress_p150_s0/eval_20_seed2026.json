@@ -1,0 +1,29 @@
+{
+  "results/run_20261124_031351_tof_progress_p150_s0/model.pt": {
+    "collision_rate": 0.05,
+    "teleport_rate": 0.95,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 1.0,
+    "episodes": 20,
+    "transitions": [],
+    "failure_end_lanes": {
+      "496583281#0_0": 19,
+      ":1681517542_4_0": 1
+    },
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {
+      "496583281#0_0": 19
+    },
+    "mean_speed_mps": 2.3544900849564727,
+    "mean_return": -5.384208291643292,
+    "mean_length_steps": 815.0,
+    "mean_travel_time_s": 407.5,
+    "lane_changes_per_ep": 0.0,
+    "min_gap_median_m": 15.553673807523364,
+    "wall_time_s": 242.19259309768677
+  }
+}
