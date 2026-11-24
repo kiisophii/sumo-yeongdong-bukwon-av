@@ -1276,6 +1276,16 @@ class SumoHighwayEnv(gym.Env):
                 self._prog_total += delta
                 reward += total * delta / max(self.road_length, 1.0)
             self._prog_prev = d
+        # 속도 보상(상태 기준, 기본 0): 구간 제한속도 대비 내 속도 비율, 제한속도에서 최대(1).
+        #   전진 보상은 저속 구간(30 km/h)에서 스텝당 값이 작아 느리게 가는 손해가 작다 → 구간마다 같은 크기로 보정.
+        #   제한속도를 넘어도 더 오르지 않으므로 과속 유인은 없다.
+        sw = float(os.environ.get("PROGRESS_SPEED_W", "0") or 0)
+        if sw > 0.0:
+            try:
+                lim = max(traci.vehicle.getAllowedSpeed(self.ego_id), 1.0)
+                reward += sw * min(ego_speed / lim, 1.0)
+            except traci.TraCIException:
+                pass
         w = float(os.environ.get("PROGRESS_OVERSPEED_W", "0.1") or 0)
         if w > 0.0:
             try:
