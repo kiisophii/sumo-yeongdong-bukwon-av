@@ -54,7 +54,7 @@ def configure(training, hard_start_prob=0.0):
         TEAM14_SCENARIO="museum", TEAM14_TOF_OBS="1", TEAM14_TOF_REAR_DENSITY="1",
         TEAM14_ROUTE_OBS="none", TEAM14_ROUTE_FORK_OBS="1", TEAM14_LANE_END_OBS="1",
         TEAM14_LANE_END_RANGE="50", TEAM14_DROP_SIGNAL_TIME="1", TEAM14_NO_SPEED_CAP="1",
-        TEAM14_REWARD="progress", PROGRESS_TOTAL="150", PROGRESS_OVERSPEED_W="0.1",
+        TEAM14_REWARD="progress", PROGRESS_TOTAL="150", PROGRESS_OVERSPEED_W=os.environ.get("PROGRESS_OVERSPEED_W_OVERRIDE", "1.0"),
         PROGRESS_YIELD_PENALTY="2", PROGRESS_TIME_PENALTY="0",
         HARD_START_PROB=str(hard_start_prob if training else 0.0),
         HARD_START_TARGETS="568664967#4,51066582#1,1307152438", HARD_START_BACK_M="100",
@@ -112,7 +112,7 @@ def main():
 
     configure(training, args.hard_start_prob if training else 0.0)
     sys.path.insert(0, str(root))
-    print("ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -10 | yield entry -2",
+    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -10 | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']}",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)
