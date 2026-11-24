@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261124_122731_scratch_idle03_s2/model.pt (60 episodes) ===
+  ep   1/60: steps=1042 return=  55.74 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep   2/60: steps= 482 return=  21.36 경로 이탈 lane=496583287_0
+  ep   3/60: steps= 426 return=  16.14 신호 위반 lane=452597718#1_0
+  ep   4/60: steps=2260 return=  97.23 경로 이탈 lane=377057231_4
+  ep   5/60: steps= 463 return=  20.16 경로 이탈 lane=496583287_0
+  ep   6/60: steps=2891 return= 134.13 경로 이탈 lane=377057231_4
+  ep   7/60: steps=2797 return= 125.45 경로 이탈 lane=377057231_4
+  ep   8/60: steps= 504 return=  21.28 경로 이탈 lane=496583287_0
+  ep   9/60: steps= 520 return=  23.27 경로 이탈 lane=496583288_0
+  ep  10/60: steps= 522 return=  24.69 경로 이탈 lane=496583287_0
+  ep  11/60: steps= 500 return=  21.67 경로 이탈 lane=496583287_0
+  ep  12/60: steps=2598 return= 115.78 경로 이탈 lane=377057231_4
+  ep  13/60: steps=2254 return=  94.81 경로 이탈 lane=377057231_4
+  ep  14/60: steps= 694 return=  32.32 경로 이탈 lane=491135704#3_1
+  ep  15/60: steps= 438 return=  18.04 경로 이탈 lane=496583288_0
+  ep  16/60: steps= 776 return=  36.17 경로 이탈 lane=491135704#3_1
+  ep  17/60: steps= 440 return=  17.39 경로 이탈 lane=496583287_0
+  ep  18/60: steps=2635 return= 117.40 경로 이탈 lane=377057231_4
+  ep  19/60: steps=2890 return= 136.00 경로 이탈 lane=377057231_4
+  ep  20/60: steps=2415 return= 104.05 경로 이탈 lane=377057231_4
+  ep  21/60: steps= 832 return=  42.35 경로 이탈 lane=491135704#3_1
+  ep  22/60: steps= 445 return=  18.85 경로 이탈 lane=496583287_0
+  ep  23/60: steps= 458 return=  18.58 경로 이탈 lane=496583287_0
+  ep  24/60: steps= 765 return=  37.00 경로 이탈 lane=491135704#3_1
+  ep  25/60: steps= 493 return=  22.61 경로 이탈 lane=496583287_0
+  ep  26/60: steps=2768 return= 126.17 경로 이탈 lane=377057231_4
+  ep  27/60: steps= 317 return=  10.73 차량 충돌 lane=:1681517542_4_0
+  ep  28/60: steps= 766 return=  36.16 경로 이탈 lane=491135704#3_1
+  ep  29/60: steps=2560 return= 113.24 경로 이탈 lane=377057231_4
+  ep  30/60: steps= 486 return=  20.60 경로 이탈 lane=496583287_0
+  ep  31/60: steps= 784 return=  37.35 경로 이탈 lane=491135704#3_1
+  ep  32/60: steps= 511 return=  22.92 경로 이탈 lane=496583288_0
+  ep  33/60: steps= 437 return=  16.20 경로 이탈 lane=496583287_0
+  ep  34/60: steps= 510 return=  23.20 경로 이탈 lane=496583287_0
+  ep  35/60: steps=2590 return= 115.19 경로 이탈 lane=377057231_4
+  ep  36/60: steps= 762 return=  37.00 경로 이탈 lane=491135704#3_1
+  ep  37/60: steps=2340 return=  98.72 경로 이탈 lane=377057231_4
+  ep  38/60: steps= 483 return=  21.44 경로 이탈 lane=496583287_0
+  ep  39/60: steps=2746 return= 123.39 경로 이탈 lane=377057231_4
+  ep  40/60: steps= 770 return=  37.48 경로 이탈 lane=491135704#3_1
+  ep  41/60: steps= 473 return=  18.68 경로 이탈 lane=496583287_0
+  ep  42/60: steps= 509 return=  22.66 경로 이탈 lane=496583287_0
+  ep  43/60: steps=2776 return= 128.58 경로 이탈 lane=377057231_4
+  ep  44/60: steps= 519 return=  23.48 경로 이탈 lane=496583287_0
+  ep  45/60: steps= 480 return=  18.60 경로 이탈 lane=496583287_0
+  ep  46/60: steps= 485 return=  20.70 경로 이탈 lane=496583287_0
+  ep  47/60: steps= 479 return=  20.42 경로 이탈 lane=496583287_0
+  ep  48/60: steps= 476 return=  21.05 경로 이탈 lane=496583287_0
+  ep  49/60: steps= 432 return=  16.67 경로 이탈 lane=496583287_0
+  ep  50/60: steps= 789 return=  37.26 경로 이탈 lane=491135704#3_1
+  ep  51/60: steps= 534 return=  24.43 경로 이탈 lane=496583287_0
+  ep  52/60: steps= 833 return=  40.36 경로 이탈 lane=491135704#3_1
+  ep  53/60: steps=2373 return= 101.97 경로 이탈 lane=377057231_4
+  ep  54/60: steps= 551 return=  24.70 경로 이탈 lane=496583287_0
+  ep  55/60: steps= 489 return=  20.65 경로 이탈 lane=496583287_0
+  ep  56/60: steps= 533 return=  22.88 경로 이탈 lane=496583287_0
+  ep  57/60: steps= 515 return=  22.37 경로 이탈 lane=496583288_0
+  ep  58/60: steps= 778 return=  37.09 경로 이탈 lane=491135704#3_1
+  ep  59/60: steps= 769 return=  36.13 경로 이탈 lane=491135704#3_1
+  ep  60/60: steps= 775 return=  37.29 경로 이탈 lane=491135704#3_1
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261124_122731_scratch_idle03_s2/model.pt     2%       0%      97%     0%           28.8       541.1
+
+저장: results/scratch_idle03_s2_2266.json

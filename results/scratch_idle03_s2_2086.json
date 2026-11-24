@@ -1,0 +1,38 @@
+{
+  "results/run_20261124_122731_scratch_idle03_s2/model.pt": {
+    "collision_rate": 0.016666666666666666,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.9666666666666667,
+    "red_light_rate": 0.016666666666666666,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 1.0,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "491135704#3_1": 8,
+      "51066582#1.95_2": 1,
+      "496583287_0": 31,
+      "377057231_4": 7,
+      "496583288_0": 11,
+      "488779086#1_0": 1,
+      "496583284_2": 1
+    },
+    "lane_end_lanes": {
+      "491135704#3_1": 8,
+      "496583287_0": 31,
+      "377057231_4": 7,
+      "496583288_0": 11,
+      "496583284_2": 1
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 7.110421499082407,
+    "mean_return": 34.64024137173331,
+    "mean_length_steps": 781.9333333333333,
+    "mean_travel_time_s": 390.96666666666664,
+    "lane_changes_per_ep": 7.783333333333333,
+    "min_gap_median_m": 6.990103632681007,
+    "wall_time_s": 1815.6010706424713
+  }
+}
