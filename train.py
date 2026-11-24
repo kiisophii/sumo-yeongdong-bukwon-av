@@ -495,6 +495,8 @@ if __name__ == "__main__":
                     ckpt_dir=os.path.join(run_dir, "checkpoints"),
                     ckpt_every=_args.ckpt_every,
                     eval_env=env,
+                    eval_reset_options={"full_route_start": True}
+                    if env.route_fork_obs else None,
                     junction_diagnostics=_args.tof_junction_diagnostics)
     finally:
         try:

@@ -16,6 +16,7 @@
 관측/행동/보상의 구체적인 정의는 configs/mdp_config.py 에 있고,
 이 파일은 그 설정을 받아서 실행만 한다. (MDP를 바꿀 때 이 파일 수정 불필요)
 """
+import math
 import os
 import sys
 
@@ -321,8 +322,15 @@ class SumoHighwayEnv(gym.Env):
         self.lane_end_range = float(os.environ.get("TEAM14_LANE_END_RANGE", "50") or 50)
         self._lane_cont = {}
         self._lane_end_prev = [1.0] * n_lanes_view
+        self.route_fork_obs = self.osm_mode and os.environ.get("TEAM14_ROUTE_FORK_OBS") == "1"
+        if self.route_fork_obs and self.route_obs_mode != "none":
+            raise ValueError("TEAM14_ROUTE_FORK_OBS requires TEAM14_ROUTE_OBS=none")
+        self._route_fork_cache = {}
+        self._route_fork_prev = (1.0, 0.0)
         if self.lane_end_obs:
             self.obs_dim += n_lanes_view
+        if self.route_fork_obs:
+            self.obs_dim += 2
         # ---- (팀14) TEAM14_REWARD=progress: 주행 결과 기반 보상 (_progress_reward 참고) ----
         self.progress_reward = os.environ.get("TEAM14_REWARD", "") == "progress"
         self._prog_prev = None
@@ -530,7 +538,8 @@ class SumoHighwayEnv(gym.Env):
                 depart_speed = "max"
                 junction_focus = True
         hs = float(os.environ.get("HARD_START_PROB", "0") or 0)
-        if not junction_focus and hs > 0 and float(np.random.random()) < hs:
+        if (not junction_focus and not options.get("full_route_start")
+                and hs > 0 and float(np.random.random()) < hs):
             picked = self._hard_start_route(route_id)
             if picked is not None:
                 route_id, self.hard_start = picked
@@ -594,6 +603,7 @@ class SumoHighwayEnv(gym.Env):
 
         self.step_count = 0
         self._lane_end_prev = [1.0] * len(self.obs_offsets)
+        self._route_fork_prev = (1.0, 0.0)
         # (팀14) 전진 거리 보상 기준점: 이번 판 ego의 주행거리계(odometer)
         self._prog_prev = None
         self._prog_total = 0.0
@@ -986,6 +996,53 @@ class SumoHighwayEnv(gym.Env):
         self._coarse_prev = out
         return out
 
+    def _map_fork_direction(self, road_id, next_id):
+        """Map heading at a fork: left -1, right +1, straight 0, or no fork."""
+        key = road_id, next_id
+        if key in self._route_fork_cache:
+            return self._route_fork_cache[key]
+
+        road = self._road_net.getEdge(road_id)
+        outgoing = [edge for edge, connections in road.getAllowedOutgoing("passenger").items()
+                    if any(c.getDirection().lower() != "t" for c in connections)]
+        direction = None
+        if len(outgoing) > 1 and any(edge.getID() == next_id for edge in outgoing):
+            approach = road.getShape()
+            departure = self._road_net.getEdge(next_id).getShape()
+            ax, ay = (approach[-1][0] - approach[-2][0], approach[-1][1] - approach[-2][1])
+            bx, by = (departure[1][0] - departure[0][0], departure[1][1] - departure[0][1])
+            angle = math.degrees(math.atan2(ax * by - ay * bx, ax * bx + ay * by))
+            direction = -1.0 if angle > 15.0 else (1.0 if angle < -15.0 else 0.0)
+        self._route_fork_cache[key] = direction
+        return direction
+
+    def _route_fork_observation(self):
+        """Distance and heading along the selected sequence of public roads."""
+        ego = self.ego_id
+        edge_id = traci.vehicle.getRoadID(ego)
+        if edge_id.startswith(":"):
+            return self._route_fork_prev
+        route = traci.vehicle.getRoute(ego)
+        index = traci.vehicle.getRouteIndex(ego)
+        if not 0 <= index < len(route) or route[index] != edge_id:
+            return (1.0, 0.0)
+        if self._outgoing is None:
+            self._build_lane_tables()
+
+        lane_id = traci.vehicle.getLaneID(ego)
+        distance = max(0.0, traci.lane.getLength(lane_id) - traci.vehicle.getLanePosition(ego))
+        lookahead = 600.0
+        self._route_fork_prev = (1.0, 0.0)
+        for current, following in zip(route[index:], route[index + 1:]):
+            if distance >= lookahead:
+                break
+            direction = self._map_fork_direction(current, following)
+            if direction is not None:
+                self._route_fork_prev = (distance / lookahead, direction)
+                break
+            distance += self._road_net.getEdge(following).getLength()
+        return self._route_fork_prev
+
     def _speed_ref(self) -> float:
         """속도 보상/막힘 판정의 기준 속도."""
         if self.speed_ref == "lane":
@@ -1312,6 +1369,8 @@ class SumoHighwayEnv(gym.Env):
 
         if getattr(self, "drop_signal_time", False):
             del obs[junction_start + 2]    # 신호 남은 시간 칸
+        if self.route_fork_obs:
+            obs.extend(self._route_fork_observation())
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
 
     def _add_ego(self, route_id, depart_lane, depart_speed, *, depart_pos="0"):

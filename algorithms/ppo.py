@@ -434,12 +434,13 @@ class PPO:
               log_interval: int = 1, eval_interval: int = 0,
               eval_episodes: int = 5,
               ckpt_dir: str = None, ckpt_every: int = 0, *, eval_env=None,
-              junction_diagnostics=False):
+              junction_diagnostics=False, eval_reset_options=None):
         """학습 실행.
 
         Args:
             logger: utils.logger.RunLogger (없으면 콘솔 출력만)
             eval_env: 집중 학습 없이 전체 경로를 평가할 환경
+            eval_reset_options: 평가 환경의 에피소드 시작 옵션
             junction_diagnostics: 집중 학습 중 위험 관측의 가감속과 GAE를 CSV로 기록
             eval_interval: 몇 번의 업데이트마다 평가할지 (0이면 평가 안 함)
             ckpt_dir, ckpt_every: (팀14) ckpt_every 스텝마다 ckpt_dir/model_<스텝>.pt 저장
@@ -495,7 +496,7 @@ class PPO:
             # 4) 주기적 평가 (utils/evaluator.py 사용)
             if eval_interval > 0 and n_updates % eval_interval == 0:
                 m = evaluate_policy(self, eval_env if eval_env is not None else env,
-                                    n_episodes=eval_episodes)
+                                    n_episodes=eval_episodes, reset_options=eval_reset_options)
                 if logger is not None:
                     logger.log_eval(self.num_timesteps, m.as_dict(),
                                     m.summary(), eval_episodes)
