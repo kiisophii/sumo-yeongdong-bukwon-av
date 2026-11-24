@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261124_122521_scratch_idle01_s1/model.pt (60 episodes) ===
+  ep   1/60: steps=1836 return=  36.15 순간이동 lane=491135704#3_1
+  ep   2/60: steps=2086 return=  38.81 순간이동 lane=491135704#3_1
+  ep   3/60: steps= 853 return=   8.62 순간이동 lane=:1681517317_0_0
+  ep   4/60: steps=2039 return=  40.01 순간이동 lane=491135704#3_1
+  ep   5/60: steps=1998 return=  39.09 순간이동 lane=491135704#3_1
+  ep   6/60: steps=2160 return=  42.17 순간이동 lane=491135704#3_1
+  ep   7/60: steps=2332 return=  46.43 순간이동 lane=491135704#3_1
+  ep   8/60: steps=1963 return=  37.01 순간이동 lane=491135704#3_1
+  ep   9/60: steps= 846 return=   7.91 순간이동 lane=:1681517317_0_0
+  ep  10/60: steps=2014 return=  40.83 순간이동 lane=491135704#3_1
+  ep  11/60: steps= 845 return=   7.67 순간이동 lane=:1681517317_0_0
+  ep  12/60: steps=2271 return=  44.03 순간이동 lane=491135704#3_1
+  ep  13/60: steps=1966 return=  37.56 순간이동 lane=491135704#3_1
+  ep  14/60: steps=2973 return= 122.60 경로 이탈 lane=1235185544_0
+  ep  15/60: steps=2033 return=  39.11 순간이동 lane=491135704#3_1
+  ep  16/60: steps=1973 return=  36.62 순간이동 lane=491135704#3_1
+  ep  17/60: steps=1834 return=  33.51 순간이동 lane=491135704#3_1
+  ep  18/60: steps=2162 return=  41.75 순간이동 lane=491135704#3_1
+  ep  19/60: steps=1722 return=  34.74 순간이동 lane=491135704#3_1
+  ep  20/60: steps=2103 return=  33.19 순간이동 lane=491135704#3_1
+  ep  21/60: steps=2072 return=  39.37 순간이동 lane=491135704#3_1
+  ep  22/60: steps=2195 return=  43.25 순간이동 lane=491135704#3_1
+  ep  23/60: steps=2116 return=  40.47 순간이동 lane=491135704#3_1
+  ep  24/60: steps=2025 return=  40.27 순간이동 lane=491135704#3_1
+  ep  25/60: steps=1701 return=  35.50 순간이동 lane=491135704#3_1
+  ep  26/60: steps= 841 return=   7.81 순간이동 lane=:1681517317_0_0
+  ep  27/60: steps=1974 return=  37.37 순간이동 lane=491135704#3_1
+  ep  28/60: steps=1940 return=  36.76 순간이동 lane=491135704#3_1
+  ep  29/60: steps=2237 return=  43.22 순간이동 lane=491135704#3_1
+  ep  30/60: steps=2181 return=  34.55 순간이동 lane=491135704#3_1
+  ep  31/60: steps= 996 return=   7.88 순간이동 lane=:1681517317_0_0
+  ep  32/60: steps=2170 return=  43.13 순간이동 lane=491135704#3_1
+  ep  33/60: steps=2898 return= 127.64 경로 이탈 lane=1235185544_0
+  ep  34/60: steps= 952 return=   8.21 순간이동 lane=:1681517317_0_0
+  ep  35/60: steps=2051 return=  39.14 순간이동 lane=491135704#3_1
+  ep  36/60: steps=1979 return=  40.38 순간이동 lane=491135704#3_1
+  ep  37/60: steps=1970 return=  37.82 순간이동 lane=491135704#3_1
+  ep  38/60: steps=2591 return= 114.91 경로 이탈 lane=377057231_2
+  ep  39/60: steps=2003 return=  40.30 순간이동 lane=491135704#3_1
+  ep  40/60: steps=1951 return=  36.65 순간이동 lane=491135704#3_1
+  ep  41/60: steps=1813 return=  29.99 순간이동 lane=491135704#3_1
+  ep  42/60: steps=2043 return=  38.51 순간이동 lane=491135704#3_1
+  ep  43/60: steps=1980 return=  39.60 순간이동 lane=491135704#3_1
+  ep  44/60: steps=1870 return=  36.78 순간이동 lane=491135704#3_1
+  ep  45/60: steps=3270 return= 122.16 순간이동 lane=377057231_4
+  ep  46/60: steps=3324 return= 132.13 순간이동 lane=377057231_4
+  ep  47/60: steps=3392 return= 133.72 순간이동 lane=377057231_4
+  ep  48/60: steps=2266 return=  36.97 순간이동 lane=491135704#3_1
+  ep  49/60: steps=1963 return=  36.58 순간이동 lane=491135704#3_1
+  ep  50/60: steps=2047 return=  40.30 순간이동 lane=491135704#3_1
+  ep  51/60: steps=2262 return=  42.90 순간이동 lane=491135704#3_1
+  ep  52/60: steps= 850 return=   7.87 순간이동 lane=:1681517317_0_0
+  ep  53/60: steps=2682 return= 114.63 경로 이탈 lane=1235185544_0
+  ep  54/60: steps=2045 return=  37.19 순간이동 lane=491135704#3_1
+  ep  55/60: steps=2851 return= 126.82 경로 이탈 lane=1235185544_0
+  ep  56/60: steps= 846 return=   7.66 순간이동 lane=:1681517317_0_0
+  ep  57/60: steps= 969 return=   7.80 순간이동 lane=:1681517317_0_0
+  ep  58/60: steps=2060 return=  37.46 순간이동 lane=491135704#3_1
+  ep  59/60: steps= 978 return=   7.78 순간이동 lane=:1681517317_0_0
+  ep  60/60: steps=2212 return=  44.32 순간이동 lane=491135704#3_1
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261124_122521_scratch_idle01_s1/model.pt     0%      92%       8%     0%           12.1       988.1
+
+저장: results/scratch_idle01_s1_2026.json
