@@ -1283,7 +1283,8 @@ class SumoHighwayEnv(gym.Env):
         if sw > 0.0:
             try:
                 lim = max(traci.vehicle.getAllowedSpeed(self.ego_id), 1.0)
-                reward += sw * min(ego_speed / lim, 1.0)
+                # PROGRESS_SPEED_OFFSET(기본 0): 매 스텝 빼는 기준값. 0.05면 제한속도의 절반보다 느릴 때 마이너스
+                reward += sw * min(ego_speed / lim, 1.0) - float(os.environ.get("PROGRESS_SPEED_OFFSET", "0") or 0)
             except traci.TraCIException:
                 pass
         w = float(os.environ.get("PROGRESS_OVERSPEED_W", "0.1") or 0)
