@@ -59,7 +59,8 @@ def configure(training, hard_start_prob=0.0):
         PROGRESS_SPEED_W=os.environ.get("PROGRESS_SPEED_W_OVERRIDE", "0"),
         PROGRESS_SPEED_OFFSET=os.environ.get("PROGRESS_SPEED_OFFSET_OVERRIDE", "0"),
         HARD_START_PROB=str(hard_start_prob if training else 0.0),
-        HARD_START_TARGETS="568664967#4,51066582#1,1307152438", HARD_START_BACK_M="100",
+        HARD_START_TARGETS=os.environ.get("HARD_START_TARGETS_OVERRIDE", "568664967#4,51066582#1,1307152438"),
+        HARD_START_BACK_M="100",
         SIM_REUSE="5" if training else "1",
     )
 
