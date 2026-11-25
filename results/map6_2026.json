@@ -1,0 +1,36 @@
+{
+  "../team14_ffs/results/run_20261125_051111_forkfix_scratch_idle03_s2/model.pt": {
+    "collision_rate": 0.03333333333333333,
+    "teleport_rate": 0.03333333333333333,
+    "lane_end_rate": 0.11666666666666667,
+    "red_light_rate": 0.03333333333333333,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.7833333333333333,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.21666666666666667,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "377057231_2": 7,
+      ":4582364294_0_0": 1,
+      "496583281#1_0": 2,
+      ":1681517456_0_0": 1,
+      ":1681517542_4_0": 1,
+      ":496765517_0_0": 1
+    },
+    "lane_end_lanes": {
+      "377057231_2": 7
+    },
+    "teleport_end_lanes": {
+      ":1681517456_0_0": 1,
+      ":496765517_0_0": 1
+    },
+    "mean_speed_mps": 9.795886054082382,
+    "mean_return": 132.1008540655856,
+    "mean_length_steps": 2474.15,
+    "mean_travel_time_s": 1237.075,
+    "lane_changes_per_ep": 10.133333333333333,
+    "min_gap_median_m": 1.266356167912523,
+    "wall_time_s": 3048.304132938385
+  }
+}

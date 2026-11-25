@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== ../team14_ffs/results/run_20261125_051111_forkfix_scratch_idle03_s2/model.pt (60 episodes) ===
+  ep   1/60: steps=2610 return= 143.86 완주 lane=611808767_0
+  ep   2/60: steps=2689 return= 153.78 완주 lane=611808767_0
+  ep   3/60: steps=2411 return= 130.37 완주 lane=611808767_0
+  ep   4/60: steps=2585 return= 138.20 완주 lane=611808767_0
+  ep   5/60: steps=2826 return= 155.84 완주 lane=611808767_0
+  ep   6/60: steps=2757 return= 155.30 완주 lane=611808767_0
+  ep   7/60: steps=2686 return= 150.77 완주 lane=611808767_0
+  ep   8/60: steps=2732 return= 158.74 완주 lane=611808767_0
+  ep   9/60: steps=2003 return= 100.45 경로 이탈 lane=377057231_2
+  ep  10/60: steps=2980 return= 169.00 완주 lane=611808767_0
+  ep  11/60: steps=2921 return= 158.35 완주 lane=611808767_0
+  ep  12/60: steps=2675 return= 144.58 완주 lane=611808767_0
+  ep  13/60: steps=2767 return= 155.16 완주 lane=611808767_0
+  ep  14/60: steps= 483 return=  14.98 차량 충돌 lane=:1681517542_4_0
+  ep  15/60: steps=2892 return= 150.79 완주 lane=611808767_0
+  ep  16/60: steps=2826 return= 160.70 완주 lane=611808767_0
+  ep  17/60: steps=3190 return= 168.21 완주 lane=611808767_0
+  ep  18/60: steps=2164 return= 114.24 경로 이탈 lane=377057231_2
+  ep  19/60: steps=2939 return= 165.18 완주 lane=611808767_0
+  ep  20/60: steps=1979 return=  97.58 경로 이탈 lane=377057231_2
+  ep  21/60: steps=2614 return= 151.17 완주 lane=611808767_0
+  ep  22/60: steps= 513 return=  16.05 차량 충돌 lane=:4582364294_0_0
+  ep  23/60: steps=2471 return= 132.53 완주 lane=611808767_0
+  ep  24/60: steps=3228 return= 170.23 완주 lane=611808767_0
+  ep  25/60: steps=2291 return= 119.07 경로 이탈 lane=377057231_2
+  ep  26/60: steps=2542 return= 137.16 완주 lane=611808767_0
+  ep  27/60: steps=2399 return= 129.40 완주 lane=611808767_0
+  ep  28/60: steps= 721 return=  -0.59 순간이동 lane=:496765517_0_0
+  ep  29/60: steps=2229 return= 113.27 경로 이탈 lane=377057231_2
+  ep  30/60: steps=2501 return= 135.83 완주 lane=611808767_0
+  ep  31/60: steps=2263 return= 118.27 경로 이탈 lane=377057231_2
+  ep  32/60: steps=2493 return= 136.04 완주 lane=611808767_0
+  ep  33/60: steps=2587 return= 147.45 완주 lane=611808767_0
+  ep  34/60: steps=2856 return= 156.02 완주 lane=611808767_0
+  ep  35/60: steps=2434 return= 132.10 완주 lane=611808767_0
+  ep  36/60: steps=3172 return= 179.32 완주 lane=611808767_0
+  ep  37/60: steps=2707 return= 152.00 완주 lane=611808767_0
+  ep  38/60: steps=2617 return= 138.94 완주 lane=611808767_0
+  ep  39/60: steps=2511 return= 134.67 완주 lane=611808767_0
+  ep  40/60: steps=2858 return= 155.82 완주 lane=611808767_0
+  ep  41/60: steps=3095 return= 165.00 완주 lane=611808767_0
+  ep  42/60: steps=2548 return= 145.55 완주 lane=611808767_0
+  ep  43/60: steps= 443 return=  14.41 신호 위반 lane=452597718#1_0
+  ep  44/60: steps=2546 return= 137.59 완주 lane=611808767_0
+  ep  45/60: steps=2586 return= 139.20 완주 lane=611808767_0
+  ep  46/60: steps=2436 return= 128.53 완주 lane=611808767_0
+  ep  47/60: steps=2967 return= 160.46 완주 lane=611808767_0
+  ep  48/60: steps=2606 return= 139.40 완주 lane=611808767_0
+  ep  49/60: steps=2528 return= 140.72 완주 lane=611808767_0
+  ep  50/60: steps= 535 return=  15.83 신호 위반 lane=496583281#1_0
+  ep  51/60: steps=2433 return= 122.78 경로 이탈 lane=377057231_3
+  ep  52/60: steps=2823 return= 150.87 완주 lane=611808767_0
+  ep  53/60: steps= 371 return=  11.47 차량 충돌 lane=:1681517542_4_0
+  ep  54/60: steps=1177 return=  51.54 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  55/60: steps=2665 return= 144.48 완주 lane=611808767_0
+  ep  56/60: steps=2904 return= 159.60 완주 lane=611808767_0
+  ep  57/60: steps=2594 return= 139.95 완주 lane=611808767_0
+  ep  58/60: steps=1827 return=  88.55 경로 이탈 lane=377057231_2
+  ep  59/60: steps=2912 return= 160.53 완주 lane=611808767_0
+  ep  60/60: steps=2563 return= 140.24 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+../team14_ffs/results/run_20261125_051111_forkfix_scratch_idle03_s2/model.pt     5%       2%      15%    75%           35.7      1197.3
+
+저장: results/map6_2086.json
