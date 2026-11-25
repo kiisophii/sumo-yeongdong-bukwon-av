@@ -1604,6 +1604,40 @@ class SumoHighwayEnv(gym.Env):
                     min(halt / 20.0, 3.0)]
         return np.array(ctx, dtype=np.float32)
 
+    def _clear_close_spawns(self, alive):
+        """(팀14, 11/25) SPAWN_CLEAR_M > 0: 배경차가 우리 차 경로상 앞뒤 이 거리(m) 안에서 생겨나면 바로 지운다.
+
+        flow는 도로 입구에서 차를 만들기 때문에, 우리 경로 위 도로에서 출발하는 흐름은 우리 차 바로 앞(또는 뒤)에
+        차를 갑자기 나타나게 한다 (예: 12.7 km 램프 추돌). 실제 도로에서는 차가 멀리서부터 보이므로, 센서로 보고
+        반응할 수 있는 거리 밖에서 생긴 차만 남긴다. 배경 교통 생성 방식의 보정이고 우리 차의 행동은 바꾸지 않는다.
+        """
+        clear = float(os.environ.get("SPAWN_CLEAR_M", "0") or 0)
+        if clear <= 0.0 or not alive:
+            return
+        departed = [v for v in traci.simulation.getDepartedIDList() if v != self.ego_id]
+        if not departed:
+            return
+        try:
+            ego_edge = traci.vehicle.getRoadID(self.ego_id)
+            ego_pos = traci.vehicle.getLanePosition(self.ego_id)
+        except traci.TraCIException:
+            return
+        for vid in departed:
+            try:
+                edge = traci.vehicle.getRoadID(vid)
+                pos = traci.vehicle.getLanePosition(vid)
+                ahead = traci.vehicle.getDrivingDistance(self.ego_id, edge, pos)       # 우리 차 → 새 차
+                behind = (traci.vehicle.getDrivingDistance(vid, ego_edge, ego_pos)     # 새 차 → 우리 차
+                          if not ego_edge.startswith(":") else -1.0)
+            except traci.TraCIException:
+                continue
+            if 0.0 <= ahead < clear or 0.0 <= behind < clear:
+                try:
+                    traci.vehicle.remove(vid)
+                    self.spawn_cleared = getattr(self, "spawn_cleared", 0) + 1
+                except traci.TraCIException:
+                    pass
+
     def _route_step_hook(self, alive):
         """(팀14) 매 스텝: 학습형 선택 실행, 갈림 구간 통과시간 기록."""
         if not self.route_alts or not alive:
@@ -2507,6 +2541,7 @@ class SumoHighwayEnv(gym.Env):
         self.step_count += 1
         alive = self.ego_id in traci.vehicle.getIDList()
         self._route_step_hook(alive)
+        self._clear_close_spawns(alive)
 
         # ----- (3) 이벤트/관측 -----
         vehicle_collision = self.ego_id in traci.simulation.getCollidingVehiclesIDList()
