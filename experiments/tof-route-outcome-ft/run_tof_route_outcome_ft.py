@@ -77,7 +77,7 @@ def configure(training, hard_start_prob=0.0):
         TEAM14_SCENARIO="museum", TEAM14_TOF_OBS="1", TEAM14_TOF_REAR_DENSITY="1",
         TEAM14_ROUTE_OBS="none", TEAM14_ROUTE_FORK_OBS="1", TEAM14_LANE_END_OBS="1",
         TEAM14_LANE_END_RANGE="50", TEAM14_DROP_SIGNAL_TIME="1", TEAM14_NO_SPEED_CAP="1",
-        TEAM14_REWARD="progress", PROGRESS_TOTAL="150", PROGRESS_OVERSPEED_W=os.environ.get("PROGRESS_OVERSPEED_W_OVERRIDE", "1.0"),
+        TEAM14_REWARD="progress", PROGRESS_TOTAL=os.environ.get("PROGRESS_TOTAL_OVERRIDE", "150"), PROGRESS_OVERSPEED_W=os.environ.get("PROGRESS_OVERSPEED_W_OVERRIDE", "1.0"),
         PROGRESS_YIELD_PENALTY="2", PROGRESS_TIME_PENALTY="0",
         PROGRESS_SPEED_W=os.environ.get("PROGRESS_SPEED_W_OVERRIDE", "0"),
         PROGRESS_SPEED_OFFSET=os.environ.get("PROGRESS_SPEED_OFFSET_OVERRIDE", "0"),
@@ -151,7 +151,7 @@ def main():
         if not converted.exists():
             drop_must_yield_weights(model, converted)
         model = converted
-    print(f"ToF PPO | {n_inputs} inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s (+RSS b={os.environ['PROGRESS_GAP_RSS_DECEL']}) | fork relative {os.environ['TEAM14_FORK_RELATIVE']} sumo-dir {os.environ['TEAM14_FORK_SUMO_DIR']} | hard start back {os.environ['HARD_START_BACK_M']} m",
+    print(f"ToF PPO | {n_inputs} inputs | progress {os.environ['PROGRESS_TOTAL']} | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s (+RSS b={os.environ['PROGRESS_GAP_RSS_DECEL']}) | fork relative {os.environ['TEAM14_FORK_RELATIVE']} sumo-dir {os.environ['TEAM14_FORK_SUMO_DIR']} | hard start back {os.environ['HARD_START_BACK_M']} m",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)
