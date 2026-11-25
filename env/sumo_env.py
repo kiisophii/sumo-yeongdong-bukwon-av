@@ -400,10 +400,7 @@ class SumoHighwayEnv(gym.Env):
             # 이전 ego가 아직 출발 대기 중(주차장 입구가 막혀 도로에 못 들어감)이면 getIDList에는
             # 없지만 시뮬레이션에는 남아 있다 → 상태와 상관없이 지운다 (city_v1 학습 63만 스텝에서
             # "ego already exists"로 멈춘 원인)
-            try:
-                traci.vehicle.remove(self.ego_id)
-            except traci.TraCIException:
-                pass
+            self._remove_ego_if_present()   # (조윤호) 없는 ego를 지우면 SUMO가 Error 줄을 찍어서, 있을 때만 지운다
             gap = float(np.random.uniform(*self.reuse_gap_seconds))
             traci.simulationStep(traci.simulation.getTime() + gap)
             self._episodes_since_start += 1
@@ -462,10 +459,7 @@ class SumoHighwayEnv(gym.Env):
             _wait += 1
         if self.ego_id not in traci.vehicle.getIDList() and self.hard_start is not None:
             # 어려운 구간 출발 자리가 꽉 막혀 있으면 원래 출발점으로 되돌린다
-            try:
-                traci.vehicle.remove(self.ego_id)
-            except traci.TraCIException:
-                pass
+            self._remove_ego_if_present()
             self.hard_start = None
             self._add_ego(*normal_add)
             _wait = 0
@@ -946,6 +940,19 @@ class SumoHighwayEnv(gym.Env):
             obs += self._junction_features()
 
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)
+
+    def _remove_ego_if_present(self):
+        """(조윤호) ego가 도로 위나 출발 대기열에 있을 때만 지운다."""
+        try:
+            known = (self.ego_id in traci.vehicle.getIDList()
+                     or self.ego_id in traci.simulation.getPendingVehicles())
+        except traci.TraCIException:
+            known = True
+        if known:
+            try:
+                traci.vehicle.remove(self.ego_id)
+            except traci.TraCIException:
+                pass
 
     def _add_ego(self, route_id, depart_lane, depart_speed):
         """ego를 넣고 SUMO 자동 제어를 끈 뒤 1스텝 진행한다."""
