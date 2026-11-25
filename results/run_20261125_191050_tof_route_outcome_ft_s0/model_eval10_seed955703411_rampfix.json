@@ -1,0 +1,29 @@
+{
+  "../../../tmp/claude-0/-home-user-sumo-yeongdong-bukwon-av/4dc12775-30ad-5669-af0f-36322fbec629/scratchpad/fixedmap/run191050_fixedmap.pt": {
+    "collision_rate": 0.2,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.1,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.7,
+    "timeout_rate": 0.0,
+    "stall_rate": 0.0,
+    "failure_rate": 0.30000000000000004,
+    "episodes": 10,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":1681517542_9_0": 1,
+      "496583281#1_0": 1,
+      "1224608702.60_3": 1
+    },
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.67703376673991,
+    "mean_return": 70.23547363105173,
+    "mean_length_steps": 1581.1,
+    "mean_travel_time_s": 790.55,
+    "lane_changes_per_ep": 48.7,
+    "min_gap_median_m": 6.900937813480002,
+    "wall_time_s": 230.39112830162048
+  }
+}
