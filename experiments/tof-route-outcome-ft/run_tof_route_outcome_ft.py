@@ -40,6 +40,29 @@ def transfer_weights(source, target):
     print(f"Initial weights saved: {target} (33 transferred inputs, 8 zero-initialized inputs)")
 
 
+MUST_YIELD_COLUMN = 35   # 41칸 관측에서 양보 의무 칸 위치
+
+
+def drop_must_yield_weights(source, target):
+    """41칸 모델의 첫 층에서 양보 의무 칸(35번) 열만 지워 40칸 모델로 만든다. 나머지 가중치는 그대로."""
+    import torch
+
+    state = torch.load(source, map_location="cpu", weights_only=True)
+    old = state["trunk.0.weight"]
+    if old.shape[1] != 41:
+        raise ValueError(f"Expected a 41-input checkpoint, got {old.shape[1]} inputs: {source}")
+    keep = [i for i in range(old.shape[1]) if i != MUST_YIELD_COLUMN]
+    state["trunk.0.weight"] = old[:, keep].clone()
+    torch.save(state, target)
+    print(f"40칸 초기 모델 저장: {target} (41칸 모델에서 양보 의무 칸만 제거)", flush=True)
+
+
+def checkpoint_inputs(path):
+    import torch
+
+    return torch.load(path, map_location="cpu", weights_only=True)["trunk.0.weight"].shape[1]
+
+
 def configure(training, hard_start_prob=0.0):
     for key in (
         "ASSIST_PROB", "ROUTE_ASSIST_M", "ROUTE_SHIELD_M", "MERGE_SUMO",
@@ -63,6 +86,7 @@ def configure(training, hard_start_prob=0.0):
         HARD_START_BACK_M="100",
         PROGRESS_GAP_PENALTY=os.environ.get("PROGRESS_GAP_PENALTY_OVERRIDE", "0"),
         PROGRESS_GAP_BASE="2", PROGRESS_GAP_HEADWAY="1",
+        TEAM14_DROP_MUST_YIELD=os.environ.get("DROP_MUST_YIELD_OVERRIDE", "0"),
         SIM_REUSE="5" if training else "1",
     )
 
@@ -117,7 +141,13 @@ def main():
 
     configure(training, args.hard_start_prob if training else 0.0)
     sys.path.insert(0, str(root))
-    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s",
+    n_inputs = 40 if os.environ["TEAM14_DROP_MUST_YIELD"] == "1" else 41
+    if training and n_inputs == 40 and checkpoint_inputs(model) == 41:
+        converted = model.with_name(f"{model.stem}_obs40.pt")
+        if not converted.exists():
+            drop_must_yield_weights(model, converted)
+        model = converted
+    print(f"ToF PPO | {n_inputs} inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)

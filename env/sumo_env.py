@@ -314,6 +314,14 @@ class SumoHighwayEnv(gym.Env):
                                  and self.junction_obs)
         if self.drop_signal_time:
             self.obs_dim -= 1
+        # ---- (팀14, 11/25) TEAM14_DROP_MUST_YIELD=1: 양보 의무 칸 제거 (41 → 40칸) ----
+        #   "이 교차로에서 양보해야 하는가"는 표지판·지도 수준 정보라 뺀다.
+        #   교차로 거리와 ToF로 본 교차 차량 칸은 남기고, 양보는 충돌·양보 위반 감점(결과)으로 배운다.
+        #   내부 판정(양보 위반 감점 등)은 SUMO 실제 상태를 그대로 쓴다.
+        self.drop_must_yield = (os.environ.get("TEAM14_DROP_MUST_YIELD", "") == "1"
+                                and self.junction_obs)
+        if self.drop_must_yield:
+            self.obs_dim -= 1
         # ---- (팀14, 11/23) TEAM14_LANE_END_OBS=1: 센서로 보이는 차로 끝 5칸 ----
         #   수업 원본 차로 연결성과 같은 뜻(경로와 무관, 물리적으로 끊기는지).
         #   _lane_end_observation 참고.
@@ -1393,6 +1401,9 @@ class SumoHighwayEnv(gym.Env):
 
         if getattr(self, "drop_signal_time", False):
             del obs[junction_start + 2]    # 신호 남은 시간 칸
+        if getattr(self, "drop_must_yield", False):
+            # 신호 거리·색·(남은 시간)·교차로 거리 다음 칸이 양보 의무
+            del obs[junction_start + (3 if getattr(self, "drop_signal_time", False) else 4)]
         if self.route_fork_obs:
             obs.extend(self._route_fork_observation())
         return np.clip(np.array(obs, dtype=np.float32), -1.0, 1.0)

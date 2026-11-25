@@ -48,3 +48,33 @@ GUI 창이 뜰 때마다 ▶ 버튼을 누른다.
 ## 검증 범위
 
 기존 저장소 사본에서 패치 적용, 41칸 체크포인트 로드, 2,048스텝 학습과 평가 1판을 확인했다. 원래 출발점과 어려운 구간 출발이 각각 적용되는 것도 확인했다. 평가 1판은 신협오거리 진입로에서 차량 충돌로 끝났다. 전체 학습 후 성능은 별도로 평가한다.
+
+## 40칸 관측 (11/25, 양보 의무 칸 제거)
+
+`DROP_MUST_YIELD_OVERRIDE=1`이면 41칸 관측에서 35번 칸(양보 의무, 표지판·지도 수준 정보)을 뺀 40칸으로 학습·평가한다.
+교차로 거리(34번)와 ToF로 본 교차 차량(36번)은 남고, 양보는 충돌 −20·양보 위반 −2(SUMO 실제 상태로 판정)로 배운다.
+41칸 모델을 `--init-model`로 주면 첫 층에서 35번 열만 지운 `<모델 이름>_obs40.pt`를 같은 폴더에 만들고 그걸로 이어 학습한다.
+40칸 모델을 평가·GUI로 볼 때도 `DROP_MUST_YIELD_OVERRIDE=1`을 같이 켠다.
+
+Windows 명령 프롬프트, 저장소 루트에서 (60만 스텝 모델에서 이어 20만 스텝, 11/25 차간 거리 학습과 같은 보상·출발 설정):
+
+```bat
+set DROP_MUST_YIELD_OVERRIDE=1
+set COLLISION_PENALTY_OVERRIDE=20
+set PROGRESS_OVERSPEED_W_OVERRIDE=0.3
+set PROGRESS_SPEED_W_OVERRIDE=0.1
+set PROGRESS_SPEED_OFFSET_OVERRIDE=0.05
+set PROGRESS_GAP_PENALTY_OVERRIDE=0.1
+set HARD_START_TARGETS_OVERRIDE=377057231,377057231,1307152438,50981265,568664967#4,51066582#1
+set PYTHONIOENCODING=utf-8
+.venv\Scripts\python.exe -u experiments\tof-route-outcome-ft\run_tof_route_outcome_ft.py train --steps 200704 --hard-start-prob 0.5 --init-model results\run_20261124_184657_tof_route_outcome_ft_s0\model.pt
+```
+
+평가 (위 `set` 줄을 같은 창에서 먼저 실행한 상태):
+
+```bat
+.venv\Scripts\python.exe -u experiments\tof-route-outcome-ft\run_tof_route_outcome_ft.py evaluate --model results\<새 결과 폴더>\model.pt --episodes 10 --seed 2026
+```
+
+- 차간 거리 감점(`PROGRESS_GAP_PENALTY_OVERRIDE`): 같은 차로 앞차 거리 < 2 m + 내 속도 × 1초 이면 매 스텝 −0.1. 0이면 꺼짐.
+- 11/25 평가에서 덕영대로 `491135704#3`(부곡IC 직전 79 m) 1번 차선 이탈이 9판 나왔다. 이 구간을 직접 연습하려면 `HARD_START_TARGETS_OVERRIDE`에 `491135704#3`을 추가한다.
