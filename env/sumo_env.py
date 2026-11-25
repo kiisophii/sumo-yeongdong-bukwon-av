@@ -1497,10 +1497,15 @@ class SumoHighwayEnv(gym.Env):
                                              self._HARD_START_TARGETS).split(",") if t]
         back = float(os.environ.get("HARD_START_BACK_M", "500") or 500)
         edges = list(traci.route.getEdges(route_id))
-        cand = [t for t in targets if t in edges]
+        # (팀14, 11/25) "도로@거리" 형식이면 그 대상만 출발 거리를 따로 정한다 (예: 568664967#4@100).
+        #   같은 대상을 여러 번 적으면 그만큼 자주 뽑힌다.
+        cand = [t for t in targets if t.split("@")[0] in edges]
         if not cand:
             return None
         target = str(np.random.choice(cand))
+        if "@" in target:
+            target, own_back = target.split("@", 1)
+            back = float(own_back)
         k, acc = edges.index(target), 0.0
         while k > 0 and acc < back:
             k -= 1
