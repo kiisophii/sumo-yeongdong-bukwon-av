@@ -158,7 +158,7 @@ def main():
             "--seed", str(args.seed), "--gamma", "0.995",
             "--collision-penalty", os.environ.get("COLLISION_PENALTY_OVERRIDE", "10"),
             "--arrival-bonus", "10", "--blocked-penalty", "0",
-            "--timesteps", str(args.steps), "--ckpt-every", str(min(51200, args.steps)),
+            "--timesteps", str(args.steps), "--ckpt-every", os.environ.get("CKPT_EVERY_OVERRIDE", str(min(51200, args.steps))),
             "--init-model", str(model), "--tag", f"{TAG}_s{args.seed}",
         ]
     else:
