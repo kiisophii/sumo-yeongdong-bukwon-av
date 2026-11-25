@@ -317,10 +317,14 @@ if SCENARIO == "museum":
         # 갈림길 경로 선택: 의왕역회전교차로 → (주황) 오봉로 / (파랑) 부곡중앙로·덕영대로 → 다시 만남
         #   mode "fastest" = 출발 직전 예상 통행시간이 짧은 길 (계산 방식 A)
         #   disruption = 에피소드의 40%에서 한 길의 가운데 구간을 7 km/h로 (공사·사고 가정)
-        "route_choice": {"file": "env/museum/route_alternatives.json",
-                         "mode": "fastest",      # "learned" = 길 선택 AI (tools/train_route_policy.py)
-                         "decision_edge": "496583281#0",  # 회전교차로 직전 21 m 구간에서 고름(learned)
-                         "disruption": {"prob": 0.4, "speed": 2.0}},
+        # (팀14, 11/25) 파란 경로(부곡중앙로·덕영대로) 제거 → ego는 주황 경로(r0, route_check.json)만 달림.
+        #   부곡중앙로에 좌·우회전 전용 차로가 연달아 있어 차선 화살표 관측 없이는 외우기로만 풀려 범위에서 뺌.
+        #   경로 선택을 되살리려면 환경변수 TEAM14_ROUTE_CHOICE=1.
+        "route_choice": ({"file": "env/museum/route_alternatives.json",
+                          "mode": "fastest",      # "learned" = 길 선택 AI (tools/train_route_policy.py)
+                          "decision_edge": "496583281#0",  # 회전교차로 직전 21 m 구간에서 고름(learned)
+                          "disruption": {"prob": 0.4, "speed": 2.0}}
+                         if _os.environ.get("TEAM14_ROUTE_CHOICE", "0") == "1" else None),
         "gui_focus_edge": "206488360",
         "speed_limit": 27.78,
         "net_patches": [
