@@ -340,6 +340,8 @@ if SCENARIO == "museum":
             {"nod": "env/patches_museum/tolls_bd_2.nod.xml",
              "edg": "env/patches_museum/tolls_bd_2.edg.xml",
              "con": "env/patches_museum/tolls_bd_2.con.xml"},
+            # 동수원IC 진출 램프 2차로의 0번 차로가 고리를 가로지르는 직선이 되는 문제 고정 (patch 파일 주석 참고)
+            {"edg": "env/patches_museum/tolls_bd_3.edg.xml"},
         ],
         "length": None,
         "num_lanes": None,
