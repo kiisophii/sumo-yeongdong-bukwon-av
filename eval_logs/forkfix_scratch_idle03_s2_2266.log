@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261125_051111_forkfix_scratch_idle03_s2/model.pt (60 episodes) ===
+  ep   1/60: steps=2614 return= 138.19 경로 이탈 lane=375714602#0_0
+  ep   2/60: steps=2468 return= 128.86 경로 이탈 lane=1235185544_0
+  ep   3/60: steps=2736 return= 150.40 완주 lane=611808767_0
+  ep   4/60: steps= 960 return=  46.07 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep   5/60: steps=2657 return= 138.45 경로 이탈 lane=375714602#0_0
+  ep   6/60: steps=3159 return= 182.21 완주 lane=611808767_0
+  ep   7/60: steps=2916 return= 161.60 경로 이탈 lane=375714602#0_0
+  ep   8/60: steps=2969 return= 161.39 완주 lane=611808767_0
+  ep   9/60: steps=2260 return= 118.33 경로 이탈 lane=377057231_2
+  ep  10/60: steps=3132 return= 173.14 완주 lane=611808767_0
+  ep  11/60: steps=2974 return= 163.22 완주 lane=611808767_0
+  ep  12/60: steps=2618 return= 145.65 경로 이탈 lane=375714602#0_0
+  ep  13/60: steps= 364 return=  14.28 경로 이탈 lane=568664967#0_1
+  ep  14/60: steps=2190 return= 103.69 경로 이탈 lane=1235185544_0
+  ep  15/60: steps=2448 return= 128.69 완주 lane=611808767_0
+  ep  16/60: steps=2710 return= 146.03 완주 lane=611808767_0
+  ep  17/60: steps= 430 return=  14.44 신호 위반 lane=452597718#1_0
+  ep  18/60: steps=2750 return= 160.21 완주 lane=611808767_0
+  ep  19/60: steps=3081 return= 184.12 완주 lane=611808767_0
+  ep  20/60: steps=2474 return= 132.80 경로 이탈 lane=375714602#0_0
+  ep  21/60: steps=2912 return= 166.16 완주 lane=611808767_0
+  ep  22/60: steps=2225 return= 115.45 경로 이탈 lane=1235185544_0
+  ep  23/60: steps=2036 return= 102.81 차량 충돌 lane=377057231_1
+  ep  24/60: steps=2300 return= 118.79 경로 이탈 lane=1235185544_0
+  ep  25/60: steps=1284 return=  56.27 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  26/60: steps=2794 return= 161.52 경로 이탈 lane=375714602#0_0
+  ep  27/60: steps=1017 return=  46.69 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  28/60: steps=1087 return=  50.73 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  29/60: steps= 447 return=  17.30 경로 이탈 lane=568664967#0_1
+  ep  30/60: steps=2161 return= 112.67 경로 이탈 lane=377057231_2
+  ep  31/60: steps=2681 return= 140.40 경로 이탈 lane=375714602#0_0
+  ep  32/60: steps=2548 return= 131.01 경로 이탈 lane=1235185544_0
+  ep  33/60: steps=2481 return= 131.18 완주 lane=611808767_0
+  ep  34/60: steps=2830 return= 154.26 경로 이탈 lane=375714602#0_0
+  ep  35/60: steps=2626 return= 144.12 경로 이탈 lane=375714602#0_0
+  ep  36/60: steps=1096 return=  48.78 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  37/60: steps= 316 return=  10.46 차량 충돌 lane=:1681517542_4_0
+  ep  38/60: steps=2867 return= 147.56 완주 lane=611808767_0
+  ep  39/60: steps=2907 return= 169.55 완주 lane=611808767_0
+  ep  40/60: steps=2520 return= 134.71 경로 이탈 lane=375714602#0_0
+  ep  41/60: steps=2351 return= 120.99 경로 이탈 lane=1235185544_0
+  ep  42/60: steps=2970 return= 165.22 완주 lane=611808767_0
+  ep  43/60: steps=2952 return= 174.13 완주 lane=611808767_0
+  ep  44/60: steps=3044 return= 171.99 완주 lane=611808767_0
+  ep  45/60: steps=2610 return= 135.77 경로 이탈 lane=375714602#0_0
+  ep  46/60: steps=2752 return= 152.40 완주 lane=611808767_0
+  ep  47/60: steps=2395 return= 128.71 경로 이탈 lane=1235185544_0
+  ep  48/60: steps=2700 return= 142.08 경로 이탈 lane=375714602#0_0
+  ep  49/60: steps=2401 return= 121.35 경로 이탈 lane=375714602#0_0
+  ep  50/60: steps=2633 return= 141.80 경로 이탈 lane=375714602#0_0
+  ep  51/60: steps=3130 return= 172.51 완주 lane=611808767_0
+  ep  52/60: steps=3108 return= 162.98 완주 lane=611808767_0
+  ep  53/60: steps= 326 return=  10.89 차량 충돌 lane=:1681517542_4_0
+  ep  54/60: steps=3223 return= 179.35 완주 lane=611808767_0
+  ep  55/60: steps=2715 return= 153.30 완주 lane=611808767_0
+  ep  56/60: steps=2874 return= 156.43 경로 이탈 lane=375714602#0_0
+  ep  57/60: steps=2762 return= 146.36 경로 이탈 lane=375714602#0_0
+  ep  58/60: steps=2650 return= 138.27 경로 이탈 lane=375714602#0_0
+  ep  59/60: steps=1097 return=  50.51 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  60/60: steps=2164 return= 107.78 경로 이탈 lane=377057231_2
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261125_051111_forkfix_scratch_idle03_s2/model.pt     5%       0%      58%    35%           35.2      1165.8
+
+저장: results/forkfix_scratch_idle03_s2_2266.json
