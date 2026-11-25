@@ -486,6 +486,21 @@ class PPO:
                 logger.log_train(self.num_timesteps, metrics,
                                  verbose=(n_updates % log_interval == 0))
 
+            # (팀14, 11/25) LANE_PROBE_FILE: 고정된 상태 묶음(예: 고속도로 합류 가속 차로 상태)에서
+            #   LANE_PROBE_EVERY번 업데이트마다 차선 head 확률(왼쪽/유지/오른쪽)을 진단해 출력한다. 학습에는 영향 없음.
+            _probe = __import__("os").environ.get("LANE_PROBE_FILE")
+            if _probe and n_updates % int(__import__("os").environ.get("LANE_PROBE_EVERY", "5")) == 0:
+                if getattr(self, "_probe_obs", None) is None:
+                    self._probe_obs = torch.as_tensor(np.load(_probe), dtype=torch.float32, device=self.device)
+                with torch.no_grad():
+                    _logits = self.policy(self._probe_obs)[2]
+                    _p = torch.softmax(_logits, -1).mean(0).cpu().numpy()
+                    _arg = torch.bincount(torch.argmax(_logits, -1), minlength=3).float().cpu().numpy()
+                _arg = _arg / max(float(_arg.sum()), 1.0)
+                # LANE_CMDS = (+1 왼쪽, 0 유지, -1 오른쪽)
+                print(f"[차선 진단 @{self.num_timesteps}] 확률 왼쪽 {_p[0]:.2f} 유지 {_p[1]:.2f} 오른쪽 {_p[2]:.2f}"
+                      f" | 가장 높은 선택 비율 왼쪽 {_arg[0]:.2f} 유지 {_arg[1]:.2f} 오른쪽 {_arg[2]:.2f}", flush=True)
+
             if next_ckpt is not None and ckpt_dir and self.num_timesteps >= next_ckpt:
                 import os as _os
                 _os.makedirs(ckpt_dir, exist_ok=True)
