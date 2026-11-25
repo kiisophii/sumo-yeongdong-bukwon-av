@@ -1326,12 +1326,24 @@ class SumoHighwayEnv(gym.Env):
         if gp > 0.0:
             need = (float(os.environ.get("PROGRESS_GAP_BASE", "2") or 0)
                     + ego_speed * float(os.environ.get("PROGRESS_GAP_HEADWAY", "1") or 0))
+            # (팀14, 11/25) PROGRESS_GAP_RSS_DECEL=b > 0: RSS식 안전거리. 앞차보다 빠르면
+            #   (내 속도² − 앞차 속도²) / (2b) 를 더한다 = 둘 다 b로 급제동할 때 속도 차를 없애는 데 더 필요한 거리.
+            #   같은 속도로 따라갈 때는 위 기준(2 m + 속도×1초)과 같다.
+            rss_b = float(os.environ.get("PROGRESS_GAP_RSS_DECEL", "0") or 0)
+            search = need + (ego_speed * ego_speed / (2.0 * rss_b) if rss_b > 0.0 else 0.0)
             try:
-                lead = traci.vehicle.getLeader(self.ego_id, max(need, 1.0))
+                lead = traci.vehicle.getLeader(self.ego_id, max(search, 1.0))
             except traci.TraCIException:
                 lead = None
-            if lead is not None and lead[0] != "" and 0.0 <= float(lead[1]) < need:
-                reward -= gp
+            if lead is not None and lead[0] != "" and float(lead[1]) >= 0.0:
+                if rss_b > 0.0:
+                    try:
+                        lead_speed = float(traci.vehicle.getSpeed(lead[0]))
+                    except traci.TraCIException:
+                        lead_speed = ego_speed
+                    need += max(0.0, ego_speed * ego_speed - lead_speed * lead_speed) / (2.0 * rss_b)
+                if float(lead[1]) < need:
+                    reward -= gp
         return reward
 
     def _get_obs(self, *, alive=None):
