@@ -1025,6 +1025,14 @@ class SumoHighwayEnv(gym.Env):
 
             angle = heading(self._road_net.getEdge(next_id))
             direction = -1.0 if angle > 15.0 else (1.0 if angle < -15.0 else 0.0)
+            # (팀14, 11/25) TEAM14_FORK_SUMO_DIR=1: 각도 15° 기준 대신 SUMO가 지도에 정한 연결 방향
+            #   (s 직진, l/L 좌, r/R 우 — GUI 도로 화살표와 같은 값)을 쓴다. 모든 갈림길에 같은 방식.
+            #   회전교차로에서 링을 계속 도는 연결은 SUMO가 s(직진)로 두므로 "좌"로 잘못 나오지 않는다.
+            if os.environ.get("TEAM14_FORK_SUMO_DIR", "") == "1":
+                dirs = sorted({c.getDirection() for c in road.getAllowedOutgoing("passenger").get(
+                    self._road_net.getEdge(next_id), []) if c.getDirection().lower() != "t"})
+                if dirs:
+                    direction = {"l": -1.0, "L": -1.0, "r": 1.0, "R": 1.0}.get(dirs[0], 0.0)
             # (팀14, 11/25) TEAM14_FORK_RELATIVE=1: Y자 분기(거의 나란히 갈라지는 갈림길)에서만 갈래끼리 비교.
             #   경로가 직진(±15° 안)이고 다른 갈래도 TEAM14_FORK_NEAR_DEG(기본 30°) 안이면,
             #   경로 갈래가 그 갈래들보다 오른쪽이면 우(+1), 왼쪽이면 좌(-1). 내비의 "오른쪽 방향 출구"와 같은 수준.
