@@ -128,7 +128,8 @@ def main():
             parser.error(f"--steps must be a positive multiple of {ROLLOUT}.")
         if not 0.0 <= args.hard_start_prob <= 1.0:
             parser.error("--hard-start-prob must be between 0 and 1.")
-        model = args.init_model.resolve()
+        # --init-model scratch: 무작위 초기값으로 완전히 새 모델 학습
+        model = None if str(args.init_model).lower() == "scratch" else args.init_model.resolve()
     else:
         if not 1 <= args.episodes <= 2**32 - args.seed:
             parser.error("--episodes must be positive and must fit the seed range.")
@@ -138,13 +139,13 @@ def main():
         if model is None:
             parser.error("Train first or pass --model.")
         model = model.resolve()
-    if not model.is_file():
+    if model is not None and not model.is_file():
         parser.error(f"Checkpoint not found: {model}")
 
     configure(training, args.hard_start_prob if training else 0.0)
     sys.path.insert(0, str(root))
     n_inputs = 40 if os.environ["TEAM14_DROP_MUST_YIELD"] == "1" else 41
-    if training and n_inputs == 40 and checkpoint_inputs(model) == 41:
+    if training and model is not None and n_inputs == 40 and checkpoint_inputs(model) == 41:
         converted = model.with_name(f"{model.stem}_obs40.pt")
         if not converted.exists():
             drop_must_yield_weights(model, converted)
@@ -159,8 +160,8 @@ def main():
             "--collision-penalty", os.environ.get("COLLISION_PENALTY_OVERRIDE", "10"),
             "--arrival-bonus", "10", "--blocked-penalty", "0",
             "--timesteps", str(args.steps), "--ckpt-every", os.environ.get("CKPT_EVERY_OVERRIDE", str(min(51200, args.steps))),
-            "--init-model", str(model), "--tag", f"{TAG}_s{args.seed}",
-        ]
+            "--tag", f"{TAG}_s{args.seed}",
+        ] + ([] if model is None else ["--init-model", str(model)])
     else:
         from train import REWARD
         REWARD.update(collision_penalty=10.0, arrival_bonus=10.0, blocked_penalty=0.0)
