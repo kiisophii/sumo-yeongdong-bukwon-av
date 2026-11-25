@@ -13,11 +13,17 @@
     <connection from="51066582#1" to="51066582#1.95" fromLane="1" toLane="1"/>
     <connection from="51066582#1" to="51066582#1.95" fromLane="2" toLane="2"/>
     <delete from="51066582#1.95" to="51066582#1.110"/>
+    <!-- (조윤호) map6: 부스 3개가 그대로 3차로로 이어지고, 오른쪽 화물차 두 차로는 갈림길 전 2차로 구간에서 합쳐짐.
+         승용차(하이패스, index 2)는 차로 변경 없이 왼쪽 차로 → 원주 램프 -->
     <connection from="51066582#1.95" to="51066582#1.110" fromLane="0" toLane="0"/>
-    <connection from="51066582#1.95" to="51066582#1.110" fromLane="1" toLane="0"/>
-    <connection from="51066582#1.95" to="51066582#1.110" fromLane="2" toLane="0"/>
+    <connection from="51066582#1.95" to="51066582#1.110" fromLane="1" toLane="1"/>
+    <connection from="51066582#1.95" to="51066582#1.110" fromLane="2" toLane="2"/>
     <delete from="51066582#1.110" to="468211809#1"/>
     <connection from="51066582#1.110" to="468211809#1" fromLane="0" toLane="0"/>
+    <connection from="51066582#1.110" to="468211809#1" fromLane="1" toLane="0"/>
+    <connection from="51066582#1.110" to="468211809#1" fromLane="2" toLane="1"/>
+    <delete from="468211809#1" to="468211809#2"/>
+    <connection from="468211809#1" to="468211809#2" fromLane="1" toLane="0"/>
     <delete from="51066582#1.110" to="480981896"/>
     <connection from="51066582#1.110" to="480981896" fromLane="0" toLane="0"/>
     <delete from="1224608702" to="1224608702.60"/>
@@ -41,9 +47,10 @@
     <connection from="1224608702.75" to="468241514" fromLane="3" toLane="2"/>
     <delete from="468241514" to="468241514.50"/>
     <connection from="468241514" to="468241514.50" fromLane="0" toLane="0"/>
-    <connection from="468241514" to="468241514.50" fromLane="1" toLane="0"/>
-    <connection from="468241514" to="468241514.50" fromLane="2" toLane="1"/>
+    <connection from="468241514" to="468241514.50" fromLane="1" toLane="1"/>
+    <connection from="468241514" to="468241514.50" fromLane="2" toLane="2"/>
     <delete from="468241514.50" to="1235185544"/>
     <connection from="468241514.50" to="1235185544" fromLane="0" toLane="0"/>
     <connection from="468241514.50" to="1235185544" fromLane="1" toLane="1"/>
+    <connection from="468241514.50" to="1235185544" fromLane="2" toLane="2"/>
 </connections>
