@@ -61,6 +61,8 @@ def configure(training, hard_start_prob=0.0):
         HARD_START_PROB=str(hard_start_prob if training else 0.0),
         HARD_START_TARGETS=os.environ.get("HARD_START_TARGETS_OVERRIDE", "568664967#4,51066582#1,1307152438"),
         HARD_START_BACK_M="100",
+        PROGRESS_GAP_PENALTY=os.environ.get("PROGRESS_GAP_PENALTY_OVERRIDE", "0"),
+        PROGRESS_GAP_BASE="2", PROGRESS_GAP_HEADWAY="1",
         SIM_REUSE="5" if training else "1",
     )
 
@@ -115,7 +117,7 @@ def main():
 
     configure(training, args.hard_start_prob if training else 0.0)
     sys.path.insert(0, str(root))
-    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']}",
+    print(f"ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)

@@ -1294,6 +1294,19 @@ class SumoHighwayEnv(gym.Env):
                 reward -= w * max(0.0, ego_speed / limit - 1.0)
             except traci.TraCIException:
                 pass
+        # 차간 거리 감점(상태 기준, 기본 0): 수업 원본 close_gap_penalty(같은 차로 앞차가 6 m 미만이면 -0.1)와 같은 계단 형태.
+        #   기준 거리만 속도에 맞춘다: PROGRESS_GAP_BASE + 내 속도 × PROGRESS_GAP_HEADWAY (기본 2 m + 1초).
+        #   판정은 SUMO 실제 앞차 거리(보상에는 시뮬레이터 정보 사용 가능 — 조교 답변). 어떻게 피할지는 정책이 배운다.
+        gp = float(os.environ.get("PROGRESS_GAP_PENALTY", "0") or 0)
+        if gp > 0.0:
+            need = (float(os.environ.get("PROGRESS_GAP_BASE", "2") or 0)
+                    + ego_speed * float(os.environ.get("PROGRESS_GAP_HEADWAY", "1") or 0))
+            try:
+                lead = traci.vehicle.getLeader(self.ego_id, max(need, 1.0))
+            except traci.TraCIException:
+                lead = None
+            if lead is not None and lead[0] != "" and 0.0 <= float(lead[1]) < need:
+                reward -= gp
         return reward
 
     def _get_obs(self, *, alive=None):
