@@ -157,6 +157,7 @@ if __name__ == "__main__":
     _ap.add_argument("--lr", type=float, help="학습률 (기본: HPARAMS['lr'])")
     _ap.add_argument("--gamma", type=float, help="할인율 (기본: HPARAMS['gamma'])")
     _ap.add_argument("--n-steps", type=int, help="rollout 길이 (기본: HPARAMS['n_steps'])")
+    _ap.add_argument("--minibatch-size", type=int, help="(팀14) 미니배치 크기 (기본: HPARAMS['minibatch_size'])")
     _ap.add_argument("--timesteps", type=int, help="총 학습 스텝 (기본: TOTAL_TIMESTEPS)")
     _ap.add_argument("--tag", default="", help="결과 폴더 이름 뒤에 붙일 표시")
     _ap.add_argument("--ckpt-every", type=int, default=0,
@@ -184,6 +185,8 @@ if __name__ == "__main__":
         HPARAMS["gamma"] = _args.gamma
     if _args.n_steps is not None:
         HPARAMS["n_steps"] = _args.n_steps
+    if _args.minibatch_size is not None:
+        HPARAMS["minibatch_size"] = _args.minibatch_size
     if _args.timesteps is not None:
         TOTAL_TIMESTEPS = _args.timesteps
     if _args.seed is not None:
@@ -199,7 +202,7 @@ if __name__ == "__main__":
     # 2) 결과 폴더 + 로거
     run_dir = make_run_dir(_args.tag)
     print(f"하이퍼파라미터: lr={HPARAMS['lr']}, gamma={HPARAMS['gamma']}, "
-          f"n_steps={HPARAMS['n_steps']}, 총 {TOTAL_TIMESTEPS:,} 스텝")
+          f"n_steps={HPARAMS['n_steps']}, minibatch={HPARAMS['minibatch_size']}, 총 {TOTAL_TIMESTEPS:,} 스텝")
     # 명령줄로 바꾼 값까지 포함해 실제 사용한 설정을 남긴다 (train.py 사본은 기본값만 담음)
     import json
     with open(os.path.join(run_dir, "hparams.json"), "w", encoding="utf-8") as f:
