@@ -90,6 +90,7 @@ def configure(training, hard_start_prob=0.0):
         PROGRESS_GAP_BASE="2", PROGRESS_GAP_HEADWAY="1",
         PROGRESS_GAP_RSS_DECEL=os.environ.get("GAP_RSS_DECEL_OVERRIDE", "0"),
         EGO_STALL_S=os.environ.get("EGO_STALL_S_OVERRIDE", "0"),
+        LANE_ENTROPY_COEF=os.environ.get("LANE_ENTROPY_OVERRIDE", ""),
         TEAM14_DROP_MUST_YIELD=os.environ.get("DROP_MUST_YIELD_OVERRIDE", "0"),
         SIM_REUSE="5" if training else "1",
     )

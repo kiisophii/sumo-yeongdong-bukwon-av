@@ -218,6 +218,10 @@ if __name__ == "__main__":
     _ap.add_argument("--tof-junction-diagnostics", action="store_true",
                      help="집중 학습 위험 관측의 제동·가속, GAE, 업데이트 전후 평균 가감속 기록")
     _args = _ap.parse_args()
+    # (팀14, 11/25) LANE_ENTROPY_COEF=x: 차선 head 엔트로피 보너스(기본 0.01)를 바꿔 차선 변경 탐색을 늘린다.
+    if __import__("os").environ.get("LANE_ENTROPY_COEF"):
+        HPARAMS["lane_entropy_coef"] = float(__import__("os").environ["LANE_ENTROPY_COEF"])
+        print(f"차선 head 엔트로피 보너스: {HPARAMS['lane_entropy_coef']:g}")
     if _args.ppo_accel_residual and not (
             _args.ppo_accel_finetune and OBSERVATION["tof"] and OBSERVATION["junction_features"]):
         _ap.error("--ppo-accel-residual 사용에는 --ppo-accel-finetune과 ToF 교차로 관측이 필요합니다.")
