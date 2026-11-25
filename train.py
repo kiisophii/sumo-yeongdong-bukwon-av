@@ -222,6 +222,14 @@ if __name__ == "__main__":
     if __import__("os").environ.get("LANE_ENTROPY_COEF"):
         HPARAMS["lane_entropy_coef"] = float(__import__("os").environ["LANE_ENTROPY_COEF"])
         print(f"차선 head 엔트로피 보너스: {HPARAMS['lane_entropy_coef']:g}")
+    # (팀14, 11/26) PPO_N_STEPS / PPO_N_EPOCHS / PPO_LR: 이어 학습할 때 한 번의 업데이트를 덜 공격적으로.
+    #   기본 n_steps 2048은 전 구간 약 한 판 분량이라, 그 판에 없던 구간(예: 신협오거리)의 행동이
+    #   n_epochs 10 × 미니배치로 수백 번 고쳐지는 동안 밀려남(망각). 실행 스크립트 run_tof_route_outcome_ft.py로도 쓸 수 있게 환경변수로 받음.
+    for _key, _env, _cast in (("n_steps", "PPO_N_STEPS", int), ("n_epochs", "PPO_N_EPOCHS", int),
+                              ("lr", "PPO_LR", float)):
+        if __import__("os").environ.get(_env):
+            HPARAMS[_key] = _cast(__import__("os").environ[_env])
+            print(f"{_key} = {HPARAMS[_key]:g} ({_env})")
     if _args.ppo_accel_residual and not (
             _args.ppo_accel_finetune and OBSERVATION["tof"] and OBSERVATION["junction_features"]):
         _ap.error("--ppo-accel-residual 사용에는 --ppo-accel-finetune과 ToF 교차로 관측이 필요합니다.")
