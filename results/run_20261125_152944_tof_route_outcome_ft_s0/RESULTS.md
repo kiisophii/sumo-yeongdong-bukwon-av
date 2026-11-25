@@ -3,7 +3,7 @@
 - 시작 모델: `results/run_20261125_122835_tof_route_outcome_ft_s0/model.pt` (엔트로피 0.05 모델)
 - 실행: `bash experiments/tof-progress-1123/train_balanced_b_c.sh 200704 results/run_20261125_122835_tof_route_outcome_ft_s0/model.pt`
 - 교통: `6bd1285` (동수원IC 진출 램프 시작점에서 생겨나던 교통 제거)
-- 최종 후보: **`checkpoints/model_102400.pt`** (끝까지 돌리기 전에 멈춰서 `model.pt`는 없음)
+- 최종 모델: **`model.pt`** = `checkpoints/model_102400.pt` (10.2만 스텝). 학습은 14.3만 스텝 근처에서 멈췄고, 체크포인트 중 10.2만을 최종으로 정함
 
 ## 설정
 
