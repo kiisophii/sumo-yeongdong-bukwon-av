@@ -41,9 +41,10 @@
     <connection from="1224608702.75" to="468241514" fromLane="3" toLane="2"/>
     <delete from="468241514" to="468241514.50"/>
     <connection from="468241514" to="468241514.50" fromLane="0" toLane="0"/>
-    <connection from="468241514" to="468241514.50" fromLane="1" toLane="0"/>
-    <connection from="468241514" to="468241514.50" fromLane="2" toLane="1"/>
+    <connection from="468241514" to="468241514.50" fromLane="1" toLane="1"/>
+    <connection from="468241514" to="468241514.50" fromLane="2" toLane="2"/>
     <delete from="468241514.50" to="1235185544"/>
     <connection from="468241514.50" to="1235185544" fromLane="0" toLane="0"/>
     <connection from="468241514.50" to="1235185544" fromLane="1" toLane="1"/>
+    <connection from="468241514.50" to="1235185544" fromLane="2" toLane="2"/>
 </connections>

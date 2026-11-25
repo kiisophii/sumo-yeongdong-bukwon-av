@@ -33,6 +33,13 @@
          한 차로가 두 방향으로 갈라지게 두면 교차점 안 차선변경 측면충돌이 났다(시드 7·10) -->
     <delete from="1235185544" to="468241513"/>
     <connection from="1235185544" to="468241513" fromLane="1" toLane="0"/>
+    <connection from="1235185544" to="468241513" fromLane="2" toLane="1"/>
+    <!-- (조윤호) 468241513 2차로 → 창룡대로 4차로: 두 차로 모두 이어 줌 (예전에 차로 1이 막다른 차로였던 원인) -->
+    <delete from="468241513" to="667354422#1"/>
+    <connection from="468241513" to="667354422#1" fromLane="0" toLane="0"/>
+    <connection from="468241513" to="667354422#1" fromLane="0" toLane="1"/>
+    <connection from="468241513" to="667354422#1" fromLane="1" toLane="2"/>
+    <connection from="468241513" to="667354422#1" fromLane="1" toLane="3"/>
     <delete from="1235185544" to="50981089"/>
     <connection from="1235185544" to="50981089" fromLane="0" toLane="0"/>
     <!-- 동수원IC 진출: 출구(50981102)가 2차로인데 본선에서 이어지는 차로가 맨 오른쪽 1개뿐이라
