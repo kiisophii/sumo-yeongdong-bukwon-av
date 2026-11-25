@@ -83,7 +83,8 @@ def configure(training, hard_start_prob=0.0):
         PROGRESS_SPEED_OFFSET=os.environ.get("PROGRESS_SPEED_OFFSET_OVERRIDE", "0"),
         HARD_START_PROB=str(hard_start_prob if training else 0.0),
         HARD_START_TARGETS=os.environ.get("HARD_START_TARGETS_OVERRIDE", "568664967#4,51066582#1,1307152438"),
-        HARD_START_BACK_M="100",
+        HARD_START_BACK_M=os.environ.get("HARD_START_BACK_M_OVERRIDE", "100"),
+        TEAM14_FORK_RELATIVE=os.environ.get("FORK_RELATIVE_OVERRIDE", "0"), TEAM14_FORK_NEAR_DEG="30",
         PROGRESS_GAP_PENALTY=os.environ.get("PROGRESS_GAP_PENALTY_OVERRIDE", "0"),
         PROGRESS_GAP_BASE="2", PROGRESS_GAP_HEADWAY="1",
         TEAM14_DROP_MUST_YIELD=os.environ.get("DROP_MUST_YIELD_OVERRIDE", "0"),
@@ -147,7 +148,7 @@ def main():
         if not converted.exists():
             drop_must_yield_weights(model, converted)
         model = converted
-    print(f"ToF PPO | {n_inputs} inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s",
+    print(f"ToF PPO | {n_inputs} inputs | progress 150 | arrival +10 | failure -{os.environ.get('COLLISION_PENALTY_OVERRIDE', '10')} | yield entry -2 | overspeed {os.environ['PROGRESS_OVERSPEED_W']} | speed {os.environ['PROGRESS_SPEED_W']} - {os.environ['PROGRESS_SPEED_OFFSET']} | gap -{os.environ['PROGRESS_GAP_PENALTY']} if < 2 m + 1 s | fork relative {os.environ['TEAM14_FORK_RELATIVE']} | hard start back {os.environ['HARD_START_BACK_M']} m",
           flush=True)
     if training:
         print(f"Training hard-start probability: {args.hard_start_prob:g}", flush=True)

@@ -1016,11 +1016,28 @@ class SumoHighwayEnv(gym.Env):
         direction = None
         if len(outgoing) > 1 and any(edge.getID() == next_id for edge in outgoing):
             approach = road.getShape()
-            departure = self._road_net.getEdge(next_id).getShape()
             ax, ay = (approach[-1][0] - approach[-2][0], approach[-1][1] - approach[-2][1])
-            bx, by = (departure[1][0] - departure[0][0], departure[1][1] - departure[0][1])
-            angle = math.degrees(math.atan2(ax * by - ay * bx, ax * bx + ay * by))
+
+            def heading(edge):
+                departure = edge.getShape()
+                bx, by = (departure[1][0] - departure[0][0], departure[1][1] - departure[0][1])
+                return math.degrees(math.atan2(ax * by - ay * bx, ax * bx + ay * by))
+
+            angle = heading(self._road_net.getEdge(next_id))
             direction = -1.0 if angle > 15.0 else (1.0 if angle < -15.0 else 0.0)
+            # (팀14, 11/25) TEAM14_FORK_RELATIVE=1: Y자 분기(거의 나란히 갈라지는 갈림길)에서만 갈래끼리 비교.
+            #   경로가 직진(±15° 안)이고 다른 갈래도 TEAM14_FORK_NEAR_DEG(기본 30°) 안이면,
+            #   경로 갈래가 그 갈래들보다 오른쪽이면 우(+1), 왼쪽이면 좌(-1). 내비의 "오른쪽 방향 출구"와 같은 수준.
+            #   차선 단위 정보는 주지 않는다. 옆 골목(약 90°)은 비교에서 빠져 직진(0) 그대로.
+            if direction == 0.0 and os.environ.get("TEAM14_FORK_RELATIVE", "") == "1":
+                near_deg = float(os.environ.get("TEAM14_FORK_NEAR_DEG", "30") or 30)
+                near = [heading(edge) for edge in outgoing if edge.getID() != next_id]
+                near = [a for a in near if abs(a) <= near_deg]
+                if near:
+                    if angle < min(near):
+                        direction = 1.0
+                    elif angle > max(near):
+                        direction = -1.0
         self._route_fork_cache[key] = direction
         return direction
 
