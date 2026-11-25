@@ -6,18 +6,20 @@
   차로 번호는 왼쪽부터, SUMO index는 오른쪽이 0이라 뒤집었다. 미운영 차로는 뺐다.
   북수원 패치와 같은 원칙: 부채꼴(차로 고르기) 구간 확보, 진입 차로마다 다른 부스로 연결,
   부스 뒤에는 교통량이 적은 차로부터 합치고 지퍼 합류, 분할로 생긴 edge 연결은 2단계에서 지정.
+  (11/25) 승용차가 하이패스 차로만 지날 수 있어 AV가 오른쪽 차로에서 '차로 끝'을 보고 멈추던 문제 때문에,
+  모든 부스 차로에 승용차를 허용한다 (속도 제한은 그대로: TCS 차로는 2~4 m/s로 천천히 통과).
 -->
 <edges>
     <edge id="51066582#1.95">
-        <lane index="0" allow="truck custom1" speed="2.0"/>   <!-- 4 화물차-TCS -->
-        <lane index="1" allow="truck custom1" speed="4.0"/>   <!-- 3 화물차-하이패스+TCS -->
+        <lane index="0" allow="passenger truck custom1" speed="2.0"/>   <!-- 4 화물차-TCS (11/25: 승용차도 허용) -->
+        <lane index="1" allow="passenger truck custom1" speed="4.0"/>   <!-- 3 화물차-하이패스+TCS (11/25: 승용차도 허용) -->
         <lane index="2" allow="passenger" speed="8.33"/>      <!-- 1 하이패스 (승용차는 이 차로만) -->
     </edge>
     <edge id="1224608702.60">
         <lane index="0" allow="passenger truck" speed="8.33"/>   <!-- 7 하이패스 -->
         <lane index="1" allow="passenger truck" speed="8.33"/>   <!-- 6 하이패스 -->
-        <lane index="2" allow="custom1 truck" speed="2.0"/>      <!-- 5 통행료정산기 -->
-        <lane index="3" allow="custom1 truck" speed="2.0"/>      <!-- 4 TCS 유인수납 -->
+        <lane index="2" allow="passenger custom1 truck" speed="2.0"/>      <!-- 5 통행료정산기 (11/25: 승용차도 허용) -->
+        <lane index="3" allow="passenger custom1 truck" speed="2.0"/>      <!-- 4 TCS 유인수납 (11/25: 승용차도 허용) -->
         <lane index="4" allow="passenger truck" speed="13.89"/>  <!-- 2 다차로하이패스 -->
         <lane index="5" allow="passenger truck" speed="13.89"/>  <!-- 1 다차로하이패스 -->
     </edge>
