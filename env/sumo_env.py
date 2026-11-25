@@ -2577,6 +2577,20 @@ class SumoHighwayEnv(gym.Env):
             yield_violation = lane_id_after.startswith(":")
         if red_light and self.rw.get("red_light_terminate", True):
             collided = True    # 신호 위반은 충돌과 같은 실패로 처리
+        # (팀14, 11/25) EGO_STALL_S > 0: 우리 차가 이 시간(초) 이상 계속 멈춰 있으면(속도 < 0.1 m/s) 실패.
+        #   SUMO 순간이동(300초)과 같은 "막힘" 실패를 더 일찍 판정할 뿐이다. 실패 감점이 할인 안에 들어와
+        #   "서 있으면 손해가 거의 없다"는 착각을 막는다. 경로상 신호의 최대 빨간불은 6초.
+        stalled = False
+        stall_s = float(os.environ.get("EGO_STALL_S", "0") or 0)
+        if alive and stall_s > 0.0:
+            try:
+                still = traci.vehicle.getSpeed(self.ego_id) < 0.1
+            except traci.TraCIException:
+                still = False
+            self._stall_steps = (getattr(self, "_stall_steps", 0) + 1) if still else 0
+            if not collided and self._stall_steps * self.step_length >= stall_s:
+                stalled = True
+                collided = True
 
         obs = self._get_obs(alive=alive)
         terminated, truncated = False, False
@@ -2726,6 +2740,8 @@ class SumoHighwayEnv(gym.Env):
             end_reason = "collision"
         elif teleported:
             end_reason = "teleport"
+        elif stalled:
+            end_reason = "stall"
         elif collided:
             end_reason = "red_light"
         elif arrived:

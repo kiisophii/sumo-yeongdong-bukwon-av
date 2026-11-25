@@ -29,6 +29,7 @@ RESULT_LABELS = {
     "vehicle_removed": "차량 제거",
     "arrival": "완주",
     "timeout": "시간 초과",
+    "stall": "정지 실패",
 }
 
 
