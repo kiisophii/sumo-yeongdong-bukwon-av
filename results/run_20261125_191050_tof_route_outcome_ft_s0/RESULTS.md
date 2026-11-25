@@ -1,0 +1,54 @@
+# 부곡 영업소 뒤 집중 10만 스텝 (11/25, map6, 차간 0.2 / RSS 3)
+
+- 시작 모델: 차간 강화 모델 `results/run_20261125_182014_tof_route_outcome_ft_s0/model.pt` (map6 20판 완주 5)
+- 지도: map6 (`yunho-forkfix-map6` 커밋 `6a66e55`·`fbea463`·`98959f5`의 지도 파일 변경을 `6bd1285` 도로 위에 적용). 학습 때 쓴 설정은 이 폴더의 `road_config.py`
+- 비교 실험: "New session" 쪽이 같은 설정에 차간 감점 한 단계 강화(0.3, RSS b=2)로 학습
+
+## 설정
+
+```bash
+LANE_ENTROPY_OVERRIDE=0.02 SPAWN_CLEAR_OVERRIDE=0 COLLISION_PENALTY_OVERRIDE=20 PROGRESS_TOTAL_OVERRIDE=150 \
+PROGRESS_OVERSPEED_W_OVERRIDE=0.3 PROGRESS_SPEED_W_OVERRIDE=0.1 PROGRESS_SPEED_OFFSET_OVERRIDE=0.1 \
+PROGRESS_GAP_PENALTY_OVERRIDE=0.2 GAP_RSS_DECEL_OVERRIDE=3 FORK_RELATIVE_OVERRIDE=1 FORK_SUMO_DIR_OVERRIDE=1 \
+EGO_STALL_S_OVERRIDE=0 DROP_MUST_YIELD_OVERRIDE=0 CKPT_EVERY_OVERRIDE=20480 \
+HARD_START_TARGETS_OVERRIDE='51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,51066582#1@300,1116479399@300,1116479399@300,1116479399@300,1116479399@300,1116479399@300,1116479399@300,468241513@300,468241513@300,-40839116#4@150,-40839116#4@150' \
+python3 -u experiments/tof-route-outcome-ft/run_tof_route_outcome_ft.py train --steps 102400 --hard-start-prob 0.5 \
+  --init-model results/run_20261125_182014_tof_route_outcome_ft_s0/model.pt
+```
+
+집중 출발 50%: 부곡 영업소 뒤 25%, 동수원IC 출구 앞 15%, 12.7 km 진출 램프 5%, 신협 5%
+
+## 학습 보상
+
+| 구간 | 평균 학습 보상 | 학습 중 평가 속도 (m/s) | 학습 중 평가 완주 (5판) |
+|---|---:|---|---|
+| 0~2.5만 | −24.5 | 9.7 / 13.0 | 1 / 4 |
+| 2.5~5만 | −12.7 | 12.9 / 6.5 / 6.4 | 3 / 0 / 1 |
+| 5~7.5만 | +3.1 | 10.7 / 14.0 | 0 / 0 |
+| 7.5~10만 | −1.9 | 16.0 / 6.4 / 14.4 | 0 / 0 / 0 |
+
+## 최종 `model.pt` 20판 (시드 955703411~955703430, map6, 근처 생성 차 지우기 끔)
+
+결과 파일: `model_eval10_seed955703411.json`, `model_eval10_seed955703421.json` (10판씩, 시드 = 시작 시드 + 회차라 같은 20판)
+
+| 결과 | 위치 | 차선 | 판 수 |
+|---|---|---|---:|
+| **완주** | 광교박물관 주차장 `611808767` | | **10** |
+| 충돌 | 동수원IC 진출 램프 `468241513` | 1번 3, 0번 2 | 5 |
+| 경로 이탈 | 동수원IC 앞 차로 감소 `1116479399` | 0번 | 2 |
+| 충돌 | 신협오거리 `:1681517542` | 0번 | 1 |
+| 충돌 | 고속도로 `493209391#1` | 2번 | 1 |
+| 신호 위반 | 회전교차로 앞 `496583281#1` | 0번 | 1 |
+
+평균 속도 약 54 km/h.
+
+### 시작 모델과 비교 (같은 시드 20판, map6)
+
+| | 차간 강화 모델 (시작) | 이번 |
+|---|---:|---:|
+| 완주 | 5 | **10** |
+| 부곡 영업소 뒤 갈림길 이탈 | 9 | **0** |
+| 진출 램프 충돌 | 5 | 5 |
+| 동수원IC 앞 이탈·출구 놓침 | 0 | 2 |
+| 신협·회전교차로 | 1 | 2 |
+| 고속도로 충돌 | 0 | 1 |
