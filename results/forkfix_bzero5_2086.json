@@ -1,0 +1,37 @@
+{
+  "results/run_20261125_051049_forkfix_bzero5/model.pt": {
+    "collision_rate": 0.0,
+    "teleport_rate": 0.9833333333333333,
+    "lane_end_rate": 0.016666666666666666,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.0,
+    "timeout_rate": 0.0,
+    "failure_rate": 1.0,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      ":1681517317_0_0": 38,
+      ":1681535716_0_0": 12,
+      ":1681517423_2_1": 5,
+      ":496765517_0_0": 4,
+      "568664967#0_1": 1
+    },
+    "lane_end_lanes": {
+      "568664967#0_1": 1
+    },
+    "teleport_end_lanes": {
+      ":1681517317_0_0": 38,
+      ":1681535716_0_0": 12,
+      ":1681517423_2_1": 5,
+      ":496765517_0_0": 4
+    },
+    "mean_speed_mps": 1.4756335240483662,
+    "mean_return": 2.488346690885954,
+    "mean_length_steps": 770.8833333333333,
+    "mean_travel_time_s": 385.44166666666666,
+    "lane_changes_per_ep": 0.1,
+    "min_gap_median_m": 1.730033499117127,
+    "wall_time_s": 945.3679871559143
+  }
+}

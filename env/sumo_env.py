@@ -784,7 +784,7 @@ class SumoHighwayEnv(gym.Env):
                 tos = {o[0].rsplit("_", 1)[0] for o in self._outgoing_lanes(ln.getID())}
                 if e_next in tos:
                     on.append(ln.getIndex())
-                if tos - {e_next}:
+                if tos - {e_next} or not tos:   # (조윤호) 잘린 도로로 가는 막다른 차로도 경로 밖 차로로 침
                     off.append(ln.getIndex())
             if on and off:
                 fork_d = d / 600.0

@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261125_051049_forkfix_bzero5/model.pt (60 episodes) ===
+  ep   1/60: steps= 759 return=   0.58 순간이동 lane=:1681517317_0_0
+  ep   2/60: steps= 769 return=   3.89 순간이동 lane=:1681517317_0_0
+  ep   3/60: steps= 649 return=  -1.91 순간이동 lane=:496765517_0_0
+  ep   4/60: steps= 760 return=   5.08 순간이동 lane=:1681535716_0_0
+  ep   5/60: steps= 768 return=   5.01 순간이동 lane=:1681517317_0_0
+  ep   6/60: steps= 764 return=   5.56 순간이동 lane=:1681535716_0_0
+  ep   7/60: steps= 783 return=   5.76 순간이동 lane=:1681535716_0_0
+  ep   8/60: steps= 759 return=   0.80 순간이동 lane=:1681517317_0_0
+  ep   9/60: steps= 779 return=   5.60 순간이동 lane=:1681535716_0_0
+  ep  10/60: steps= 781 return=   1.72 순간이동 lane=:1681517317_0_0
+  ep  11/60: steps= 788 return=   2.92 순간이동 lane=:1681517317_0_0
+  ep  12/60: steps= 781 return=   2.56 순간이동 lane=:1681517317_0_0
+  ep  13/60: steps= 764 return=   0.59 순간이동 lane=:1681517317_0_0
+  ep  14/60: steps= 765 return=   1.20 순간이동 lane=:1681517317_0_0
+  ep  15/60: steps= 766 return=   5.12 순간이동 lane=:1681517317_0_0
+  ep  16/60: steps= 775 return=  -0.06 순간이동 lane=:1681517317_0_0
+  ep  17/60: steps= 752 return=   2.90 순간이동 lane=:1681517317_0_0
+  ep  18/60: steps= 765 return=   4.31 순간이동 lane=:1681535716_0_0
+  ep  19/60: steps= 755 return=   4.14 순간이동 lane=:1681517317_0_0
+  ep  20/60: steps= 750 return=   3.76 순간이동 lane=:1681517317_0_0
+  ep  21/60: steps= 760 return=   4.79 순간이동 lane=:1681535716_0_0
+  ep  22/60: steps= 774 return=   4.88 순간이동 lane=:1681535716_0_0
+  ep  23/60: steps= 772 return=   4.28 순간이동 lane=:1681517317_0_0
+  ep  24/60: steps= 779 return=   2.60 순간이동 lane=:1681517317_0_0
+  ep  25/60: steps= 756 return=  -0.47 순간이동 lane=:1681517317_0_0
+  ep  26/60: steps= 769 return=   4.73 순간이동 lane=:1681535716_0_0
+  ep  27/60: steps= 752 return=   4.15 순간이동 lane=:1681535716_0_0
+  ep  28/60: steps= 752 return=   3.09 순간이동 lane=:1681535716_0_0
+  ep  29/60: steps= 772 return=   4.39 순간이동 lane=:1681535716_0_0
+  ep  30/60: steps= 755 return=   4.14 순간이동 lane=:1681517317_0_0
+  ep  31/60: steps= 778 return=   6.83 순간이동 lane=:1681535716_0_0
+  ep  32/60: steps= 767 return=   4.47 순간이동 lane=:1681535716_0_0
+  ep  33/60: steps= 765 return=   4.96 순간이동 lane=:1681517317_0_0
+  ep  34/60: steps= 799 return=   7.06 순간이동 lane=:1681535716_0_0
+  ep  35/60: steps= 758 return=   4.77 순간이동 lane=:1681535716_0_0
+  ep  36/60: steps= 772 return=   4.13 순간이동 lane=:1681517317_0_0
+  ep  37/60: steps= 946 return=   2.58 순간이동 lane=:1681517423_2_1
+  ep  38/60: steps= 765 return=   4.68 순간이동 lane=:1681517317_0_0
+  ep  39/60: steps= 758 return=   5.87 순간이동 lane=:1681535716_0_0
+  ep  40/60: steps= 760 return=  -0.50 순간이동 lane=:1681517317_0_0
+  ep  41/60: steps= 913 return=   4.35 순간이동 lane=:1681517423_2_1
+  ep  42/60: steps= 768 return=   3.81 순간이동 lane=:1681517317_0_0
+  ep  43/60: steps= 769 return=   3.94 순간이동 lane=:1681517317_0_0
+  ep  44/60: steps= 750 return=   3.07 순간이동 lane=:1681535716_0_0
+  ep  45/60: steps= 774 return=   0.39 순간이동 lane=:1681517317_0_0
+  ep  46/60: steps= 788 return=   5.07 순간이동 lane=:1681517317_0_0
+  ep  47/60: steps= 774 return=   4.87 순간이동 lane=:1681535716_0_0
+  ep  48/60: steps= 761 return=  -0.39 순간이동 lane=:1681517317_0_0
+  ep  49/60: steps= 755 return=   4.38 순간이동 lane=:1681535716_0_0
+  ep  50/60: steps= 770 return=   5.45 순간이동 lane=:1681517317_0_0
+  ep  51/60: steps= 770 return=   4.45 순간이동 lane=:1681535716_0_0
+  ep  52/60: steps= 789 return=   3.38 순간이동 lane=:1681517317_0_0
+  ep  53/60: steps= 755 return=   2.62 순간이동 lane=:1681517317_0_0
+  ep  54/60: steps= 764 return=   1.04 순간이동 lane=:1681517317_0_0
+  ep  55/60: steps= 767 return=   3.45 순간이동 lane=:1681517317_0_0
+  ep  56/60: steps= 773 return=   6.39 순간이동 lane=:1681535716_0_0
+  ep  57/60: steps= 649 return=  -1.91 순간이동 lane=:496765517_0_0
+  ep  58/60: steps= 764 return=   0.64 순간이동 lane=:1681517317_0_0
+  ep  59/60: steps= 792 return=   7.80 순간이동 lane=:1681535716_0_0
+  ep  60/60: steps= 646 return=  -2.29 순간이동 lane=:496765517_0_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261125_051049_forkfix_bzero5/model.pt     0%     100%       0%     0%            5.0       383.6
+
+저장: results/forkfix_bzero5_2026.json
