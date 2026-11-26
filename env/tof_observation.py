@@ -2,7 +2,7 @@
 
 import os
 from dataclasses import dataclass
-from math import hypot, isfinite
+from math import acos, degrees, hypot, isfinite
 
 from .tof_perception import offset
 
@@ -276,6 +276,8 @@ class ToFObservation:
         # Preserve the pretrained policy's encoding when no signal is upcoming.
         # (팀14, 11/26) 관측 D용: 이번 스텝에 ToF로 보이는 교차 차량 중 가장 가까운 것 (중심 거리 m, 그 차 길이 m). 없으면 None.
         self.cross_gap = None
+        # (팀14, 11/26) 보상 E용: 양보 교차로에 접근 중일 때 (교차로까지 거리 m, 교차 차량 칸 값, 교차 각도 °). 그 밖에는 None.
+        self.yield_state = None
         signal = [1.0, 0.0, -1.0] if signals else [1.0, 1.0, 1.0]
         if signals:
             tls, link, distance, state = signals[0]
@@ -323,7 +325,9 @@ class ToFObservation:
         if self.keep_inside:
             self._yield_connection = connection
         self.cross_gap = self._nearest_crossing(frame, connection)
-        return signal + [distance / self.junction_range, 1.0, self._foe_state(frame, connection)]
+        foe = self._foe_state(frame, connection)
+        self.yield_state = (float(distance), float(foe), self._crossing_angle(connection))
+        return signal + [distance / self.junction_range, 1.0, foe]
 
     def _inside_yield(self, lane_id):
         """(팀14) 지금 내부 차선이 바로 전에 다가가던 양보 교차로 안이면 그 연결을 돌려준다."""
@@ -331,6 +335,43 @@ class ToFObservation:
             return None
         node = self._yield_connection.getJunction().getID()
         return self._yield_connection if lane_id.startswith(f":{node}_") else None
+
+    def _crossing_angle(self, connection):
+        """내 진입 차로와, 내 길과 충돌하는 진입 차로들이 교차로에 들어오는 방향 사이의 가장 큰 각도(°).
+        나란히 달리다 합쳐지는 합류는 작고, 길이 가로지르는 교차로는 크다. 지도 모양만 쓴다. 보상 E의 적용 범위 판정용."""
+        cached = getattr(self, "_crossing_angles", None)
+        if cached is None:
+            cached = self._crossing_angles = {}
+        if connection in cached:
+            return cached[connection]
+
+        def heading(lane):
+            shape = lane.getShape()
+            for a, b in zip(reversed(shape[:-1]), reversed(shape[1:])):
+                length = hypot(b[0] - a[0], b[1] - a[1])
+                if length > 0.1:
+                    return ((b[0] - a[0]) / length, (b[1] - a[1]) / length)
+            return None
+
+        mine = heading(connection.getFromLane())
+        best = 0.0
+        junction = connection.getJunction()
+        index = junction.getLinkIndex(connection)
+        if mine is not None and index >= 0 and junction.hasFoes():
+            for other in junction.getConnections():
+                other_index = junction.getLinkIndex(other)
+                if other == connection or other_index < 0 or not junction.areFoes(index, other_index):
+                    continue
+                lane = other.getFromLane()
+                if lane.getID().startswith(":") or lane.getEdge() == connection.getFromLane().getEdge():
+                    continue
+                theirs = heading(lane)
+                if theirs is None:
+                    continue
+                dot = max(-1.0, min(1.0, mine[0] * theirs[0] + mine[1] * theirs[1]))
+                best = max(best, degrees(acos(dot)))
+        cached[connection] = best
+        return best
 
     def _nearest_crossing(self, frame, connection):
         """내 길과 충돌하는 진입로·교차로 안 경로 위에 있고 ToF로 보이는 차 중 ego 중심에서 가장 가까운 것.

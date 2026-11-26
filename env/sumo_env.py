@@ -2857,6 +2857,51 @@ class SumoHighwayEnv(gym.Env):
                 _pen = _cgw * min(1.0, max(0.0, _safe - _gap) / _safe)
                 info["cross_gap_penalty"] = float(_pen)
                 reward -= _pen
+        # (팀14, 11/26) 보상 E: 양보 교차로 앞 정지 가능 속도 감점 (기본 0 꺼짐). TEAM14_YIELD_STOP_W / TEAM14_YIELD_UNSEEN_W
+        #   [종류] "상태"에 대한 보상이다. 계산에 들어가는 것은 스텝 뒤 상태의 세 값뿐이다:
+        #     내 속도, 양보 교차로까지 남은 거리, 교차 차량 칸(+1 보임 / 0 가려서 모름 / -1 비었음).
+        #     정책이 낸 가감속·차선 명령(행동)은 보지 않고, 충돌·진입 같은 사건(결과)도 보지 않는다.
+        #     같은 위치·같은 속도·같은 칸 값이면 어떤 명령을 냈든 감점이 같다. SUMO 실제 상태는 쓰지 않는다.
+        #   [식] 필요한 거리 = v*dt + v^2/(2*b), 남은 거리 = 교차로까지 거리 - 2 m,
+        #        감점 = W * min(1, max(0, 필요한 거리 - 남은 거리) / 10 m). 멈출 수 있는 속도면 0.
+        #     칸 +1: W = TEAM14_YIELD_STOP_W,   b = TEAM14_YIELD_STOP_DECEL   (기본 2.5 m/s^2)
+        #     칸  0: W = TEAM14_YIELD_UNSEEN_W, b = TEAM14_YIELD_UNSEEN_DECEL (기본 1.5 m/s^2),
+        #            단 속도가 TEAM14_YIELD_UNSEEN_CREEP (기본 2 m/s) 이하면 0 (안 보일 때 서행 진입은 허용)
+        #     칸 -1: 없음. 교차로 안(내부 차로)에서는 적용하지 않는다.
+        #   [범위] 길이 가로지르는 교차로만. 내 진입 방향과 충돌 진입로 방향의 각도가
+        #     TEAM14_YIELD_STOP_MIN_ANGLE (기본 30도) 이상일 때. 나란히 달리다 합쳐지는 합류는 제외.
+        #   [주의] 정책이 감속 말고 다른 행동을 고를 수 있다. 이 감점은 감속을 강제하지 않는다.
+        #     (1) 그대로 가기: 감점이 서행으로 늦어지는 손해보다 작으면 감점을 받고 지나간다 (W가 작을 때).
+        #     (2) 가속해서 통과: 교차로 안에서는 감점이 없어, 정지선을 빨리 넘으면 감점받는 스텝 수가 준다.
+        #         양보 위반 진입 감점(PROGRESS_YIELD_PENALTY)이 이 경우를 따로 벌한다.
+        #     (3) 보이기 전에 통과하거나 칸이 -1로 바뀐 순간 진입: -1에서는 감점이 없다.
+        #     (4) 정지선 앞에 선 채 오래 기다리기: 멈추면 감점이 0이다. 뒤차 추돌·시간 초과가 생길 수 있다.
+        #     학습 뒤에는 완주율과 함께 교차로 진입 속도, 교차로 앞 정지 시간, +1 뒤 가감속 명령을 확인할 것.
+        info["yield_stop_penalty"] = 0.0
+        info["yield_stop_state"] = None
+        _ys = (getattr(self._tof_geometry, "yield_state", None)
+               if self.tof and getattr(self, "_tof_geometry", None) is not None else None)
+        if _ys is not None:
+            info["yield_stop_state"] = _ys
+            _dist, _foe, _angle = _ys
+            if _foe > 0.5:
+                _yw = float(os.environ.get("TEAM14_YIELD_STOP_W", "0") or 0)
+                _yb = float(os.environ.get("TEAM14_YIELD_STOP_DECEL", "2.5") or 2.5)
+                _creep = 0.0
+            elif _foe > -0.5:
+                _yw = float(os.environ.get("TEAM14_YIELD_UNSEEN_W", "0") or 0)
+                _yb = float(os.environ.get("TEAM14_YIELD_UNSEEN_DECEL", "1.5") or 1.5)
+                _creep = float(os.environ.get("TEAM14_YIELD_UNSEEN_CREEP", "2") or 0)
+            else:
+                _yw, _yb, _creep = 0.0, 1.0, 0.0
+            if (_yw > 0.0 and self.progress_reward and alive and not terminated and float(ego_speed) > _creep
+                    and _angle >= float(os.environ.get("TEAM14_YIELD_STOP_MIN_ANGLE", "30") or 0)):
+                _v = float(ego_speed)
+                _need = _v * self.step_length + _v ** 2 / (2.0 * _yb)
+                _left = max(0.0, _dist - 2.0)
+                _pen = _yw * min(1.0, max(0.0, _need - _left) / 10.0)
+                info["yield_stop_penalty"] = float(_pen)
+                reward -= _pen
         return obs, float(reward), terminated, truncated, info
 
     # ==================================================================
