@@ -291,7 +291,11 @@ class SumoHighwayEnv(gym.Env):
             "--no-warnings", "true",   # 콘솔 경고 끄기
             "--no-step-log", "true",   # 스텝 로그 끄기
             # 매 에피소드 다른 시드 → 배경 교통 패턴이 달라져서 과적합 방지
-            "--seed", str(np.random.randint(0, 100000)),
+            # (팀14, 11/27) 데이터 수집: _sumo_seed_override가 있으면 그 값을 SUMO 시드로 쓴다
+            # (판의 시드와 SUMO 시드를 같게 해서 판끼리 교통 패턴이 겹치지 않게).
+            "--seed", str(getattr(self, "_sumo_seed_override", None)
+                          if getattr(self, "_sumo_seed_override", None) is not None
+                          else np.random.randint(0, 100000)),
         ]
         if self.gui:
             cmd += ["--quit-on-end"]      # 에피소드 종료 시 창 정리
@@ -1539,6 +1543,82 @@ class SumoHighwayEnv(gym.Env):
         except traci.TraCIException:
             return False
 
+    def _state_extras(self) -> dict:
+        """(팀14, 11/27) 데이터셋 state 추가 칼럼. SUMO 실제 값. 정책 입력으로 쓰지 않는다.
+        없는 값은 -1 (신호 없음, 앞차 없음)."""
+        e = self.ego_id
+        out = {}
+        try:
+            lane_id = traci.vehicle.getLaneID(e)
+            road_id = traci.vehicle.getRoadID(e)
+            out["ego_accel"] = float(traci.vehicle.getAcceleration(e))
+            out["ego_heading"] = float(traci.vehicle.getAngle(e))
+            out["ego_distance_m"] = float(traci.vehicle.getDistance(e))
+            out["ego_route_edge_index"] = int(traci.vehicle.getRouteIndex(e))
+            try:
+                out["ego_num_lanes"] = int(traci.edge.getLaneNumber(road_id))
+            except traci.TraCIException:
+                out["ego_num_lanes"] = -1
+            out["ego_lane_remaining_m"] = float(traci.lane.getLength(lane_id) - traci.vehicle.getLanePosition(e))
+            out["speed_limit_mps"] = float(traci.lane.getMaxSpeed(lane_id))
+            out["allowed_speed_mps"] = float(traci.vehicle.getAllowedSpeed(e))
+        except traci.TraCIException:
+            pass
+        sig = {"signal_distance_m": -1.0, "signal_green": 0, "signal_yellow": 0, "signal_red": 0,
+               "signal_remaining_s": -1.0}
+        nxt = None
+        try:
+            nxt = traci.vehicle.getNextTLS(e)
+            if nxt:
+                tls_id, _link, dist, state = nxt[0]
+                sig["signal_distance_m"] = float(dist)
+                sig["signal_green"] = int(state in "Gg")
+                sig["signal_yellow"] = int(state in "yYu")
+                sig["signal_red"] = int(state in "rR")
+                sig["signal_remaining_s"] = float(traci.trafficlight.getNextSwitch(tls_id) - traci.simulation.getTime())
+        except traci.TraCIException:
+            pass
+        out.update(sig)
+        # 두 번째 신호 (앞 신호 다음 신호). 없으면 -1 / 0
+        sig2 = {"signal2_distance_m": -1.0, "signal2_green": 0, "signal2_yellow": 0, "signal2_red": 0}
+        try:
+            if nxt and len(nxt) > 1:
+                _t2, _l2, d2, st2 = nxt[1]
+                sig2["signal2_distance_m"] = float(d2)
+                sig2["signal2_green"] = int(st2 in "Gg")
+                sig2["signal2_yellow"] = int(st2 in "yYu")
+                sig2["signal2_red"] = int(st2 in "rR")
+        except Exception:
+            pass
+        out.update(sig2)
+        # SUMO 시각 (초)
+        try:
+            out["sim_time_s"] = float(traci.simulation.getTime())
+        except traci.TraCIException:
+            out["sim_time_s"] = -1.0
+        # 현재 도로의 차로별 "차선변경 없이 경로를 따라 더 갈 수 있는 거리" (차로 번호 0부터).
+        # 목적지까지 이어지는 차로는 99999. 교차로 안이면 빈 목록.
+        try:
+            ra = self._route_ahead()
+            if ra:
+                n = max(ra) + 1
+                out["lane_route_remaining_m"] = [
+                    (99999.0 if ra.get(i, 0.0) == float("inf") else float(ra.get(i, -1.0))) for i in range(n)]
+            else:
+                out["lane_route_remaining_m"] = []
+        except Exception:
+            out["lane_route_remaining_m"] = []
+        lead = {"lead_gap_m": -1.0, "lead_speed_mps": -1.0}
+        try:
+            ld = traci.vehicle.getLeader(e, 150.0)
+            if ld and ld[0]:
+                lead["lead_gap_m"] = float(ld[1])
+                lead["lead_speed_mps"] = float(traci.vehicle.getSpeed(ld[0]))
+        except traci.TraCIException:
+            pass
+        out.update(lead)
+        return out
+
     def get_privileged_state(self) -> dict:
         """POMDP 데이터셋용 simulator-side state.
 
@@ -1567,6 +1647,10 @@ class SumoHighwayEnv(gym.Env):
                         "lane_id": traci.vehicle.getLaneID(vid),
                         "road_id": traci.vehicle.getRoadID(vid),
                         "lane_pos": float(traci.vehicle.getLanePosition(vid)),
+                        # (팀14, 11/27) 추가 칼럼
+                        "accel": float(traci.vehicle.getAcceleration(vid)),
+                        "heading": float(traci.vehicle.getAngle(vid)),
+                        "length": float(traci.vehicle.getLength(vid)),
                     })
                 except traci.TraCIException:
                     continue
@@ -1579,6 +1663,7 @@ class SumoHighwayEnv(gym.Env):
                 "ego_lane_id": traci.vehicle.getLaneID(self.ego_id),
                 "ego_road_id": traci.vehicle.getRoadID(self.ego_id),
                 "ego_lane_pos": float(traci.vehicle.getLanePosition(self.ego_id)),
+                **self._state_extras(),
                 "vehicles": vehicles,
             }
         except traci.TraCIException:
@@ -1938,14 +2023,17 @@ class SumoHighwayEnv(gym.Env):
 
         # ----- (4) 기존 보상 유지 -----
         self._stop_pen = 0.0
+        _rt = {}   # (팀14, 11/27) 보상 구성 항별 값 (데이터셋 reward_terms). 합 = reward
         if collided:
             reward = -float(self.rw["collision_penalty"])
             if red_light:
                 reward = -float(self.rw.get("red_light_penalty",
                                             self.rw["collision_penalty"]))
+            _rt["red_light" if red_light else "collision"] = reward
             terminated = True
         elif arrived:
             reward = float(self.rw["arrival_bonus"])
+            _rt["arrival"] = reward
             terminated = True
         elif not alive:
             reward = 0.0
@@ -1957,6 +2045,7 @@ class SumoHighwayEnv(gym.Env):
                 ego_gap = same_lane_leader[0]
             v_ref = self._speed_ref()
             reward = float(self.rw["speed_weight"]) * min(ego_speed / v_ref, 1.0)
+            _rt["speed"] = reward
             if os.environ.get("TEAM14_NO_SPEED_CAP", "") == "1":
                 # (팀14) 과속 감점: 구간 제한속도를 넘은 비율 × 가중치, 매 스텝
                 try:
@@ -1966,6 +2055,7 @@ class SumoHighwayEnv(gym.Env):
                 _over = max(0.0, ego_speed / _lim - 1.0)
                 self._overspeed_steps = getattr(self, "_overspeed_steps", 0) + (1 if _over > 0.02 else 0)
                 reward -= float(os.environ.get("TEAM14_OVERSPEED_W", "1.0")) * _over
+                _rt["overspeed"] = -float(os.environ.get("TEAM14_OVERSPEED_W", "1.0")) * _over
             # (팀14, 11/24) 정지 감점: 앞이 비어 있고(같은 차로 앞차 20 m 밖 또는 없음) 앞 60 m 안
             #   신호가 빨강·노랑이 아닌데 1 m/s 미만으로 서 있으면 매 스텝 TEAM14_IDLE_PEN 감점.
             #   정지 후 teleport(-30)가 할인돼 "출발 안 하기"가 local optimum이 되는 것을 막는다 (D 실패 원인).
@@ -1980,14 +2070,17 @@ class SumoHighwayEnv(gym.Env):
                     pass
                 if not _red:
                     reward -= _iw
+                    _rt["idle"] = -_iw
             # (팀14 실험) STOP_SHAPING=w: 끊기는 차로 끝·빨간불 앞에서 "못 멈출 속도"면 매 스텝 최대 w 감점
             _sw = float(os.environ.get("STOP_SHAPING", "0") or 0)
             if _sw > 0:
                 self._stop_pen = _sw * self._stop_shaping_term(ego_speed)
                 reward -= self._stop_pen
+                _rt["stop_shaping"] = -self._stop_pen
             if (ego_gap is not None and
                     ego_gap < float(self.rw["close_gap_threshold"])):
                 reward -= float(self.rw["close_gap_penalty"])
+                _rt["close_gap"] = -float(self.rw["close_gap_penalty"])
 
             # ---- 막힘 페널티: 느린 앞차 뒤에 갇혀 있는 동안 매 스텝 감점 ----
             # "차선을 유지한 채 막혀 있기"와 "변경으로 탈출하기" 사이에
@@ -1999,6 +2092,7 @@ class SumoHighwayEnv(gym.Env):
                     and ego_speed < float(self.rw.get("blocked_speed_frac", 0.7))
                         * v_ref):
                 reward -= bp
+                _rt["blocked"] = -bp
 
             # ---- 차선변경 보상 항 ----
             # lane_change        : 이번 스텝에 policy가 낸 양자화 명령 (-1/0/+1)
@@ -2011,13 +2105,17 @@ class SumoHighwayEnv(gym.Env):
                 # 변경 덕에 속도 보상이 그 이상 늘면 순이득이므로,
                 # "필요할 때만 바꾸는" 정책으로 수렴하게 만드는 항이다.
                 reward -= float(self.rw.get("lane_change_penalty", 0.0))
+                _rt["lane_change"] = -float(self.rw.get("lane_change_penalty", 0.0))
             elif lane_change != 0:
                 # 명령은 냈는데 실행 불가(차선 없음/교차로)였던 경우 감점
                 # → 의미 없는 행동 출력을 줄이는 정칙화 (rl_action_penalty 대응)
                 reward -= float(self.rw.get("invalid_action_penalty", 0.0))
+                _rt["invalid_action"] = -float(self.rw.get("invalid_action_penalty", 0.0))
 
         if yield_violation and not terminated:
             reward -= float(self.rw.get("yield_penalty", 0.0))
+            _rt["yield"] = -float(self.rw.get("yield_penalty", 0.0))
+        self._reward_terms = {k: float(v) for k, v in _rt.items()}
 
         if self.step_count >= self.max_steps:
             truncated = True
@@ -2071,6 +2169,7 @@ class SumoHighwayEnv(gym.Env):
             "lane_before": lane_before,
             "lane_after": lane_after,
         }
+        info["reward_terms"] = dict(getattr(self, "_reward_terms", {}))
         return obs, float(reward), terminated, truncated, info
 
     # ==================================================================

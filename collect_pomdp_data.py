@@ -92,6 +92,27 @@ def make_policy(args, env, worker_seed: int):
         def act(obs):
             a = agent.predict(obs, deterministic=deterministic)
             return np.clip(a, -1.0, 1.0).astype(np.float32)
+        act.value = agent.get_value   # (팀14, 11/27) critic V(o_t) → value_pred 칼럼
+
+        def dist_info(obs, action):
+            """정책 분포와 실제로 고른 행동의 log π(a|o). hybrid 정책일 때만."""
+            import torch
+            pol = agent.policy
+            if not hasattr(pol, "lane_head"):
+                return None
+            with torch.no_grad():
+                o = torch.as_tensor(obs, dtype=torch.float32, device=agent.device).unsqueeze(0)
+                mu, std, logits, value = pol(o)
+                probs = torch.softmax(logits, dim=-1).squeeze(0)
+                a = torch.as_tensor(np.asarray(action, dtype=np.float32), device=agent.device)
+                lane_idx = int(1 - round(float(a[1])))        # 명령(+1/0/-1) → 인덱스(0 왼쪽/1 유지/2 오른쪽)
+                lp = (torch.distributions.Normal(mu, std).log_prob(a[:1].unsqueeze(0)).sum()
+                      + torch.log(probs[lane_idx] + 1e-12))
+            return {"accel_mean": float(mu.item()), "accel_std": float(std.item()),
+                    "lane_prob_left": float(probs[0]), "lane_prob_keep": float(probs[1]),
+                    "lane_prob_right": float(probs[2]), "log_prob": float(lp.item()),
+                    "value": float(value.item())}
+        act.dist_info = dist_info
         return act
 
     if args.policy == "bc":
@@ -160,12 +181,178 @@ def iter_transitions(jsonl_path: str):
             yield prev
 
 
+# (팀14, 11/27) 추가 칼럼용 코드표. 데이터셋 README에 같은 표를 넣는다.
+END_REASON_CODE = {None: 0, "arrival": 1, "collision": 2, "lane_end": 3, "red_light": 4,
+                   "teleport": 5, "timeout": 6, "stall": 7, "vehicle_removed": 8}
+
+
+# 차선변경이 실행되지 않은 이유 (event.lane_change_blocked 문자열의 숫자 코드)
+LC_BLOCK_CODE = {None: 0, "no_lane": 1, "junction": 2, "unsafe": 3, "route": 4, "reverse": 5}
+# 보상 구성 항. 매 스텝 이 순서의 고정 칸으로 저장한다 (발생하지 않은 항은 0). 합 = reward
+REWARD_TERM_KEYS = ("speed", "overspeed", "idle", "stop_shaping", "close_gap", "blocked",
+                    "lane_change", "invalid_action", "yield", "red_light", "collision", "arrival")
+
+
+def _reward_terms(info):
+    rt = info.get("reward_terms") or {}
+    out = {k: float(rt.get(k, 0.0)) for k in REWARD_TERM_KEYS}
+    for k, v in rt.items():          # 표에 없는 항이 생기면 버리지 않고 그대로 둔다
+        if k not in out:
+            out[k] = float(v)
+    return out
+
+
+def _sumo_version():
+    try:
+        from env import sumo_env as _se
+        return str(_se.traci.getVersion()[1])
+    except Exception:
+        return None
+
+
+COLLISION_TYPE_CODE = {None: 0, "collision": 1, "junction": 2, "frontal": 3, "crossing": 4, "side": 5}
+
+
+def _collision_detail(env, flow_map):
+    """차량 충돌로 끝난 스텝의 상대 차 정보 (SUMO getCollisions). 없으면 None."""
+    try:
+        from env import sumo_env as _se
+        for c in _se.traci.simulation.getCollisions():
+            if env.ego_id in (c.collider, c.victim):
+                ego_is_collider = c.collider == env.ego_id
+                partner = c.victim if ego_is_collider else c.collider
+                return {
+                    "type": str(c.type),
+                    "type_code": int(COLLISION_TYPE_CODE.get(str(c.type), 9)),
+                    "ego_is_collider": bool(ego_is_collider),
+                    "ego_speed_mps": float(c.colliderSpeed if ego_is_collider else c.victimSpeed),
+                    "partner_id": str(partner),
+                    "partner_flow_index": int(flow_map.get(str(partner).rsplit(".", 1)[0], -1)),
+                    "partner_speed_mps": float(c.victimSpeed if ego_is_collider else c.colliderSpeed),
+                    "lane_id": str(c.lane),
+                    "lane_pos": float(c.pos),
+                }
+    except Exception:
+        pass
+    return None
+
+
+# 코드가 읽는 환경변수 전체 (SUMO_HOME 제외). 판마다 env_options에 값(없으면 null)을 남긴다.
+ENV_KEYS = ("ASSIST_PROB", "EXEC_ACTION_BUFFER", "HARD_START_BACK_M", "HARD_START_PROB", "HARD_START_TARGETS",
+            "JUNCTION_ROW", "JUNCTION_YIELD", "LC_COOLDOWN_EXEMPT", "LC_REVERSE_COOLDOWN", "LC_TRACK_SUMO",
+            "MERGE_COOP", "MERGE_SPEEDMATCH", "MERGE_STOP", "MERGE_SUMO", "RED_STOP", "ROUNDABOUT_VMAX",
+            "ROUTE_ASSIST_M", "ROUTE_SHIELD_M", "SIM_REUSE", "SPAWN_CLEAR_OVERRIDE", "STOP_SHAPING",
+            "STOP_SHAPING_DECEL", "STOP_SHAPING_HEADWAY", "SUMO_USE_LIBSUMO", "ZIPPER_FOLLOW",
+            "TEAM14_IDLE_PEN", "TEAM14_JUN_INSIDE", "TEAM14_NO_SPEED_CAP", "TEAM14_OVERSPEED_W",
+            "TEAM14_RESET_LOGSTD", "TEAM14_ROUTE_NO_SHINHYUP", "TEAM14_ROUTE_OBS", "TEAM14_SCENARIO",
+            "TEAM14_TOF_OBS")
+# map6b 모델(map5 이어 학습 20만)의 표준 수집 조건. tools/collect_map6b.sh가 이 값으로 맞춘다.
+STANDARD_ENV = {"TEAM14_SCENARIO": "museum", "TEAM14_ROUTE_OBS": "coarse", "TEAM14_NO_SPEED_CAP": "1",
+                "TEAM14_OVERSPEED_W": "1.0", "TEAM14_IDLE_PEN": "0.3", "SIM_REUSE": "1"}
+STANDARD_ENV_OPTIONAL = {"TEAM14_ROUTE_NO_SHINHYUP": "0", "SUMO_USE_LIBSUMO": None}   # 없어도 되는 것
+STANDARD_REWARD = {"collision_penalty": 30.0, "arrival_bonus": 30.0, "blocked_penalty": 0.0}
+STANDARD_MODEL_SHA256 = "6ebdc4f6462497299d03b0197e3c9086dd3e20d9c7af31871a63abaa22d36b36"
+
+
+def _same(a, b):
+    try:
+        return float(a) == float(b)
+    except (TypeError, ValueError):
+        return a == b
+
+
+def check_standard(args):
+    """표준 조건과 다른 점의 목록. 비어 있으면 통과."""
+    bad = []
+    for k, v in STANDARD_ENV.items():
+        if not _same(os.environ.get(k), v):
+            bad.append(f"{k}={os.environ.get(k)!r} (표준 {v!r})")
+    for k in sorted(set(ENV_KEYS) | {x for x in os.environ if x.startswith("TEAM14_")}):
+        if k in STANDARD_ENV or os.environ.get(k) is None:
+            continue
+        if k in STANDARD_ENV_OPTIONAL and (STANDARD_ENV_OPTIONAL[k] is None
+                                            or _same(os.environ[k], STANDARD_ENV_OPTIONAL[k])):
+            continue
+        bad.append(f"{k}={os.environ[k]!r} (표준: 설정 안 함)")
+    for k, v in STANDARD_REWARD.items():
+        if float(REWARD[k]) != v:
+            bad.append(f"보상 {k}={REWARD[k]} (표준 {v})")
+    if args.policy != "ppo" or args.stochastic:
+        bad.append("정책은 ppo, 결정적 행동이어야 함")
+    return bad
+
+
+def _run_conditions(args):
+    """수집 조건 증명용: 환경변수, 모델 해시, 코드 커밋."""
+    import hashlib
+    import subprocess
+    sha = None
+    if args.model:
+        h = hashlib.sha256()
+        with open(args.model, "rb") as f:
+            h.update(f.read())
+        sha = h.hexdigest()
+    commit = args.code_commit
+    if commit is None:
+        try:
+            commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=BASE, capture_output=True,
+                                    text=True, timeout=10).stdout.strip() or None
+        except Exception:
+            commit = None
+    keys = sorted(set(ENV_KEYS) | {k for k in os.environ if k.startswith("TEAM14_")})
+    return {"model_sha256": sha, "code_commit": commit,
+            "env_options": {k: os.environ.get(k) for k in keys},
+            "standard_conditions": not check_standard(args) and sha == STANDARD_MODEL_SHA256}
+
+
+def _flow_index_map(sumocfg):
+    """배경 교통 흐름 이름 → 번호 (rou.xml의 flow id를 이름순으로 정렬). 모든 워커에서 같다."""
+    import re
+    rou = os.path.join(os.path.dirname(str(sumocfg)), "highway.rou.xml")
+    try:
+        names = sorted(set(re.findall(r'<flow id="([^"]+)"', open(rou, encoding="utf-8").read())))
+    except OSError:
+        names = []
+    return {n: i for i, n in enumerate(names)}
+
+
+def _annotate_state(state, flow_map, route_map):
+    """state에 숫자 번호 칼럼을 붙인다 (문자열 ID는 그대로 둔다)."""
+    if not state or not state.get("ego_alive"):
+        return state
+    for v in state.get("vehicles", ()):
+        vid = str(v.get("id", ""))
+        v["flow_index"] = int(flow_map.get(vid.rsplit(".", 1)[0], -1))
+        v["route_edge_number"] = int(route_map.get(v.get("road_id"), -1))
+    return state
+
+
+def _derived(obs):
+    """관측 37칸(coarse)에서 단위를 되돌린 도로 정보. 관측과 같은 계산값이다 (칸 21~23, 34~36)."""
+    o = [float(x) for x in obs]
+    if len(o) < 37:
+        return {}
+    return {
+        "lane_end_remaining_m": o[21] * 50.0 if o[21] < 0.999 else -1.0,
+        "fork_distance_m": o[22] * 600.0 if o[22] < 0.999 else -1.0,
+        "fork_direction": int(round(o[23])),
+        "junction_distance_m": o[34] * 150.0 if o[34] < 0.999 else -1.0,
+        "junction_must_yield": int(o[35] > 0),
+        "junction_cross_traffic": int(o[36] > 0),
+    }
+
+
 def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
     """SUMO 인스턴스 하나로 episodes(전역 에피소드 번호 목록)를 수집해 두 파일로 저장한다.
 
     --workers > 1이면 이 함수가 프로세스마다 하나씩 돌고, main()이 결과를 합친다.
     반환값: 수집한 transition 수.
     """
+    # (팀14, 11/27) --workers > 1이면 이 함수가 새 프로세스(spawn)에서 돌아 main()에서 바꾼 REWARD가
+    # 전달되지 않는다. 여기서 다시 적용한다 (안 하면 보상이 기본값 -5/+2/0.05로 기록된다).
+    for _k in ("collision_penalty", "arrival_bonus", "blocked_penalty"):
+        if getattr(args, _k, None) is not None:
+            REWARD[_k] = getattr(args, _k)
     worker_seed = (args.seed * 1000 + worker_id) % 2**32
     if args.workers > 1:
         # 프로세스마다 torch가 코어 수만큼 스레드를 띄우면 서로 뺏는다. 관측 1개씩
@@ -191,6 +378,16 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
     # 워커들이 같은 교통 패턴을 반복하지 않는다.
     np.random.seed(worker_seed)
 
+    flow_map = _flow_index_map(sumocfg)
+    route_map = {}
+    # (팀14, 11/27) NPZ 추가 배열
+    end_reason_buf, speed_buf, limit_buf, dist_buf, lead_gap_buf, signal_buf, seed_buf = [], [], [], [], [], [], []
+    value_buf, rtg_buf = [], []
+    value_fn = getattr(act, "value", None)
+    dist_fn = getattr(act, "dist_info", None)
+    logp_buf, mean_buf, lane_prob_buf, simtime_buf = [], [], [], []
+    conditions = _run_conditions(args)
+    sumo_version = None
     # NPZ는 학습에서 바로 쓰기 좋은 고정 크기 값만 모은다.
     obs_buf, next_obs_buf, action_raw_buf = [], [], []
     lane_cmd_buf, reward_buf = [], []
@@ -205,8 +402,22 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
         # 느린 대신 보통 20~30% 추가 절감.
         with gzip.open(jsonl_path, "wt", encoding="utf-8", compresslevel=6) as jf:
             for ep in episodes:
-                obs, _ = env.reset(seed=args.seed + ep)
-                state_t = env.get_privileged_state()
+                # (팀14, 11/27) 판마다 시드를 고정한다: 전역 난수(경로 선택 등)와 SUMO 시드 모두 seed + ep.
+                # SIM_REUSE=1(매 판 SUMO 새로 시작)과 함께 쓰면 판 하나를 시드만으로 다시 만들 수 있다.
+                ep_seed = int(args.seed + ep)
+                np.random.seed(ep_seed % 2**32)
+                env._sumo_seed_override = ep_seed % 2**31
+                obs, _ = env.reset(seed=ep_seed)
+                try:
+                    from env import sumo_env as _se
+                    _route = list(_se.traci.vehicle.getRoute(env.ego_id))
+                except Exception:
+                    _route = []
+                route_map = {e: i for i, e in enumerate(_route)}
+                state_t = _annotate_state(env.get_privileged_state(), flow_map, route_map)
+                ep_records = []     # 판이 끝난 뒤 return_to_go를 채워서 한꺼번에 쓴다
+                if sumo_version is None:
+                    sumo_version = _sumo_version()
                 done = False
                 t = 0
                 ep_return = 0.0
@@ -216,8 +427,15 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
                     # 관측 벡터와 별도로 저장하는 부가 데이터 (분석/시각화용).
                     detected = env.get_detected_vehicles()
                     action = act(obs)
+                    pol = dist_fn(obs, action) if dist_fn is not None else None
+                    if pol is not None:
+                        value_pred = pol.pop("value")
+                    else:
+                        value_pred = float(value_fn(obs)) if value_fn is not None else None
                     next_obs, reward, terminated, truncated, info = env.step(action)
-                    state_tp1 = env.get_privileged_state()
+                    collision = (_collision_detail(env, flow_map)
+                                 if info.get("vehicle_collision") else None)
+                    state_tp1 = _annotate_state(env.get_privileged_state(), flow_map, route_map)
                     done = terminated or truncated
 
                     record = {
@@ -233,6 +451,11 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
                             "lane_change_applied": bool(info["lane_change_applied"]),
                         },
                         "reward": float(reward),
+                        # (팀14, 11/27) critic 예측값 V(o_t). return_to_go는 판이 끝난 뒤 채운다.
+                        "value_pred": value_pred,
+                        # 정책 분포: 가감속 평균·표준편차, 차선 확률(왼쪽·유지·오른쪽), 고른 행동의 log π
+                        "policy": pol,
+                        "return_to_go": None,
                         "terminated": bool(terminated),
                         "truncated": bool(truncated),
                         "state": compact(state_t, args.ndigits),
@@ -243,15 +466,79 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
                             "arrived": bool(info["arrived"]),
                             "lane_before": info["lane_before"],
                             "lane_after": info["lane_after"],
+                            # (팀14, 11/27) 추가 칼럼
+                            "end_reason": int(END_REASON_CODE.get(info.get("end_reason"), 9)),
+                            "end_lane": info.get("end_lane"),
+                            "vehicle_collision": bool(info.get("vehicle_collision", False)),
+                            "red_light": bool(info.get("red_light", False)),
+                            "lane_end": bool(info.get("lane_end", False)),
+                            "teleported": bool(info.get("teleported", False)),
+                            "yield_violation": bool(info.get("yield_violation", False)),
+                            "lane_change_blocked": info.get("lane_change_blocked"),
+                            "lane_change_blocked_code": int(LC_BLOCK_CODE.get(info.get("lane_change_blocked"), 9)),
+                            "action_executed": (list(info["action_executed"])
+                                                if info.get("action_executed") is not None else None),
+                            "overspeed": bool(state_t.get("ego_speed", 0.0)
+                                              > state_t.get("allowed_speed_mps", 1e9) * 1.02),
                         },
+                        "reward_terms": _reward_terms(info),
+                        "derived": _derived(obs),
                     }
+                    if t == 0:
+                        record["episode_meta"] = {
+                            "seed": int(args.seed + ep),
+                            "route_name": info.get("route"),
+                            "route_estimates": info.get("route_estimates"),
+                            "disrupted_route": info.get("disrupted_route"),
+                            "hard_start": info.get("hard_start"),
+                            "route_edges": len(route_map),
+                            "model": os.path.basename(str(args.model)) if args.model else None,
+                            "policy": args.policy,
+                            "stochastic": bool(getattr(args, "stochastic", False)),
+                            "detour_no_shinhyup": os.environ.get("TEAM14_ROUTE_NO_SHINHYUP", "0") == "1",
+                            "sumo_seed": int(ep_seed % 2**31),
+                            "sim_reuse": os.environ.get("SIM_REUSE"),
+                            "sumo_version": sumo_version,
+                            "model_path": str(args.model) if args.model else None,
+                            "model_sha256": conditions["model_sha256"],
+                            "code_commit": conditions["code_commit"],
+                            "env_options": conditions["env_options"],
+                            "standard_conditions": bool(conditions["standard_conditions"]),
+                            "gae_lambda": float(HPARAMS.get("gae_lambda", 0.95)),
+                            "map_version": args.map_version,
+                            "traffic_vehs_per_hour": TRAFFIC.get("vehs_per_hour"),
+                            "step_seconds": 0.5,
+                            "gamma": float(args.gamma),
+                            # 보상 설정 전체 (train.py의 REWARD) + 환경변수로 주는 두 값
+                            "reward_config": {
+                                **{k: (float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else v)
+                                   for k, v in REWARD.items()},
+                                "idle_penalty": float(os.environ.get("TEAM14_IDLE_PEN", "0") or 0),
+                                "overspeed_weight": float(os.environ.get("TEAM14_OVERSPEED_W", "1.0")),
+                            },
+                        }
+                    if done:
+                        record["episode_summary"] = {
+                            "end_reason": int(END_REASON_CODE.get(info.get("end_reason"), 9)),
+                            "end_reason_name": info.get("end_reason"),
+                            "end_lane": info.get("end_lane"),
+                            "steps": int(t + 1),
+                            "return": float(ep_return + reward),
+                            "distance_m": float(state_tp1.get("ego_distance_m", state_t.get("ego_distance_m", -1.0))),
+                            "collision": collision,
+                        }
                     if done:
                         # 중간 스텝의 next_*는 다음 레코드의 observation/state와 같으므로
                         # 에피소드 마지막 스텝에만 기록한다 (iter_transitions가 복원).
                         record["next_observation"] = compact(next_obs, args.ndigits)
                         record["next_state"] = compact(state_tp1, args.ndigits)
-                    jf.write(json.dumps(record, ensure_ascii=False,
-                                        separators=(",", ":")) + "\n")
+                    ep_records.append(record)
+                    value_buf.append(float("nan") if value_pred is None else value_pred)
+                    logp_buf.append(float("nan") if pol is None else pol["log_prob"])
+                    mean_buf.append(float("nan") if pol is None else pol["accel_mean"])
+                    lane_prob_buf.append((float("nan"),) * 3 if pol is None else
+                                         (pol["lane_prob_left"], pol["lane_prob_keep"], pol["lane_prob_right"]))
+                    simtime_buf.append(float(state_t.get("sim_time_s", -1.0)))
 
                     obs_buf.append(np.asarray(obs, dtype=np.float32))
                     next_obs_buf.append(np.asarray(next_obs, dtype=np.float32))
@@ -262,6 +549,14 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
                     trunc_buf.append(bool(truncated))
                     episode_buf.append(int(ep))
                     step_buf.append(t)
+                    end_reason_buf.append(int(END_REASON_CODE.get(info.get("end_reason"), 9)))
+                    speed_buf.append(float(state_t.get("ego_speed", 0.0)))
+                    limit_buf.append(float(state_t.get("allowed_speed_mps", -1.0)))
+                    dist_buf.append(float(state_t.get("ego_distance_m", -1.0)))
+                    lead_gap_buf.append(float(state_t.get("lead_gap_m", -1.0)))
+                    signal_buf.append((int(state_t.get("signal_green", 0)), int(state_t.get("signal_yellow", 0)),
+                                       int(state_t.get("signal_red", 0))))
+                    seed_buf.append(int(args.seed + ep))
                     detected_xy_buf.extend((d["x"], d["y"]) for d in detected)
                     detected_offsets.append(len(detected_xy_buf))
 
@@ -270,6 +565,18 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
                     t += 1
                     obs = next_obs
                     state_t = state_tp1  # 스텝 끝의 상태 = 다음 스텝 시작의 상태
+
+                # (팀14, 11/27) return_to_go: G_t = r_t + γ·G_{t+1}, 판의 마지막 스텝 뒤는 0.
+                # 시간 제한(truncated)으로 끝난 판은 그 뒤 보상이 빠져 있다.
+                g = 0.0
+                rtg = [0.0] * len(ep_records)
+                for i in range(len(ep_records) - 1, -1, -1):
+                    g = ep_records[i]["reward"] + args.gamma * g
+                    rtg[i] = g
+                for rec, gi in zip(ep_records, rtg):
+                    rec["return_to_go"] = float(gi)
+                    jf.write(json.dumps(rec, ensure_ascii=False, separators=(",", ":")) + "\n")
+                rtg_buf.extend(rtg)
 
                 print(f"{tag}episode {ep + 1:4d}/{args.episodes} | "
                       f"steps={t:4d} return={ep_return:8.3f}", flush=True)
@@ -287,6 +594,20 @@ def collect(args, sumocfg, episodes, worker_id, jsonl_path, npz_path, tag=""):
         truncated=np.asarray(trunc_buf, dtype=np.bool_),
         episode=np.asarray(episode_buf, dtype=np.int32),
         t=np.asarray(step_buf, dtype=np.int32),
+        # (팀14, 11/27) 추가 배열
+        end_reason=np.asarray(end_reason_buf, dtype=np.int8),
+        speed_mps=np.asarray(speed_buf, dtype=np.float32),
+        allowed_speed_mps=np.asarray(limit_buf, dtype=np.float32),
+        distance_m=np.asarray(dist_buf, dtype=np.float32),
+        lead_gap_m=np.asarray(lead_gap_buf, dtype=np.float32),
+        signal_onehot=np.asarray(signal_buf, dtype=np.int8).reshape(total, 3),
+        seed=np.asarray(seed_buf, dtype=np.int64),
+        value_pred=np.asarray(value_buf, dtype=np.float32),
+        log_prob=np.asarray(logp_buf, dtype=np.float32),
+        accel_mean=np.asarray(mean_buf, dtype=np.float32),
+        lane_probs=np.asarray(lane_prob_buf, dtype=np.float32).reshape(total, 3),
+        sim_time_s=np.asarray(simtime_buf, dtype=np.float32),
+        return_to_go=np.asarray(rtg_buf, dtype=np.float32),
         # 감지 차량 (x,y)를 전 스텝에 걸쳐 이어 붙인 (M, 2) float32.
         # 스텝 i의 좌표: detected_xy[detected_offsets[i]:detected_offsets[i+1]]
         detected_xy=np.asarray(detected_xy_buf, dtype=np.float32).reshape(-1, 2),
@@ -348,13 +669,42 @@ def main():
     parser.add_argument("--ndigits", type=int, default=4,
                         help="JSONL의 observation/state/detected float 소수 자릿수 "
                              "(NPZ에는 영향 없음)")
+    # (팀14, 11/27) 학습 때와 같은 보상으로 기록하기 위한 옵션 (train.py와 같은 이름)
+    # 기본값 = map6b 모델의 학습 명령 (--collision-penalty 30 --arrival-bonus 30 --blocked-penalty 0)
+    parser.add_argument("--collision-penalty", type=float, default=30.0)
+    parser.add_argument("--arrival-bonus", type=float, default=30.0)
+    parser.add_argument("--blocked-penalty", type=float, default=0.0)
+    parser.add_argument("--allow-nonstandard", action="store_true",
+                        help="표준 수집 조건(환경변수·보상·모델)과 달라도 실행한다. 판 정보에 "
+                             "standard_conditions=false로 남는다")
+    parser.add_argument("--gamma", type=float, default=0.995,
+                        help="return_to_go 계산에 쓰는 할인율 (학습과 같은 값)")
+    parser.add_argument("--map-version", default="map6b")
+    parser.add_argument("--code-commit", default=None,
+                        help="코드 커밋 해시 (생략하면 git rev-parse HEAD)")
     args = parser.parse_args()
+    for _k, _v in (("collision_penalty", args.collision_penalty), ("arrival_bonus", args.arrival_bonus),
+                   ("blocked_penalty", args.blocked_penalty)):
+        if _v is not None:
+            REWARD[_k] = _v
     if args.policy in ("ppo", "bc") and args.model is None:
         parser.error(f"--policy {args.policy}에는 --model이 필요합니다.")
     if args.model is not None and not os.path.exists(args.model):
         parser.error(f"모델 파일이 없습니다: {args.model}")
     if args.policy is None:
         args.policy = detect_algorithm(args.model) if args.model else "random"
+    _bad = check_standard(args)
+    if args.model and args.policy == "ppo":
+        import hashlib
+        if hashlib.sha256(open(args.model, "rb").read()).hexdigest() != STANDARD_MODEL_SHA256:
+            _bad.append("모델 파일이 표준 모델(map5_ft_200704.pt)과 다름")
+    if _bad:
+        print("표준 수집 조건과 다른 점:\n  - " + "\n  - ".join(_bad))
+        if not args.allow_nonstandard:
+            parser.error("표준 조건이 아니어서 시작하지 않습니다. tools/collect_map6b.sh로 실행하거나, "
+                         "의도한 것이면 --allow-nonstandard를 붙이세요.")
+    else:
+        print("표준 수집 조건 확인: 통과")
     if args.model:
         print(f"정책: {args.policy} ({args.model})"
               + (" [stochastic]" if args.stochastic and args.policy == "ppo" else ""))
