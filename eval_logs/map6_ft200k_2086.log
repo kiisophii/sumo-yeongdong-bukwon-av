@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== ../team14_map5/results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt (60 episodes) ===
+  ep   1/60: steps=2583 return= 136.79 완주 lane=611808767_0
+  ep   2/60: steps=2604 return= 149.68 완주 lane=611808767_0
+  ep   3/60: steps=2379 return= 127.35 완주 lane=611808767_0
+  ep   4/60: steps=2526 return= 135.44 완주 lane=611808767_0
+  ep   5/60: steps=2591 return= 149.23 완주 lane=611808767_0
+  ep   6/60: steps=2638 return= 154.19 완주 lane=611808767_0
+  ep   7/60: steps= 244 return=  10.24 차량 충돌 lane=:1681517542_4_0
+  ep   8/60: steps=2649 return= 153.01 완주 lane=611808767_0
+  ep   9/60: steps=2389 return= 129.22 완주 lane=611808767_0
+  ep  10/60: steps=2699 return= 161.21 완주 lane=611808767_0
+  ep  11/60: steps=2641 return= 156.57 완주 lane=611808767_0
+  ep  12/60: steps=2565 return= 138.99 완주 lane=611808767_0
+  ep  13/60: steps=2641 return= 145.32 완주 lane=611808767_0
+  ep  14/60: steps=2746 return= 156.33 완주 lane=611808767_0
+  ep  15/60: steps=2608 return= 150.88 완주 lane=611808767_0
+  ep  16/60: steps=2714 return= 155.66 완주 lane=611808767_0
+  ep  17/60: steps=2809 return= 168.40 완주 lane=611808767_0
+  ep  18/60: steps=2563 return= 142.76 완주 lane=611808767_0
+  ep  19/60: steps=2684 return= 153.62 완주 lane=611808767_0
+  ep  20/60: steps=2370 return= 127.05 완주 lane=611808767_0
+  ep  21/60: steps=2603 return= 146.00 완주 lane=611808767_0
+  ep  22/60: steps=2664 return= 150.14 완주 lane=611808767_0
+  ep  23/60: steps=2474 return= 130.18 완주 lane=611808767_0
+  ep  24/60: steps=2880 return= 166.29 완주 lane=611808767_0
+  ep  25/60: steps=2613 return= 151.20 완주 lane=611808767_0
+  ep  26/60: steps=2483 return= 135.83 완주 lane=611808767_0
+  ep  27/60: steps=2370 return= 124.12 완주 lane=611808767_0
+  ep  28/60: steps=3137 return= 175.07 완주 lane=611808767_0
+  ep  29/60: steps=2554 return= 143.70 완주 lane=611808767_0
+  ep  30/60: steps=2442 return= 132.27 완주 lane=611808767_0
+  ep  31/60: steps=2590 return= 146.83 완주 lane=611808767_0
+  ep  32/60: steps=2473 return= 133.04 완주 lane=611808767_0
+  ep  33/60: steps= 268 return=  14.00 경로 이탈 lane=568664967#0_1
+  ep  34/60: steps=2656 return= 157.51 완주 lane=611808767_0
+  ep  35/60: steps=2464 return= 126.23 완주 lane=611808767_0
+  ep  36/60: steps=2836 return= 167.28 완주 lane=611808767_0
+  ep  37/60: steps=2562 return= 148.06 완주 lane=611808767_0
+  ep  38/60: steps=2478 return= 134.14 완주 lane=611808767_0
+  ep  39/60: steps=2392 return= 133.14 완주 lane=611808767_0
+  ep  40/60: steps=2663 return= 154.74 완주 lane=611808767_0
+  ep  41/60: steps= 999 return=  57.40 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  42/60: steps=1720 return=  92.13 차량 충돌 lane=1307152438_3
+  ep  43/60: steps=2429 return= 130.84 완주 lane=611808767_0
+  ep  44/60: steps=2497 return= 135.27 완주 lane=611808767_0
+  ep  45/60: steps=2506 return= 137.89 완주 lane=611808767_0
+  ep  46/60: steps=2400 return= 124.14 완주 lane=611808767_0
+  ep  47/60: steps= 947 return=  51.60 차량 충돌 lane=474882669#1-AddedOnRampEdge_0
+  ep  48/60: steps= 875 return=  47.14 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  49/60: steps=2475 return= 135.54 완주 lane=611808767_0
+  ep  50/60: steps=2566 return= 149.35 완주 lane=611808767_0
+  ep  51/60: steps=2657 return= 151.25 완주 lane=611808767_0
+  ep  52/60: steps=2683 return= 147.30 완주 lane=611808767_0
+  ep  53/60: steps=2551 return= 141.59 완주 lane=611808767_0
+  ep  54/60: steps=2593 return= 141.20 완주 lane=611808767_0
+  ep  55/60: steps=2479 return= 139.51 완주 lane=611808767_0
+  ep  56/60: steps=2701 return= 157.44 완주 lane=611808767_0
+  ep  57/60: steps=2476 return= 137.51 완주 lane=611808767_0
+  ep  58/60: steps=2259 return= 115.83 완주 lane=611808767_0
+  ep  59/60: steps=2661 return= 152.47 완주 lane=611808767_0
+  ep  60/60: steps=2451 return= 137.42 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+../team14_map5/results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt     5%       0%       5%    90%           37.7      1201.4
+
+저장: results/map6_ft200k_2086.json

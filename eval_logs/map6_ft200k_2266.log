@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== ../team14_map5/results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt (60 episodes) ===
+  ep   1/60: steps= 325 return=  13.16 경로 이탈 lane=568664967#0_1
+  ep   2/60: steps=2599 return= 146.70 완주 lane=611808767_0
+  ep   3/60: steps=2587 return= 143.96 완주 lane=611808767_0
+  ep   4/60: steps= 279 return=  12.27 경로 이탈 lane=568664967#0_1
+  ep   5/60: steps=2653 return= 147.64 완주 lane=611808767_0
+  ep   6/60: steps=2599 return= 148.31 완주 lane=611808767_0
+  ep   7/60: steps= 293 return=  12.25 경로 이탈 lane=568664967#0_1
+  ep   8/60: steps=2135 return= 108.94 경로 이탈 lane=1224608702_3
+  ep   9/60: steps=2436 return= 131.47 완주 lane=611808767_0
+  ep  10/60: steps=2611 return= 150.40 완주 lane=611808767_0
+  ep  11/60: steps=2596 return= 143.83 완주 lane=611808767_0
+  ep  12/60: steps=2181 return= 113.30 경로 이탈 lane=1224608702_3
+  ep  13/60: steps=2563 return= 149.15 완주 lane=611808767_0
+  ep  14/60: steps= 419 return=  15.83 신호 위반 lane=:4931777214_2_0
+  ep  15/60: steps=2598 return= 141.77 완주 lane=611808767_0
+  ep  16/60: steps=2405 return= 129.79 완주 lane=611808767_0
+  ep  17/60: steps=2324 return= 126.68 경로 이탈 lane=1224608702_3
+  ep  18/60: steps=2752 return= 143.50 완주 lane=611808767_0
+  ep  19/60: steps=2826 return= 167.17 완주 lane=611808767_0
+  ep  20/60: steps=2761 return= 164.55 완주 lane=611808767_0
+  ep  21/60: steps=2505 return= 141.41 완주 lane=611808767_0
+  ep  22/60: steps= 285 return=  12.05 신호 위반 lane=496583281#1_0
+  ep  23/60: steps=2552 return= 141.85 완주 lane=611808767_0
+  ep  24/60: steps=2353 return= 123.34 완주 lane=611808767_0
+  ep  25/60: steps=2579 return= 144.84 완주 lane=611808767_0
+  ep  26/60: steps=2488 return= 137.94 완주 lane=611808767_0
+  ep  27/60: steps=2509 return= 138.43 완주 lane=611808767_0
+  ep  28/60: steps=2858 return= 171.00 완주 lane=611808767_0
+  ep  29/60: steps=2524 return= 142.26 완주 lane=611808767_0
+  ep  30/60: steps=2571 return= 146.45 완주 lane=611808767_0
+  ep  31/60: steps=2704 return= 155.23 완주 lane=611808767_0
+  ep  32/60: steps=2504 return= 139.14 완주 lane=611808767_0
+  ep  33/60: steps=2487 return= 139.82 완주 lane=611808767_0
+  ep  34/60: steps=2450 return= 137.52 완주 lane=611808767_0
+  ep  35/60: steps= 222 return=  10.08 차량 충돌 lane=:1681517542_4_0
+  ep  36/60: steps=2403 return= 127.47 완주 lane=611808767_0
+  ep  37/60: steps=2580 return= 142.22 완주 lane=611808767_0
+  ep  38/60: steps=2516 return= 139.54 완주 lane=611808767_0
+  ep  39/60: steps= 232 return=   9.11 차량 충돌 lane=:1681517542_4_0
+  ep  40/60: steps=2393 return= 119.44 완주 lane=611808767_0
+  ep  41/60: steps=2557 return= 149.01 완주 lane=611808767_0
+  ep  42/60: steps=2451 return= 130.46 완주 lane=611808767_0
+  ep  43/60: steps=2362 return= 124.92 완주 lane=611808767_0
+  ep  44/60: steps=2392 return= 117.38 완주 lane=611808767_0
+  ep  45/60: steps= 878 return=  47.98 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  46/60: steps=2488 return= 133.36 완주 lane=611808767_0
+  ep  47/60: steps= 233 return=   9.49 차량 충돌 lane=:1681517542_4_0
+  ep  48/60: steps=2716 return= 158.40 완주 lane=611808767_0
+  ep  49/60: steps=2521 return= 134.81 완주 lane=611808767_0
+  ep  50/60: steps=2592 return= 145.68 완주 lane=611808767_0
+  ep  51/60: steps=2638 return= 146.28 완주 lane=611808767_0
+  ep  52/60: steps=2505 return= 135.52 완주 lane=611808767_0
+  ep  53/60: steps= 245 return=  12.25 차량 충돌 lane=:1681517542_4_0
+  ep  54/60: steps=2479 return= 131.95 완주 lane=611808767_0
+  ep  55/60: steps=2982 return= 176.71 완주 lane=611808767_0
+  ep  56/60: steps=2545 return= 144.29 완주 lane=611808767_0
+  ep  57/60: steps=2645 return= 149.68 완주 lane=611808767_0
+  ep  58/60: steps=2460 return= 134.05 완주 lane=611808767_0
+  ep  59/60: steps=2812 return= 170.02 완주 lane=611808767_0
+  ep  60/60: steps=2601 return= 147.29 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+../team14_map5/results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt     7%       0%      12%    78%           38.0      1089.7
+
+저장: results/map6_ft200k_2266.json
