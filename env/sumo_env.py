@@ -139,6 +139,10 @@ class SumoHighwayEnv(gym.Env):
         # 제동 가능성 검사 (0이면 끔): 변경 직후 속도차를 이 감속도로 없앨 수 있어야 허용
         self.lc_brake_decel = float(lcs.get("brake_check_decel", 0.0))          # m/s^2 (ego)
         self.lc_follower_decel = float(lcs.get("follower_brake_decel", 0.0))    # m/s^2 (뒤차)
+        # (팀14, 11/26) TEAM14_LC_NOBRAKE_T=t > 0: 제동을 가정하지 않는 검사. 지금 속도 그대로 t초 동안
+        #   (차로 변경 1초 + 반응 시간) 다가가도 최소 간격이 남아야 허용. 정책이 변경 뒤 4.0 m/s²로
+        #   감속한다는 위 가정이 실제로 지켜지지 않아 끼어든 뒤 추돌하던 문제 때문. 기본 0 = 끔(기존과 같음).
+        self.lc_nobrake_t = float(os.environ.get("TEAM14_LC_NOBRAKE_T", "0") or 0)
         # 목표 차선 뒤차를 교차점 너머 앞 구간까지 찾는 거리 (m). 0이면 끔.
         self.upstream_scan_m = float(lcs.get("upstream_scan", 80.0))
         self._incoming = None   # 차선 → 들어오는 차선 표 (처음 쓸 때 만든다)
@@ -1962,6 +1966,8 @@ class SumoHighwayEnv(gym.Env):
                 closing = max(v - lv, 0.0)
                 if gap <= self.lc_front_min + closing ** 2 / (2.0 * self.lc_brake_decel):
                     return False
+            if self.lc_nobrake_t > 0.0 and gap <= self.lc_front_min + max(v - lv, 0.0) * self.lc_nobrake_t:
+                return False
 
         if not self.tof:
             foll = closer(self._neighbor(direction, leader=False), scan_rear)
@@ -1976,6 +1982,8 @@ class SumoHighwayEnv(gym.Env):
                 closing = max(fv - v, 0.0)
                 if gap <= self.lc_rear_min + closing ** 2 / (2.0 * self.lc_follower_decel):
                     return False
+            if self.lc_nobrake_t > 0.0 and gap <= self.lc_rear_min + max(fv - v, 0.0) * self.lc_nobrake_t:
+                return False
         return True
 
     def _tof_merge_gap_penalty(self, edge, lane, ahead, speed, speed_ref):

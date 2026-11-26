@@ -1,0 +1,25 @@
+{
+  "results/run_20261126_140618_tof_route_outcome_ft_s0/model_2222.pt": {
+    "collision_rate": 0.0,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "stall_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 1,
+    "transitions": [],
+    "failure_end_lanes": {},
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.811337624134627,
+    "mean_return": 108.44173533695117,
+    "mean_length_steps": 1928.0,
+    "mean_travel_time_s": 964.0,
+    "lane_changes_per_ep": 23.0,
+    "min_gap_median_m": 2.745966929828569,
+    "wall_time_s": 58.30352711677551
+  }
+}
