@@ -66,9 +66,14 @@ def _connection_shape(connection, net):
 
 class ToFObservation:
     def __init__(self, net, visibility, nominal_spacing, junction_range, *,
-                 lead_hold_s=0.0, lead_gap_window=False):
+                 lead_hold_s=0.0, lead_gap_window=False, keep_inside=False):
         if not isfinite(lead_hold_s) or lead_hold_s < 0.0:
             raise ValueError("ToF lead_hold_s must be finite and non-negative")
+        # (팀14, 11/26) keep_inside: 양보 교차로 안(내부 차선)에 들어간 뒤에도 교차로 관측을 유지
+        #   [거리 0, 양보 의무 +1, 교차 차량(ToF)]. 기존에는 내부 차선에서 [1, −1, −1](교차로 없음)이라
+        #   건너는 중에 가속해 신협오거리에서 충돌했음. 새 정보 없이 같은 세 칸을 끊기지 않게 함.
+        self.keep_inside = keep_inside
+        self._yield_connection = None
         self.net = net
         self.window = visibility
         self.spacing = nominal_spacing
@@ -257,7 +262,11 @@ class ToFObservation:
         # No simulator vehicle routes, hasFoe flag, or invisible track states enter PPO.
         lane = self.net.getLane(lane_id)
         if lane_id.startswith(":") or next_edge_id is None:
+            inside = self._inside_yield(lane_id)
+            if inside is not None:
+                return signal + [0.0, 1.0, self._foe_state(frame, inside)]
             return signal + [1.0, -1.0, -1.0]
+        self._yield_connection = None
         path = Path(_shape(lane))
         reference = path.project(frame.center)
         if reference is None:
@@ -267,6 +276,20 @@ class ToFObservation:
         if (distance > self.junction_range or connection is None or connection.getTLSID()
                 or connection.getState() not in YIELD_CONNECTION_STATES):
             return signal + [1.0, -1.0, -1.0]
+        if self.keep_inside:
+            self._yield_connection = connection
+        return signal + [distance / self.junction_range, 1.0, self._foe_state(frame, connection)]
+
+    def _inside_yield(self, lane_id):
+        """(팀14) 지금 내부 차선이 바로 전에 다가가던 양보 교차로 안이면 그 연결을 돌려준다."""
+        if not (self.keep_inside and self._yield_connection is not None and lane_id.startswith(":")):
+            return None
+        node = self._yield_connection.getJunction().getID()
+        return self._yield_connection if lane_id.startswith(f":{node}_") else None
+
+    def _foe_state(self, frame, connection):
+        """교차 진입로에서 ToF로 보이는 차가 다가오면 +1, 진입로가 다 보이고 비었으면 −1, 가려서 모르면 0.
+        진입로 경로는 교차로 안 구간까지 이어져 있어, 이미 교차로에 들어선 차도 잡힌다."""
         paths = self._conflicting_approaches(connection)
         clear = bool(paths)
         for other, stop, width in paths:
@@ -276,8 +299,8 @@ class ToFObservation:
                     continue
                 position, lateral = result
                 if lateral <= width and stop - position <= max(8.0, 4.0 * (track.speed or 0.0)):
-                    return signal + [distance / self.junction_range, 1.0, 1.0]
+                    return 1.0
             for back in (1.0, 10.0, 20.0, 30.0, 40.0):
                 point = other.point_at(max(0.0, stop - back))
                 clear = clear and point is not None and frame.visible(point)
-        return signal + [distance / self.junction_range, 1.0, -1.0 if clear else 0.0]
+        return -1.0 if clear else 0.0

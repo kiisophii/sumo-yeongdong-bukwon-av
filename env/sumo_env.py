@@ -1200,6 +1200,8 @@ class SumoHighwayEnv(gym.Env):
                     self._road_net, self.visibility, self.density_veh_len, self.junction_lookahead,
                     lead_hold_s=self.tof.get("lead_hold_s", 0.0),
                     lead_gap_window=self.tof.get("lead_gap_window", False),
+                    # (팀14, 11/26) TEAM14_TOF_JUN_INSIDE=1: 양보 교차로 안에서도 교차로 관측 유지 (학습·평가 모두 켜야 함)
+                    keep_inside=os.environ.get("TEAM14_TOF_JUN_INSIDE", "0") == "1",
                 )
             self._tof_scene = frame
             self._tof_lane_id = traci.vehicle.getLaneID(self.ego_id)
