@@ -1,0 +1,29 @@
+{
+  "../team14_map5/results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt": {
+    "collision_rate": 0.016666666666666666,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.03333333333333333,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.95,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.050000000000000044,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "474882669#1-AddedOnRampEdge_0": 2,
+      ":1681517542_4_0": 1
+    },
+    "lane_end_lanes": {
+      "474882669#1-AddedOnRampEdge_0": 2
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 10.142665962000033,
+    "mean_return": 146.0888262591546,
+    "mean_length_steps": 2609.75,
+    "mean_travel_time_s": 1304.875,
+    "lane_changes_per_ep": 11.166666666666666,
+    "min_gap_median_m": 0.5794765397375841,
+    "wall_time_s": 3490.1037771701813
+  }
+}
