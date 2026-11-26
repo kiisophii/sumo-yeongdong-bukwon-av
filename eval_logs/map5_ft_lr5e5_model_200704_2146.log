@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt (60 episodes) ===
+  ep   1/60: steps=2628 return= 147.10 완주 lane=611808767_0
+  ep   2/60: steps=2862 return= 169.72 완주 lane=611808767_0
+  ep   3/60: steps=2381 return= 130.07 완주 lane=611808767_0
+  ep   4/60: steps=2536 return= 139.74 완주 lane=611808767_0
+  ep   5/60: steps=2684 return= 159.79 완주 lane=611808767_0
+  ep   6/60: steps=2466 return= 135.73 완주 lane=611808767_0
+  ep   7/60: steps=2639 return= 151.32 완주 lane=611808767_0
+  ep   8/60: steps=2650 return= 152.37 완주 lane=611808767_0
+  ep   9/60: steps=2537 return= 141.70 완주 lane=611808767_0
+  ep  10/60: steps=2731 return= 164.01 완주 lane=611808767_0
+  ep  11/60: steps=2686 return= 157.95 완주 lane=611808767_0
+  ep  12/60: steps=2469 return= 131.50 완주 lane=611808767_0
+  ep  13/60: steps=2541 return= 144.46 완주 lane=611808767_0
+  ep  14/60: steps= 724 return=  39.78 차량 충돌 lane=:51066582#1.110_0_2
+  ep  15/60: steps=2440 return= 131.03 완주 lane=611808767_0
+  ep  16/60: steps=2611 return= 144.43 완주 lane=611808767_0
+  ep  17/60: steps=2840 return= 165.00 완주 lane=611808767_0
+  ep  18/60: steps=2574 return= 143.36 완주 lane=611808767_0
+  ep  19/60: steps=2362 return= 123.47 완주 lane=611808767_0
+  ep  20/60: steps=2446 return= 133.20 완주 lane=611808767_0
+  ep  21/60: steps=2467 return= 133.52 완주 lane=611808767_0
+  ep  22/60: steps=2605 return= 149.36 완주 lane=611808767_0
+  ep  23/60: steps=2770 return= 163.34 완주 lane=611808767_0
+  ep  24/60: steps=2666 return= 153.37 완주 lane=611808767_0
+  ep  25/60: steps= 241 return=   9.76 차량 충돌 lane=:1681517542_4_0
+  ep  26/60: steps=2384 return= 128.05 완주 lane=611808767_0
+  ep  27/60: steps=2648 return= 152.92 완주 lane=611808767_0
+  ep  28/60: steps=2623 return= 137.98 완주 lane=611808767_0
+  ep  29/60: steps=2779 return= 165.42 완주 lane=611808767_0
+  ep  30/60: steps= 308 return=  15.44 신호 위반 lane=496583281#1_0
+  ep  31/60: steps=2765 return= 161.60 완주 lane=611808767_0
+  ep  32/60: steps= 264 return=  12.40 경로 이탈 lane=568664967#0_1
+  ep  33/60: steps=2538 return= 135.39 완주 lane=611808767_0
+  ep  34/60: steps=1013 return=  60.88 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  35/60: steps=2551 return= 147.27 완주 lane=611808767_0
+  ep  36/60: steps= 326 return=  15.34 신호 위반 lane=496583281#1_0
+  ep  37/60: steps=2587 return= 152.17 완주 lane=611808767_0
+  ep  38/60: steps=1220 return=  28.93 순간이동 lane=:1681517425_0_0
+  ep  39/60: steps=2680 return= 155.38 완주 lane=611808767_0
+  ep  40/60: steps=2388 return= 128.28 완주 lane=611808767_0
+  ep  41/60: steps=2548 return= 144.22 완주 lane=611808767_0
+  ep  42/60: steps=2837 return= 158.32 완주 lane=611808767_0
+  ep  43/60: steps=2562 return= 146.08 완주 lane=611808767_0
+  ep  44/60: steps=2768 return= 169.90 완주 lane=611808767_0
+  ep  45/60: steps=2657 return= 148.36 완주 lane=611808767_0
+  ep  46/60: steps=2577 return= 142.71 완주 lane=611808767_0
+  ep  47/60: steps=2583 return= 147.51 완주 lane=611808767_0
+  ep  48/60: steps= 699 return=  36.26 차량 충돌 lane=:51066582#1.110_0_2
+  ep  49/60: steps=2613 return= 149.86 완주 lane=611808767_0
+  ep  50/60: steps=2776 return= 159.22 완주 lane=611808767_0
+  ep  51/60: steps=2736 return= 159.81 완주 lane=611808767_0
+  ep  52/60: steps=2493 return= 136.63 완주 lane=611808767_0
+  ep  53/60: steps=2465 return= 134.79 완주 lane=611808767_0
+  ep  54/60: steps=2425 return= 130.76 완주 lane=611808767_0
+  ep  55/60: steps=2507 return= 141.41 완주 lane=611808767_0
+  ep  56/60: steps=2521 return= 137.62 완주 lane=611808767_0
+  ep  57/60: steps=2692 return= 160.32 완주 lane=611808767_0
+  ep  58/60: steps=2514 return= 141.62 완주 lane=611808767_0
+  ep  59/60: steps=2583 return= 150.45 완주 lane=611808767_0
+  ep  60/60: steps=2375 return= 131.18 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_200704.pt     5%       2%       3%    87%           37.3      1163.0
+
+저장: results/map5_ft_lr5e5_model_200704_2146.json

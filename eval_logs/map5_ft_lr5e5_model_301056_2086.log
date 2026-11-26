@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_301056.pt (60 episodes) ===
+  ep   1/60: steps=2369 return= 138.26 완주 lane=611808767_0
+  ep   2/60: steps= 347 return=  16.17 경로 이탈 lane=568664967#0_1
+  ep   3/60: steps=2172 return= 119.53 완주 lane=611808767_0
+  ep   4/60: steps=2299 return= 135.93 완주 lane=611808767_0
+  ep   5/60: steps=2364 return= 136.11 완주 lane=611808767_0
+  ep   6/60: steps=2422 return= 146.31 완주 lane=611808767_0
+  ep   7/60: steps= 321 return=  15.49 경로 이탈 lane=568664967#0_1
+  ep   8/60: steps=2575 return= 163.78 완주 lane=611808767_0
+  ep   9/60: steps=2447 return= 154.36 완주 lane=611808767_0
+  ep  10/60: steps=2204 return= 118.00 완주 lane=611808767_0
+  ep  11/60: steps=2331 return= 142.59 완주 lane=611808767_0
+  ep  12/60: steps=2308 return= 140.36 완주 lane=611808767_0
+  ep  13/60: steps=2307 return= 131.50 완주 lane=611808767_0
+  ep  14/60: steps=2465 return= 134.63 완주 lane=611808767_0
+  ep  15/60: steps=2348 return= 137.30 완주 lane=611808767_0
+  ep  16/60: steps=2261 return= 126.99 완주 lane=611808767_0
+  ep  17/60: steps=2494 return= 161.94 완주 lane=611808767_0
+  ep  18/60: steps=2304 return= 136.99 완주 lane=611808767_0
+  ep  19/60: steps=2503 return= 159.50 완주 lane=611808767_0
+  ep  20/60: steps=2481 return= 149.11 완주 lane=611808767_0
+  ep  21/60: steps= 300 return=  13.28 경로 이탈 lane=568664967#0_1
+  ep  22/60: steps= 250 return=   9.60 차량 충돌 lane=:1681517542_4_0
+  ep  23/60: steps=2490 return= 157.34 완주 lane=611808767_0
+  ep  24/60: steps=2304 return= 128.55 완주 lane=611808767_0
+  ep  25/60: steps=2480 return= 147.94 완주 lane=611808767_0
+  ep  26/60: steps=2513 return= 156.24 완주 lane=611808767_0
+  ep  27/60: steps=2347 return= 140.95 완주 lane=611808767_0
+  ep  28/60: steps= 298 return=  14.20 경로 이탈 lane=568664967#0_1
+  ep  29/60: steps=2314 return= 137.76 완주 lane=611808767_0
+  ep  30/60: steps=2550 return= 160.22 완주 lane=611808767_0
+  ep  31/60: steps=2321 return= 137.36 완주 lane=611808767_0
+  ep  32/60: steps=2577 return= 165.68 완주 lane=611808767_0
+  ep  33/60: steps= 375 return=  18.57 경로 이탈 lane=568664967#0_1
+  ep  34/60: steps=2273 return= 128.95 완주 lane=611808767_0
+  ep  35/60: steps=2450 return= 156.21 완주 lane=611808767_0
+  ep  36/60: steps=2239 return= 130.01 완주 lane=611808767_0
+  ep  37/60: steps= 844 return=  43.92 차량 충돌 lane=:51066582#1.110_0_2
+  ep  38/60: steps=2621 return= 157.46 완주 lane=611808767_0
+  ep  39/60: steps=2310 return= 139.21 완주 lane=611808767_0
+  ep  40/60: steps=2413 return= 141.67 완주 lane=611808767_0
+  ep  41/60: steps=2454 return= 158.12 완주 lane=611808767_0
+  ep  42/60: steps= 332 return=  16.27 경로 이탈 lane=568664967#0_1
+  ep  43/60: steps=2424 return= 153.97 완주 lane=611808767_0
+  ep  44/60: steps=2352 return= 137.38 완주 lane=611808767_0
+  ep  45/60: steps=2410 return= 140.30 완주 lane=611808767_0
+  ep  46/60: steps=2271 return= 130.64 완주 lane=611808767_0
+  ep  47/60: steps=2660 return= 171.35 완주 lane=611808767_0
+  ep  48/60: steps= 352 return=  15.42 신호 위반 lane=496583281#1_0
+  ep  49/60: steps=2309 return= 135.72 완주 lane=611808767_0
+  ep  50/60: steps= 312 return=  12.84 차량 충돌 lane=:1681517542_4_0
+  ep  51/60: steps=2422 return= 143.67 완주 lane=611808767_0
+  ep  52/60: steps=2435 return= 153.68 완주 lane=611808767_0
+  ep  53/60: steps= 333 return=  16.71 경로 이탈 lane=568664967#0_1
+  ep  54/60: steps=2328 return= 142.56 완주 lane=611808767_0
+  ep  55/60: steps=2364 return= 137.75 완주 lane=611808767_0
+  ep  56/60: steps=2442 return= 151.69 완주 lane=611808767_0
+  ep  57/60: steps=2588 return= 165.73 완주 lane=611808767_0
+  ep  58/60: steps=2616 return= 174.49 완주 lane=611808767_0
+  ep  59/60: steps= 846 return=  44.19 차량 충돌 lane=:51066582#1.110_0_2
+  ep  60/60: steps=2547 return= 169.58 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_301056.pt     7%       0%      12%    80%           39.7      1003.2
+
+저장: results/map5_ft_lr5e5_model_301056_2086.json

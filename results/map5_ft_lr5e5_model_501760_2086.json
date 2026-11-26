@@ -1,0 +1,36 @@
+{
+  "results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_501760.pt": {
+    "collision_rate": 0.11666666666666667,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.2833333333333333,
+    "red_light_rate": 0.016666666666666666,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.5833333333333334,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.41666666666666663,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "1307152438_3": 3,
+      "377057231_2": 6,
+      ":51066582#1.110_0_2": 3,
+      "452597718#1_0": 1,
+      "1224608702_3": 7,
+      "474882669#1-AddedOnRampEdge_0": 4,
+      ":1681517542_4_0": 1
+    },
+    "lane_end_lanes": {
+      "377057231_2": 6,
+      "1224608702_3": 7,
+      "474882669#1-AddedOnRampEdge_0": 4
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 13.720925701576109,
+    "mean_return": 109.06523033651122,
+    "mean_length_steps": 1660.65,
+    "mean_travel_time_s": 830.325,
+    "lane_changes_per_ep": 9.116666666666667,
+    "min_gap_median_m": 6.807485034278898,
+    "wall_time_s": 4448.503072977066
+  }
+}

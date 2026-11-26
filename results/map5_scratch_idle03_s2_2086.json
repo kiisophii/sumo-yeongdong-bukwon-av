@@ -1,0 +1,44 @@
+{
+  "results/run_20261125_160555_map5_scratch_idle03_s2/model.pt": {
+    "collision_rate": 0.43333333333333335,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.43333333333333335,
+    "red_light_rate": 0.016666666666666666,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.11666666666666667,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.8833333333333333,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "1307152438_3": 14,
+      ":4582364294_0_0": 1,
+      "51066582#1_1": 12,
+      "377057231_2": 3,
+      "51066582#0_0": 2,
+      "474882669#1-AddedOnRampEdge_0": 10,
+      "474882669#1-AddedOnRampEdge_1": 3,
+      "496583281#1_0": 1,
+      "1224608702_3": 1,
+      ":650022432_0_1": 1,
+      "488779086#1_0": 1,
+      ":650022328_1_1": 2,
+      ":1681517542_4_0": 1,
+      ":4582364295_2_0": 1
+    },
+    "lane_end_lanes": {
+      "51066582#1_1": 12,
+      "377057231_2": 3,
+      "474882669#1-AddedOnRampEdge_0": 10,
+      "1224608702_3": 1
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 13.160914185820037,
+    "mean_return": 65.56673870429097,
+    "mean_length_steps": 1005.85,
+    "mean_travel_time_s": 502.925,
+    "lane_changes_per_ep": 5.283333333333333,
+    "min_gap_median_m": 3.0771957785325537,
+    "wall_time_s": 1134.5500972270966
+  }
+}

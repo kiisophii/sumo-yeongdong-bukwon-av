@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_100352.pt (60 episodes) ===
+  ep   1/60: steps= 377 return=  17.82 경로 이탈 lane=568664967#0_1
+  ep   2/60: steps=2577 return= 161.14 완주 lane=611808767_0
+  ep   3/60: steps=2009 return= 105.51 경로 이탈 lane=377057231_2
+  ep   4/60: steps= 358 return=  15.34 신호 위반 lane=496583281#1_0
+  ep   5/60: steps=1867 return=  98.88 경로 이탈 lane=377057231_2
+  ep   6/60: steps=2541 return= 146.00 완주 lane=611808767_0
+  ep   7/60: steps=2345 return= 123.87 완주 lane=611808767_0
+  ep   8/60: steps=2598 return= 158.77 완주 lane=611808767_0
+  ep   9/60: steps=2603 return= 158.45 완주 lane=611808767_0
+  ep  10/60: steps=2540 return= 150.92 완주 lane=611808767_0
+  ep  11/60: steps=2491 return= 139.72 완주 lane=611808767_0
+  ep  12/60: steps=2441 return= 134.83 완주 lane=611808767_0
+  ep  13/60: steps=2729 return= 163.60 완주 lane=611808767_0
+  ep  14/60: steps= 320 return=  13.12 차량 충돌 lane=:1681517542_4_0
+  ep  15/60: steps=2509 return= 140.98 완주 lane=611808767_0
+  ep  16/60: steps=2436 return= 137.03 완주 lane=611808767_0
+  ep  17/60: steps=2572 return= 161.03 완주 lane=611808767_0
+  ep  18/60: steps=2503 return= 148.64 완주 lane=611808767_0
+  ep  19/60: steps=2451 return= 132.85 완주 lane=611808767_0
+  ep  20/60: steps=2528 return= 141.60 완주 lane=611808767_0
+  ep  21/60: steps=2477 return= 142.45 완주 lane=611808767_0
+  ep  22/60: steps=2644 return= 165.27 완주 lane=611808767_0
+  ep  23/60: steps=2169 return= 113.85 경로 이탈 lane=1224608702_3
+  ep  24/60: steps=2607 return= 150.00 완주 lane=611808767_0
+  ep  25/60: steps=2554 return= 147.69 완주 lane=611808767_0
+  ep  26/60: steps=2690 return= 145.62 완주 lane=611808767_0
+  ep  27/60: steps=2620 return= 156.42 완주 lane=611808767_0
+  ep  28/60: steps=2590 return= 150.20 완주 lane=611808767_0
+  ep  29/60: steps=2465 return= 138.78 완주 lane=611808767_0
+  ep  30/60: steps=2281 return= 122.31 완주 lane=611808767_0
+  ep  31/60: steps=1030 return=  53.00 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  32/60: steps=2556 return= 143.18 완주 lane=611808767_0
+  ep  33/60: steps=2448 return= 120.95 완주 lane=611808767_0
+  ep  34/60: steps=2568 return= 139.06 완주 lane=611808767_0
+  ep  35/60: steps=2376 return= 129.71 완주 lane=611808767_0
+  ep  36/60: steps=2273 return= 120.15 완주 lane=611808767_0
+  ep  37/60: steps=2578 return= 152.43 완주 lane=611808767_0
+  ep  38/60: steps=2628 return= 161.77 완주 lane=611808767_0
+  ep  39/60: steps=2618 return= 161.81 완주 lane=611808767_0
+  ep  40/60: steps=2409 return= 127.56 완주 lane=611808767_0
+  ep  41/60: steps=2425 return= 128.78 완주 lane=611808767_0
+  ep  42/60: steps=2507 return= 144.07 완주 lane=611808767_0
+  ep  43/60: steps=2448 return= 128.23 완주 lane=611808767_0
+  ep  44/60: steps=2456 return= 141.84 완주 lane=611808767_0
+  ep  45/60: steps=2615 return= 141.71 완주 lane=611808767_0
+  ep  46/60: steps=2377 return= 127.75 완주 lane=611808767_0
+  ep  47/60: steps=2543 return= 141.97 완주 lane=611808767_0
+  ep  48/60: steps=1013 return=  52.71 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  49/60: steps=2540 return= 143.23 완주 lane=611808767_0
+  ep  50/60: steps= 774 return=  40.15 차량 충돌 lane=:51066582#1.110_0_2
+  ep  51/60: steps=2500 return= 137.34 완주 lane=611808767_0
+  ep  52/60: steps=2602 return= 134.95 완주 lane=611808767_0
+  ep  53/60: steps=2375 return= 137.46 완주 lane=611808767_0
+  ep  54/60: steps=2517 return= 146.60 완주 lane=611808767_0
+  ep  55/60: steps=2320 return= 128.39 완주 lane=611808767_0
+  ep  56/60: steps=2480 return= 142.59 완주 lane=611808767_0
+  ep  57/60: steps=2460 return= 137.87 완주 lane=611808767_0
+  ep  58/60: steps=2452 return= 139.07 완주 lane=611808767_0
+  ep  59/60: steps=2539 return= 153.47 완주 lane=611808767_0
+  ep  60/60: steps=2342 return= 129.58 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_100352.pt     3%       0%      10%    85%           38.9      1147.2
+
+저장: results/map5_ft_lr5e5_model_100352_2206.json

@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_100352.pt (60 episodes) ===
+  ep   1/60: steps=2462 return= 140.93 완주 lane=611808767_0
+  ep   2/60: steps=2627 return= 153.89 완주 lane=611808767_0
+  ep   3/60: steps=2368 return= 120.69 완주 lane=611808767_0
+  ep   4/60: steps=2461 return= 136.03 완주 lane=611808767_0
+  ep   5/60: steps=2426 return= 138.64 완주 lane=611808767_0
+  ep   6/60: steps=2592 return= 148.61 완주 lane=611808767_0
+  ep   7/60: steps=2572 return= 146.25 완주 lane=611808767_0
+  ep   8/60: steps=2691 return= 162.80 완주 lane=611808767_0
+  ep   9/60: steps=2465 return= 153.40 완주 lane=611808767_0
+  ep  10/60: steps=2420 return= 118.91 완주 lane=611808767_0
+  ep  11/60: steps= 980 return=  48.98 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  12/60: steps=2495 return= 141.48 완주 lane=611808767_0
+  ep  13/60: steps=2394 return= 134.67 완주 lane=611808767_0
+  ep  14/60: steps=2492 return= 139.46 완주 lane=611808767_0
+  ep  15/60: steps=2412 return= 136.42 완주 lane=611808767_0
+  ep  16/60: steps=2383 return= 129.59 완주 lane=611808767_0
+  ep  17/60: steps=2652 return= 157.15 완주 lane=611808767_0
+  ep  18/60: steps=2470 return= 137.09 완주 lane=611808767_0
+  ep  19/60: steps=2638 return= 160.39 완주 lane=611808767_0
+  ep  20/60: steps=2544 return= 149.76 완주 lane=611808767_0
+  ep  21/60: steps= 327 return=  14.12 경로 이탈 lane=568664967#0_1
+  ep  22/60: steps=2377 return= 123.15 완주 lane=611808767_0
+  ep  23/60: steps=2118 return= 122.73 차량 충돌 lane=206488704_2
+  ep  24/60: steps=2378 return= 128.48 완주 lane=611808767_0
+  ep  25/60: steps=2521 return= 148.09 완주 lane=611808767_0
+  ep  26/60: steps=2628 return= 157.03 완주 lane=611808767_0
+  ep  27/60: steps=2454 return= 140.08 완주 lane=611808767_0
+  ep  28/60: steps=2442 return= 132.06 완주 lane=611808767_0
+  ep  29/60: steps=2444 return= 138.53 완주 lane=611808767_0
+  ep  30/60: steps=2588 return= 159.84 완주 lane=611808767_0
+  ep  31/60: steps=2416 return= 136.68 완주 lane=611808767_0
+  ep  32/60: steps=2336 return= 140.12 경로 이탈 lane=1224608702_3
+  ep  33/60: steps=2712 return= 164.65 완주 lane=611808767_0
+  ep  34/60: steps= 711 return=  34.36 차량 충돌 lane=:51066582#1.110_0_2
+  ep  35/60: steps=2531 return= 153.35 완주 lane=611808767_0
+  ep  36/60: steps=2119 return= 108.77 경로 이탈 lane=1224608702_3
+  ep  37/60: steps=2600 return= 158.67 완주 lane=611808767_0
+  ep  38/60: steps=2611 return= 164.29 완주 lane=611808767_0
+  ep  39/60: steps=2429 return= 137.24 완주 lane=611808767_0
+  ep  40/60: steps=2467 return= 142.27 완주 lane=611808767_0
+  ep  41/60: steps= 392 return=  15.76 차량 충돌 lane=:4582364294_0_0
+  ep  42/60: steps= 334 return=  14.47 경로 이탈 lane=568664967#0_1
+  ep  43/60: steps=2561 return= 155.48 완주 lane=611808767_0
+  ep  44/60: steps= 960 return=  47.41 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  45/60: steps=2402 return= 140.83 완주 lane=611808767_0
+  ep  46/60: steps=2362 return= 130.38 완주 lane=611808767_0
+  ep  47/60: steps=2808 return= 174.89 완주 lane=611808767_0
+  ep  48/60: steps=2568 return= 142.49 완주 lane=611808767_0
+  ep  49/60: steps=2383 return= 133.62 완주 lane=611808767_0
+  ep  50/60: steps= 387 return=  15.45 차량 충돌 lane=:4582364294_0_0
+  ep  51/60: steps=2513 return= 142.38 완주 lane=611808767_0
+  ep  52/60: steps=2518 return= 154.62 완주 lane=611808767_0
+  ep  53/60: steps= 351 return=  16.00 경로 이탈 lane=568664967#0_1
+  ep  54/60: steps=2538 return= 143.90 완주 lane=611808767_0
+  ep  55/60: steps=2448 return= 141.15 완주 lane=611808767_0
+  ep  56/60: steps=2539 return= 149.42 완주 lane=611808767_0
+  ep  57/60: steps=2765 return= 168.97 완주 lane=611808767_0
+  ep  58/60: steps=2704 return= 164.78 완주 lane=611808767_0
+  ep  59/60: steps=2608 return= 160.04 완주 lane=611808767_0
+  ep  60/60: steps=2624 return= 167.15 완주 lane=611808767_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_100352.pt     7%       0%      12%    82%           38.3      1121.0
+
+저장: results/map5_ft_lr5e5_model_100352_2086.json

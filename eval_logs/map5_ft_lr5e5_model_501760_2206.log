@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_501760.pt (60 episodes) ===
+  ep   1/60: steps= 860 return=  54.66 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep   2/60: steps=2140 return= 137.65 완주 lane=611808767_0
+  ep   3/60: steps=1548 return= 105.12 경로 이탈 lane=377057231_2
+  ep   4/60: steps=1956 return= 130.60 완주 lane=611808767_0
+  ep   5/60: steps=1807 return= 116.48 완주 lane=611808767_0
+  ep   6/60: steps= 743 return=  42.89 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep   7/60: steps=1428 return=  88.33 경로 이탈 lane=377057231_2
+  ep   8/60: steps=2059 return= 127.98 완주 lane=611808767_0
+  ep   9/60: steps=1829 return= 124.14 경로 이탈 lane=1224608702_3
+  ep  10/60: steps= 270 return=  14.23 신호 위반 lane=496583281#1_0
+  ep  11/60: steps=1929 return= 132.72 완주 lane=611808767_0
+  ep  12/60: steps=1825 return= 119.24 완주 lane=611808767_0
+  ep  13/60: steps=2069 return= 138.62 완주 lane=611808767_0
+  ep  14/60: steps=2076 return= 136.94 완주 lane=611808767_0
+  ep  15/60: steps=2107 return= 127.50 완주 lane=611808767_0
+  ep  16/60: steps=1945 return= 120.46 완주 lane=611808767_0
+  ep  17/60: steps=2000 return= 140.53 완주 lane=611808767_0
+  ep  18/60: steps=1958 return= 135.43 완주 lane=611808767_0
+  ep  19/60: steps=1475 return=  95.27 경로 이탈 lane=377057231_2
+  ep  20/60: steps=1993 return= 133.60 완주 lane=611808767_0
+  ep  21/60: steps=1956 return= 127.19 완주 lane=611808767_0
+  ep  22/60: steps=1846 return= 130.16 경로 이탈 lane=1224608702_3
+  ep  23/60: steps=1876 return= 127.08 완주 lane=611808767_0
+  ep  24/60: steps= 211 return=   9.03 차량 충돌 lane=:1681517542_4_0
+  ep  25/60: steps=2029 return= 133.18 완주 lane=611808767_0
+  ep  26/60: steps=2025 return= 136.30 완주 lane=611808767_0
+  ep  27/60: steps=2006 return= 132.05 완주 lane=611808767_0
+  ep  28/60: steps=1595 return= 105.68 경로 이탈 lane=377057231_2
+  ep  29/60: steps=1532 return= 100.45 경로 이탈 lane=377057231_2
+  ep  30/60: steps=1201 return=  71.51 차량 충돌 lane=1307152438_3
+  ep  31/60: steps=1973 return= 131.62 완주 lane=611808767_0
+  ep  32/60: steps=1872 return= 123.91 완주 lane=611808767_0
+  ep  33/60: steps=1192 return=  68.37 차량 충돌 lane=1307152438_3
+  ep  34/60: steps=1947 return= 127.70 완주 lane=611808767_0
+  ep  35/60: steps= 233 return=  11.56 신호 위반 lane=496583281#1_0
+  ep  36/60: steps=1783 return= 111.39 완주 lane=611808767_0
+  ep  37/60: steps=2021 return= 138.97 완주 lane=611808767_0
+  ep  38/60: steps=2023 return= 136.20 완주 lane=611808767_0
+  ep  39/60: steps=2105 return= 140.55 완주 lane=611808767_0
+  ep  40/60: steps= 240 return=   8.29 신호 위반 lane=496583281#1_0
+  ep  41/60: steps=1658 return= 103.58 경로 이탈 lane=1224608702_3
+  ep  42/60: steps=1707 return= 114.48 경로 이탈 lane=1224608702_3
+  ep  43/60: steps=1822 return= 118.04 완주 lane=611808767_0
+  ep  44/60: steps=1920 return= 132.70 완주 lane=611808767_0
+  ep  45/60: steps=1989 return= 135.48 완주 lane=611808767_0
+  ep  46/60: steps=1867 return= 120.45 완주 lane=611808767_0
+  ep  47/60: steps=1939 return= 124.32 완주 lane=611808767_0
+  ep  48/60: steps=1312 return=  84.49 차량 충돌 lane=1307152438_3
+  ep  49/60: steps=1963 return= 134.18 완주 lane=611808767_0
+  ep  50/60: steps=1905 return= 128.10 완주 lane=611808767_0
+  ep  51/60: steps=1598 return=  99.72 경로 이탈 lane=377057231_2
+  ep  52/60: steps=1706 return= 115.63 경로 이탈 lane=1224608702_3
+  ep  53/60: steps=1674 return= 106.46 차량 충돌 lane=:1224608702.60_0_4
+  ep  54/60: steps=1951 return= 132.45 완주 lane=611808767_0
+  ep  55/60: steps=1940 return= 116.56 완주 lane=611808767_0
+  ep  56/60: steps=1977 return= 128.91 완주 lane=611808767_0
+  ep  57/60: steps=1247 return=  84.34 차량 충돌 lane=1307152438_3
+  ep  58/60: steps= 970 return=  58.84 차량 충돌 lane=493209391#2_2
+  ep  59/60: steps=1987 return= 137.35 완주 lane=611808767_0
+  ep  60/60: steps=1564 return= 101.77 차량 충돌 lane=1224608702_4
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_011253_map5_ft_lr5e5/checkpoints/model_501760.pt    13%       0%      22%    60%           50.3       836.5
+
+저장: results/map5_ft_lr5e5_model_501760_2206.json

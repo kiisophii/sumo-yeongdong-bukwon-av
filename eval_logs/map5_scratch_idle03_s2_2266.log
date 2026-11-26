@@ -1,0 +1,69 @@
+평가 알고리즘: PPO
+
+=== results/run_20261125_160555_map5_scratch_idle03_s2/model.pt (60 episodes) ===
+  ep   1/60: steps=1430 return= 107.79 차량 충돌 lane=1307152438_3
+  ep   2/60: steps= 634 return=  35.37 차량 충돌 lane=:474882669#1-AddedOnRampNode_0_0
+  ep   3/60: steps= 247 return=   9.42 신호 위반 lane=496583281#1_0
+  ep   4/60: steps= 694 return=  45.73 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep   5/60: steps= 533 return=  29.57 경로 이탈 lane=51066582#1_1
+  ep   6/60: steps= 566 return=  37.26 차량 충돌 lane=51066582#0_0
+  ep   7/60: steps= 588 return=  37.18 차량 충돌 lane=51066582#0_0
+  ep   8/60: steps= 607 return=  35.19 경로 이탈 lane=51066582#1_1
+  ep   9/60: steps= 630 return=  35.84 차량 충돌 lane=51066582#1.95_2
+  ep  10/60: steps= 542 return=  29.35 경로 이탈 lane=51066582#1_1
+  ep  11/60: steps= 497 return=  24.47 경로 이탈 lane=51066582#1_1
+  ep  12/60: steps= 216 return=   9.33 차량 충돌 lane=496583281#1_0
+  ep  13/60: steps=1950 return= 137.70 완주 lane=611808767_0
+  ep  14/60: steps= 620 return=  38.72 경로 이탈 lane=51066582#1_1
+  ep  15/60: steps= 547 return=  31.42 경로 이탈 lane=51066582#1_1
+  ep  16/60: steps= 618 return=  37.04 경로 이탈 lane=51066582#1_1
+  ep  17/60: steps= 658 return=  39.84 경로 이탈 lane=51066582#1_1
+  ep  18/60: steps= 610 return=  40.66 차량 충돌 lane=51066582#0_0
+  ep  19/60: steps= 611 return=  39.62 차량 충돌 lane=51066582#0_0
+  ep  20/60: steps=1562 return= 118.83 경로 이탈 lane=377057231_2
+  ep  21/60: steps=1126 return=  77.07 차량 충돌 lane=1307152438_3
+  ep  22/60: steps= 495 return=  27.11 경로 이탈 lane=51066582#1_1
+  ep  23/60: steps= 228 return=   9.41 차량 충돌 lane=:1681517542_4_0
+  ep  24/60: steps= 595 return=  35.85 경로 이탈 lane=51066582#1_1
+  ep  25/60: steps= 581 return=  32.40 경로 이탈 lane=51066582#1_1
+  ep  26/60: steps=1238 return=  92.34 차량 충돌 lane=1307152438_3
+  ep  27/60: steps= 624 return=  36.68 경로 이탈 lane=51066582#1_1
+  ep  28/60: steps=1185 return=  81.45 차량 충돌 lane=1307152438_3
+  ep  29/60: steps= 525 return=  32.18 차량 충돌 lane=51066582#0_0
+  ep  30/60: steps= 665 return=  38.61 경로 이탈 lane=51066582#1_1
+  ep  31/60: steps= 729 return=  42.18 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  32/60: steps= 708 return=  40.45 차량 충돌 lane=474882669#1-AddedOnRampEdge_1
+  ep  33/60: steps=1582 return= 102.82 차량 충돌 lane=:650022328_1_1
+  ep  34/60: steps= 531 return=  28.52 경로 이탈 lane=51066582#1_1
+  ep  35/60: steps=1291 return=  90.62 차량 충돌 lane=1307152438_3
+  ep  36/60: steps= 780 return=  46.03 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+  ep  37/60: steps= 590 return=  38.84 차량 충돌 lane=:651290887_2_2
+  ep  38/60: steps= 650 return=  36.52 경로 이탈 lane=51066582#1_1
+  ep  39/60: steps= 568 return=  36.30 차량 충돌 lane=51066582#0_0
+  ep  40/60: steps= 599 return=  34.86 경로 이탈 lane=51066582#1_1
+  ep  41/60: steps=1711 return= 115.12 경로 이탈 lane=377057231_2
+  ep  42/60: steps=1535 return= 108.35 경로 이탈 lane=377057231_2
+  ep  43/60: steps= 360 return=  13.21 신호 위반 lane=488779086#1_0
+  ep  44/60: steps=2234 return= 141.35 완주 lane=611808767_0
+  ep  45/60: steps= 235 return=   8.45 차량 충돌 lane=:1681517542_4_0
+  ep  46/60: steps= 545 return=  29.90 차량 충돌 lane=51066582#1.95_2
+  ep  47/60: steps= 541 return=  32.30 경로 이탈 lane=51066582#1_1
+  ep  48/60: steps= 249 return=   8.22 차량 충돌 lane=:4582364295_2_0
+  ep  49/60: steps= 640 return=  35.97 경로 이탈 lane=51066582#1_1
+  ep  50/60: steps= 662 return=  36.89 경로 이탈 lane=51066582#1_1
+  ep  51/60: steps= 229 return=   7.78 차량 충돌 lane=496583281#1_0
+  ep  52/60: steps= 550 return=  29.81 차량 충돌 lane=51066582#1.95_2
+  ep  53/60: steps= 531 return=  32.18 차량 충돌 lane=51066582#0_0
+  ep  54/60: steps= 512 return=  29.14 경로 이탈 lane=51066582#1_1
+  ep  55/60: steps= 560 return=  29.60 경로 이탈 lane=51066582#1_1
+  ep  56/60: steps= 621 return=  34.85 경로 이탈 lane=51066582#1_1
+  ep  57/60: steps= 744 return=  42.14 차량 충돌 lane=474882669#1-AddedOnRampEdge_1
+  ep  58/60: steps= 207 return=   5.08 차량 충돌 lane=:1681517542_4_0
+  ep  59/60: steps=1434 return= 103.18 경로 이탈 lane=377057231_2
+  ep  60/60: steps= 223 return=   8.08 신호 위반 lane=496583281#1_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261125_160555_map5_scratch_idle03_s2/model.pt    43%       0%      48%     3%           41.8       366.4
+
+저장: results/map5_scratch_idle03_s2_2266.json
