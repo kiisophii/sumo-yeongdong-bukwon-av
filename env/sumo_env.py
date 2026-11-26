@@ -2839,6 +2839,24 @@ class SumoHighwayEnv(gym.Env):
             "lane_before": lane_before,
             "lane_after": lane_after,
         }
+        # (팀14, 11/26) 교차 차량 근접 감점 D (상태 기준, 자기 센서만 사용, 기본 0 꺼짐): TEAM14_CROSS_GAP_W=W
+        #   이번 스텝 뒤 상태에서 양보 교차로 접근 중이거나 그 안일 때, ToF로 보이는 교차 차량 중 가장 가까운 차와의
+        #   간격 = 중심 거리 − (내 길이 + 그 차 길이)/2 가 안전 간격 = D0 + T × 내 속도 보다 좁으면 (최대 W)
+        #   감점 = W × (안전 간격 − 간격) / 안전 간격. 넓으면 0. 가감속 명령과 SUMO 실제 상태는 쓰지 않는다.
+        #   TEAM14_CROSS_GAP_D0 (기본 2 m), TEAM14_CROSS_GAP_T (기본 1.5 s). 전진 거리 보상 방식에서만, 종료 스텝 제외.
+        _cgw = float(os.environ.get("TEAM14_CROSS_GAP_W", "0") or 0)
+        info["cross_gap"] = None
+        info["cross_gap_penalty"] = 0.0
+        _cg = getattr(self._tof_geometry, "cross_gap", None) if self.tof and getattr(self, "_tof_geometry", None) is not None else None
+        if _cg is not None:
+            _gap = _cg[0] - (float(getattr(self, "_tof_length", 5.0)) + _cg[1]) / 2.0
+            info["cross_gap"] = float(_gap)
+            if _cgw > 0.0 and self.progress_reward and alive and not terminated:
+                _safe = (float(os.environ.get("TEAM14_CROSS_GAP_D0", "2") or 2)
+                         + float(os.environ.get("TEAM14_CROSS_GAP_T", "1.5") or 1.5) * float(ego_speed))
+                _pen = _cgw * min(1.0, max(0.0, _safe - _gap) / _safe)
+                info["cross_gap_penalty"] = float(_pen)
+                reward -= _pen
         return obs, float(reward), terminated, truncated, info
 
     # ==================================================================
