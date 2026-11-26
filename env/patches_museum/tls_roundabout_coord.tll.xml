@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 의왕역 회전교차로 앞뒤 보행 신호 연동 (green wave, 녹색 신호 연동). 켜는 법: TEAM14_TLS_COORD=1 (기본 꺼짐).
+     앞 신호 4931777208(회전교차로 진입 약 10 m 전)과 뒤 신호 4931777200(회전교차로를 나와 약 40 m 뒤)은
+     netconvert 기본값으로 같은 프로그램(초록 84 s · 노랑 5 s · 빨강 1 s, 주기 90 s)에 offset 0이라 동시에 바뀜.
+     → 앞 신호를 초록 끝에 통과한 차가 회전교차로를 도는 사이 뒤 신호가 노랑으로 바뀌고, 도착할 때 빨강(1 s)에 걸리는 함정.
+     뒤 신호를 앞 신호보다 6 s 늦게 바꿔, 앞 신호를 초록에 통과한 차가 뒤 신호도 초록(또는 노랑)에 지나도록 한다.
+     값은 실측이 아님(두 신호 모두 netconvert 기본값). 신호 시간 자체(84/5/1)는 그대로, 위상만 옮김. -->
+<additional>
+    <tlLogic id="4931777200" type="static" programID="0" offset="6">
+        <phase duration="84" state="GG"/>
+        <phase duration="5"  state="yy"/>
+        <phase duration="1"  state="rr"/>
+    </tlLogic>
+</additional>

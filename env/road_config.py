@@ -348,6 +348,9 @@ if SCENARIO == "museum":
             {"edg": "env/patches_museum/tolls_bd_3.edg.xml"},
             # (팀14, 11/26) 신협오거리 5갈래 → 4갈래: 부곡시장2길(차없는거리) 첫 구간 삭제 (patch 파일 주석 참고)
             {"edg": "env/patches_museum/fiveway_4leg.edg.xml"},
+            # (팀14, 11/26) 회전교차로 앞뒤 신호 연동(green wave): TEAM14_TLS_COORD=1일 때만 (기본 꺼짐, 패치 파일 주석 참고)
+            *([{"tll": "env/patches_museum/tls_roundabout_coord.tll.xml"}]
+              if _os.environ.get("TEAM14_TLS_COORD", "0") == "1" else []),
         ],
         "length": None,
         "num_lanes": None,

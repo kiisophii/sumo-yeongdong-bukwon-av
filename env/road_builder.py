@@ -667,6 +667,9 @@ def _build_osm(road: dict, ego: dict, traffic: dict, out_dir: str) -> str:
             pcmd += ["-e", _resolve(patch["edg"])]
         if patch.get("con"):
             pcmd += ["-x", _resolve(patch["con"])]
+        # (팀14, 11/26) tll = 신호 프로그램 덮어쓰기 (같은 id·programID의 tlLogic을 바꿈)
+        if patch.get("tll"):
+            pcmd += ["-i", _resolve(patch["tll"])]
         subprocess.run(pcmd, check=True, capture_output=True)
 
     net = sumolib.net.readNet(net_path)
