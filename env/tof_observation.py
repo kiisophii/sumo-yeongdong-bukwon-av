@@ -247,7 +247,7 @@ class ToFObservation:
         self.foe_paths[connection] = paths
         return paths
 
-    def junction(self, frame, lane_id, next_edge_id, signals):
+    def junction(self, frame, lane_id, next_edge_id, signals, route_after=(), skip_short_m=0.0):
         # Distance and phase are a line-of-sight gated RGB signal proxy.
         # Preserve the pretrained policy's encoding when no signal is upcoming.
         signal = [1.0, 0.0, -1.0] if signals else [1.0, 1.0, 1.0]
@@ -273,6 +273,23 @@ class ToFObservation:
             return signal + [1.0, -1.0, -1.0]
         distance = path.length - reference[0]
         connection = next((c for c in lane.getOutgoing() if c.getTo().getID() == next_edge_id), None)
+        if (skip_short_m > 0.0 and connection is not None and route_after
+                and (connection.getTLSID() or connection.getState() not in YIELD_CONNECTION_STATES)):
+            # (팀14, 11/26) 짧은 도로 너머의 교차로도 보기 (TEAM14_JUNCTION_SKIP_SHORT_M): 현재 차로 끝 교차로
+            #   (예: 신호)에 양보할 게 없고 바로 다음 도로가 skip_short_m 이하로 짧으면, 그 너머 교차로(예: 신호
+            #   10 m 뒤 의왕역 회전교차로 진입)를 대신 관측한다. 지도 정보(차로 연결·우선순위)만 쓰고, 교차 차량은
+            #   아래와 같이 ToF로 본다. 경로에서 바뀌는 곳: 0.73 km, 0.77 km(회전교차로), 12.37 km.
+            nxt = connection.getToLane()
+            if nxt is not None and nxt.getLength() <= skip_short_m:
+                via = connection.getViaLaneID()
+                ahead = distance + (self.net.getLane(via).getLength() if via else 0.0) + nxt.getLength()
+                beyond = next((c for c in nxt.getOutgoing() if c.getTo().getID() == route_after[0]), None)
+                if beyond is None:
+                    beyond = next((c for l in nxt.getEdge().getLanes() for c in l.getOutgoing()
+                                   if c.getTo().getID() == route_after[0]), None)
+                if (beyond is not None and not beyond.getTLSID()
+                        and beyond.getState() in YIELD_CONNECTION_STATES and ahead <= self.junction_range):
+                    connection, distance = beyond, ahead
         if (distance > self.junction_range or connection is None or connection.getTLSID()
                 or connection.getState() not in YIELD_CONNECTION_STATES):
             return signal + [1.0, -1.0, -1.0]

@@ -1420,6 +1420,9 @@ class SumoHighwayEnv(gym.Env):
                 next_edge = route[next_index] if 0 < next_index < len(route) else None
                 obs += self._tof_geometry.junction(
                     frame, self._tof_lane_id, next_edge, traci.vehicle.getNextTLS(self.ego_id),
+                    route_after=tuple(route[next_index + 1:next_index + 2]) if 0 < next_index else (),
+                    # (팀14, 11/26) TEAM14_JUNCTION_SKIP_SHORT_M=m > 0: m 이하 짧은 도로 너머 교차로도 관측 (기본 꺼짐)
+                    skip_short_m=float(os.environ.get("TEAM14_JUNCTION_SKIP_SHORT_M", "0") or 0),
                 )
             else:
                 obs += self._junction_features()
