@@ -1,0 +1,25 @@
+{
+  "results/run_20261126_103411_tof_route_outcome_ft_s0/checkpoints/model_20000.pt": {
+    "collision_rate": 0.0,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.0,
+    "red_light_rate": 0.0,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 1.0,
+    "timeout_rate": 0.0,
+    "stall_rate": 0.0,
+    "failure_rate": 0.0,
+    "episodes": 1,
+    "transitions": [],
+    "failure_end_lanes": {},
+    "lane_end_lanes": {},
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 14.45009471644171,
+    "mean_return": 116.41732158767502,
+    "mean_length_steps": 2000.0,
+    "mean_travel_time_s": 1000.0,
+    "lane_changes_per_ep": 25.0,
+    "min_gap_median_m": 7.877293555273363,
+    "wall_time_s": 52.552032470703125
+  }
+}
