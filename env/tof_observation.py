@@ -1,5 +1,6 @@
 """Project visible ego sensor tracks onto local navigation-map geometry."""
 
+import os
 from dataclasses import dataclass
 from math import hypot, isfinite
 
@@ -226,6 +227,22 @@ class ToFObservation:
                 neighbors[0] = estimate, neighbors[0][1]
         return neighbors, front_density, rear_density
 
+    def _upstream_shapes(self, lane, need, depth=0):
+        """lane으로 들어오는 차로들의 모양을 need m만큼 거슬러 올라가며 이어 붙인 목록 (갈라지면 갈래마다 하나)."""
+        if need <= 0.0 or depth >= 8:
+            return [()]
+        out = []
+        for incoming in lane.getIncomingConnections():
+            source = incoming.getFromLane()
+            if source.getID().startswith(":"):
+                continue
+            via = _connection_shape(incoming, self.net)
+            via_length = Path(via).length if via else 0.0
+            segment = _shape(source) + via
+            for prefix in self._upstream_shapes(source, need - source.getLength() - via_length, depth + 1):
+                out.append(prefix + segment)
+        return out or [()]
+
     def _conflicting_approaches(self, connection):
         if connection in self.foe_paths:
             return self.foe_paths[connection]
@@ -241,9 +258,16 @@ class ToFObservation:
                 if lane.getID().startswith(":"):
                     continue
                 shape = _shape(lane)
-                approach = Path(shape)
-                path = Path(shape + _connection_shape(other, self.net))
-                paths.append((path, approach.length, lane.getWidth() / 2))
+                # (팀14, 11/26) TEAM14_FOE_UPSTREAM_M=m > 0: 교차 진입로 차로가 m보다 짧으면 그 차로로 들어오는
+                #   앞쪽 차로(내부 차로 포함)를 거슬러 올라가 합친 길이가 m가 될 때까지 이어 붙인다 (기본 0 꺼짐).
+                #   의왕역 회전교차로 진입부는 진입로 차로가 1.4 m라 안에서 도는 차가 판단에서 빠졌음.
+                upstream_m = float(os.environ.get("TEAM14_FOE_UPSTREAM_M", "0") or 0)
+                prefixes = (self._upstream_shapes(lane, upstream_m - lane.getLength())
+                            if upstream_m > lane.getLength() else [()])
+                for prefix in prefixes:
+                    approach = Path(prefix + shape)
+                    path = Path(prefix + shape + _connection_shape(other, self.net))
+                    paths.append((path, approach.length, lane.getWidth() / 2))
         self.foe_paths[connection] = paths
         return paths
 
