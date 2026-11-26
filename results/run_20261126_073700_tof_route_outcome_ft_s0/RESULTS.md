@@ -1,0 +1,48 @@
+# 모델 A' — 4갈래 신협오거리 지도에서 A 8만 이어 학습 10만 스텝 (11/26)
+
+- 시작 모델: `results/run_20261126_023012_tof_route_outcome_ft_s0/model.pt` (모델 A 8만, 옛 지도 20판 18 / 무작위 100판 86)
+- 지도: map6 + 진출 램프 수정 + **신협오거리 4갈래** (`92753ee`: `env/patches_museum/fiveway_4leg.edg.xml`, `five_east_northwest` 삭제). 신호 연동 패치 없음
+- 관측: **A만** (`TEAM14_TOF_JUN_INSIDE=1`), B 끔 (`JUNCTION_SKIP_SHORT_OVERRIDE=0`)
+- 평가할 때도 `TEAM14_TOF_JUN_INSIDE=1`을 켜고, B는 끈 채로 (`JUNCTION_SKIP_SHORT_OVERRIDE=0`), 4갈래 지도로 평가
+- SUMO 1.28.0
+
+## 바꾼 것
+
+A 학습(`023012`)과 같은 설정에서 **지도만** 4갈래로 바꿈. 집중 출발 50%(동수원IC 앞 15, 신협 10, 회전교차로 10, 부곡 뒤 5, 출구 직후 5, 고속도로 합류 5), 양보 위반 감점 2, PPO 20000·3·2e-5, 2만마다 체크포인트.
+
+```bash
+TEAM14_TOF_JUN_INSIDE=1 JUNCTION_SKIP_SHORT_OVERRIDE=0 \
+LANE_ENTROPY_OVERRIDE=0.02 SPAWN_CLEAR_OVERRIDE=0 COLLISION_PENALTY_OVERRIDE=20 PROGRESS_TOTAL_OVERRIDE=150 \
+PROGRESS_OVERSPEED_W_OVERRIDE=0.3 PROGRESS_SPEED_W_OVERRIDE=0.1 PROGRESS_SPEED_OFFSET_OVERRIDE=0.1 \
+PROGRESS_GAP_PENALTY_OVERRIDE=0.2 GAP_RSS_DECEL_OVERRIDE=3 FORK_RELATIVE_OVERRIDE=1 FORK_SUMO_DIR_OVERRIDE=1 \
+EGO_STALL_S_OVERRIDE=0 DROP_MUST_YIELD_OVERRIDE=0 CKPT_EVERY_OVERRIDE=20000 \
+PPO_N_STEPS=20000 PPO_N_EPOCHS=3 PPO_LR=2e-5 \
+HARD_START_TARGETS_OVERRIDE='1116479399@300,1116479399@300,1116479399@300,1116479399@300,1116479399@300,1116479399@300,-40839116#4@150,-40839116#4@150,-40839116#4@150,-40839116#4@150,568664967#4@100,568664967#4@100,568664967#4@100,568664967#4@100,51066582#1@300,51066582#1@300,1250775757@300,1250775757@300,474882669#1-AddedOnRampEdge@300,474882669#1-AddedOnRampEdge@300' \
+python3 -u experiments/tof-route-outcome-ft/run_tof_route_outcome_ft.py train --steps 100000 --hard-start-prob 0.5 \
+  --init-model results/run_20261126_023012_tof_route_outcome_ft_s0/model.pt
+```
+
+## 학습 보상
+
+| 스텝 | 학습 보상 |
+|---:|---:|
+| 2만 | +7.9 |
+| 4만 | −0.1 |
+| 6만 | +44.9 |
+| 8만 | +37.3 |
+| 10만 | +38.2 |
+
+학습 보상은 판 수가 적고 출발 위치가 섞여 흔들림이 큼. 체크포인트는 평가로 고를 것 (옛 지도 실험에서 학습 보상 최고였던 8만이 동수원IC 출구 망각으로 평가 전멸한 적 있음).
+
+## 기준점: 모델 A 8만을 학습 없이 4갈래 지도에서 (같은 20판, 시드 955703411~955703430, A 켜고)
+
+| 지도 | 완주 | 실패 |
+|---|---:|---|
+| 옛 지도 (5갈래) | 18 | 신협 1, 회전교차로 신호 위반 1 |
+| 4갈래 | 18 | 신협 좌회전 `:1681517542_4` 1, 합류 정체 `1307152438_3` 1 |
+
+4갈래 지도에서 신협 좌회전 내부 차선은 `:1681517542_9` → `:1681517542_4`로 번호가 바뀜.
+
+## 체크포인트별 20판
+
+(세션 2에서 평가 예정)

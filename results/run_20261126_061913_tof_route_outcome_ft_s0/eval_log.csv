@@ -1,0 +1,2 @@
+steps,collision_rate,success_rate,timeout_rate,mean_speed,mean_gap,min_gap,ep_return,ep_length,lane_changes
+100000,1.0,0.0,0.0,14.648283222677948,36.06324702592073,3.792028709135419,67.6960212109835,1694.2,3.0
