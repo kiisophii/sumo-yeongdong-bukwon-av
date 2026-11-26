@@ -9,6 +9,11 @@ from .tof_perception import offset
 
 YIELD_CONNECTION_STATES = {"m", "=", "s", "w", "Z"}
 
+# (팀14, 11/26) 차체 기준 차로 판정 (TEAM14_TOF_BODY_LANES=1, 기본 0 꺼짐). ToF 트랙에는 폭이 없어 2.0 m로 가정.
+BODY_LANES = os.environ.get("TEAM14_TOF_BODY_LANES", "0") == "1"
+BODY_WIDTH = 2.0
+BODY_MARGIN = 0.3   # 옆 차로 차 모서리가 살짝 넘어온 것까지 앞차로 잡지 않도록 경계 안쪽 여유 (m)
+
 
 class Path:
     def __init__(self, points):
@@ -188,11 +193,22 @@ class ToFObservation:
                 # Use unassigned tracks at the edge of the window only for the ego-lane lead.
                 side, delta = 0, extended_delta
             else:
+                if BODY_LANES:
+                    speed = ego_speed if track.speed is None else track.speed
+                    for b_side, b_delta, b_gap in self._body_hits(windows, track, None, ego_length):
+                        hits[b_side].append((b_delta, b_gap, speed))
                 continue
             gap = max(0.0, abs(delta) - half_lengths)
             speed = ego_speed if track.speed is None else track.speed
             if possible:
                 hits[side].append((delta, gap, speed))
+            if BODY_LANES:
+                # (팀14, 11/26) TEAM14_TOF_BODY_LANES=1: 중심점이 들어가지 않은 차로라도 차체 모서리·축 위 점이
+                #   그 차로 폭 안에 있으면 그 차로를 막는 차로 본다 (예: 회전교차로 출구에 선 트럭의 꼬리가 링 위에 걸침).
+                #   거리는 차로 안에 들어온 가장 가까운 점까지. 기본 꺼짐이면 기존과 같음.
+                for b_side, b_delta, b_gap in self._body_hits(windows, track, side if possible else None,
+                                                              ego_length):
+                    hits[b_side].append((b_delta, b_gap, speed))
             if select_lead and side == 0 and delta > 0.0:
                 reading = gap, speed
                 if current_lead is None or reading < current_lead[0]:
@@ -226,6 +242,38 @@ class ToFObservation:
                 # Only fill the PPO lead slots; density uses current measurements.
                 neighbors[0] = estimate, neighbors[0][1]
         return neighbors, front_density, rear_density
+
+    def _body_hits(self, windows, track, assigned_side, ego_length):
+        """(팀14) 차체 점(앞뒤 모서리 4개 + 축 위 앞·뒤 끝)이 들어간 차로마다 (side, delta, gap) 하나씩.
+        중심점으로 이미 배정된 차로는 건너뛴다. 모서리는 차로 경계에서 BODY_MARGIN만큼 안쪽에 들어와야 친다."""
+        dx, dy = track.direction
+        side_vec = (-dy, dx)
+        half_l, half_w = track.length / 2, BODY_WIDTH / 2
+        cx, cy = track.center
+        points = []
+        for along in (half_l, -half_l):
+            ax, ay = cx + dx * along, cy + dy * along
+            points.append(((ax, ay), 0.0))
+            for s in (half_w, -half_w):
+                points.append(((ax + side_vec[0] * s, ay + side_vec[1] * s), BODY_MARGIN))
+        out = []
+        for b_side, (path, ref, width) in windows.items():
+            if b_side == assigned_side:
+                continue
+            best = None
+            for point, margin in points:
+                position = path.project(point)
+                if position is None:
+                    continue
+                along, lateral = position
+                delta = along - ref
+                if lateral > width / 2 - margin or abs(delta) > self.window:
+                    continue
+                if best is None or abs(delta) < abs(best):
+                    best = delta
+            if best is not None:
+                out.append((b_side, best, max(0.0, abs(best) - ego_length / 2)))
+        return out
 
     def _upstream_shapes(self, lane, need, depth=0):
         """lane으로 들어오는 차로들의 모양을 need m만큼 거슬러 올라가며 이어 붙인 목록 (갈라지면 갈래마다 하나)."""
