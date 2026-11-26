@@ -308,6 +308,10 @@ if SCENARIO == "museum":
             "unclassified": "50", "residential": "30", "living_street": "30", "service": "30"},
         "context_osm_file": None,
         "ego_edges_file": "env/museum/route_check.json",       # 주황 경로(오봉로) 72개 edge
+        # (팀14, 11/26) TEAM14_ROUTE_NO_SHINHYUP=1: 신협오거리를 지나지 않는 경로 (주차장 → 철도박물관로 북쪽 직진
+        #   → 의왕역회전교차로, 이후 같음). 기본 0 = 기존 경로.
+        **({"ego_edges_file": "env/museum/route_no_shinhyup.json"}
+           if _os.environ.get("TEAM14_ROUTE_NO_SHINHYUP", "0") == "1" else {}),
         # (팀14, 11/24) 경로 끝을 창룡대로 첫 구간(동수원IC 진출 뒤, 12.85 km)으로 당김.
         #   그 뒤(창룡대로 나머지~광교로~주차장, 약 0.3 km)는 배경 차가 0대라 상호작용이 없는 구간.
         #   원래 목적지로 되돌리려면 None.
