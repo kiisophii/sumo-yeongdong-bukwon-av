@@ -1,0 +1,22 @@
+ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -20 | yield entry -2 | overspeed 0.3 | speed 0.1 - 0.1 | gap -0.2 if < 2 m + 1 s (+RSS b=3) | fork relative 1 sumo-dir 1 | hard start back 100 m | stall fail 0 s | spawn clear 0 m | junction skip short 50 m
+Training hard-start probability: 0.5
+차선 head 엔트로피 보너스: 0.02
+n_steps = 20000 (PPO_N_STEPS)
+n_epochs = 3 (PPO_N_EPOCHS)
+lr = 2e-05 (PPO_LR)
+보상: 충돌 -20.0, 완주 +10.0, 막힘 -0.0
+도로 생성 완료: /Users/JO/team14_apbc/env/sumo/museum/highway.sumocfg
+  길이 13532.87m, 6차선, 교통량 10165.0대/시간
+하이퍼파라미터: lr=2e-05, gamma=0.995, n_steps=20000, 총 80,000 스텝
+결과 폴더: /Users/JO/team14_apbc/results/run_20261126_173829_tof_route_outcome_ft_s0
+이어서 학습: /Users/JO/team14_apbc/results/run_20261126_073700_tof_route_outcome_ft_s0/checkpoints/model_60000.pt
+obs_dim=41, act_dim=2, device=cpu
+tof_rear_density=on
+[update    1] steps=  20000  ep_rew_mean=8.22  std=0.2316  policy_loss=-0.0009667  value_loss=5.683  entropy=0.8755  approx_kl=0.005393  clip_frac=0.04957  p_lane_change=0.6796  tof_yield_hazard_steps=283  tof_yield_brake_cmd_steps=200  tof_yield_decel_steps=195  tof_yield_risky_entry_events=18
+[update    2] steps=  40000  ep_rew_mean=37.11  std=0.2313  policy_loss=-0.001918  value_loss=3.205  entropy=0.8451  approx_kl=0.005153  clip_frac=0.05333  p_lane_change=0.6606  tof_yield_hazard_steps=199  tof_yield_brake_cmd_steps=144  tof_yield_decel_steps=144  tof_yield_risky_entry_events=12
+[update    3] steps=  60000  ep_rew_mean=26.93  std=0.2312  policy_loss=-0.0005788  value_loss=3.761  entropy=0.8462  approx_kl=0.0038  clip_frac=0.03895  p_lane_change=0.6518  tof_yield_hazard_steps=576  tof_yield_brake_cmd_steps=497  tof_yield_decel_steps=166  tof_yield_risky_entry_events=11
+[update    4] steps=  80000  ep_rew_mean=38.01  std=0.2312  policy_loss=-0.0004049  value_loss=4.178  entropy=0.8535  approx_kl=0.003441  clip_frac=0.03784  p_lane_change=0.6503  tof_yield_hazard_steps=347  tof_yield_brake_cmd_steps=274  tof_yield_decel_steps=124  tof_yield_risky_entry_events=17
+
+저장 완료: /Users/JO/team14_apbc/results/run_20261126_173829_tof_route_outcome_ft_s0/model.pt
+재생 방법:      python test.py results/run_20261126_173829_tof_route_outcome_ft_s0/model.pt
+학습 곡선 보기: tensorboard --logdir results  → http://localhost:6006

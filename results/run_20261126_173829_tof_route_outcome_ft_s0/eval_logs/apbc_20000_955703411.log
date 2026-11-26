@@ -1,0 +1,20 @@
+ToF PPO | 41 inputs | progress 150 | arrival +10 | failure -20 | yield entry -2 | overspeed 0.3 | speed 0.1 - 0.1 | gap -0.2 if < 2 m + 1 s (+RSS b=3) | fork relative 1 sumo-dir 1 | hard start back 100 m | stall fail 0 s | spawn clear 0 m | junction skip short 50 m
+평가 알고리즘: PPO
+
+=== results/run_20261126_173829_tof_route_outcome_ft_s0/checkpoints/model_20000.pt (10 episodes) ===
+  ep   1/10: steps=2007 return= 109.43 완주 lane=611808767_0
+  ep   2/10: steps= 224 return=  -8.81 차량 충돌 lane=:1681517542_4_0
+  ep   3/10: steps=2012 return= 111.41 완주 lane=611808767_0
+  ep   4/10: steps=1999 return= 104.45 완주 lane=611808767_0
+  ep   5/10: steps=1968 return= 115.36 완주 lane=611808767_0
+  ep   6/10: steps=1990 return= 120.92 완주 lane=611808767_0
+  ep   7/10: steps=1928 return= 115.41 완주 lane=611808767_0
+  ep   8/10: steps= 216 return=  -9.49 차량 충돌 lane=:1681517542_4_0
+  ep   9/10: steps=1986 return= 119.53 완주 lane=611808767_0
+  ep  10/10: steps= 815 return=  16.24 경로 이탈 lane=474882669#1-AddedOnRampEdge_0
+
+─── 결과 요약 ───
+정책                                           충돌     순간이동     경로이탈     완주     평균속도(km/h)     통과시간(s)
+results/run_20261126_173829_tof_route_outcome_ft_s0/checkpoints/model_20000.pt    20%       0%      10%    70%           51.0       757.2
+
+저장: /Users/JO/team14_apbc/results/run_20261126_173829_tof_route_outcome_ft_s0/checkpoints/model_20000_eval10_seed955703411.json
