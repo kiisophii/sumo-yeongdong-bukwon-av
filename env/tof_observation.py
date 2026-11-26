@@ -274,6 +274,8 @@ class ToFObservation:
     def junction(self, frame, lane_id, next_edge_id, signals, route_after=(), skip_short_m=0.0):
         # Distance and phase are a line-of-sight gated RGB signal proxy.
         # Preserve the pretrained policy's encoding when no signal is upcoming.
+        # (팀14, 11/26) 관측 D용: 이번 스텝에 ToF로 보이는 교차 차량 중 가장 가까운 것 (중심 거리 m, 그 차 길이 m). 없으면 None.
+        self.cross_gap = None
         signal = [1.0, 0.0, -1.0] if signals else [1.0, 1.0, 1.0]
         if signals:
             tls, link, distance, state = signals[0]
@@ -288,6 +290,7 @@ class ToFObservation:
         if lane_id.startswith(":") or next_edge_id is None:
             inside = self._inside_yield(lane_id)
             if inside is not None:
+                self.cross_gap = self._nearest_crossing(frame, inside)
                 return signal + [0.0, 1.0, self._foe_state(frame, inside)]
             return signal + [1.0, -1.0, -1.0]
         self._yield_connection = None
@@ -319,6 +322,7 @@ class ToFObservation:
             return signal + [1.0, -1.0, -1.0]
         if self.keep_inside:
             self._yield_connection = connection
+        self.cross_gap = self._nearest_crossing(frame, connection)
         return signal + [distance / self.junction_range, 1.0, self._foe_state(frame, connection)]
 
     def _inside_yield(self, lane_id):
@@ -327,6 +331,20 @@ class ToFObservation:
             return None
         node = self._yield_connection.getJunction().getID()
         return self._yield_connection if lane_id.startswith(f":{node}_") else None
+
+    def _nearest_crossing(self, frame, connection):
+        """내 길과 충돌하는 진입로·교차로 안 경로 위에 있고 ToF로 보이는 차 중 ego 중심에서 가장 가까운 것.
+        (중심 사이 거리, 그 차 길이)를 돌려준다. 보상(TEAM14_CROSS_GAP_W)에서만 쓰고 관측 벡터에는 넣지 않는다."""
+        best = None
+        for other, _stop, width in self._conflicting_approaches(connection):
+            for track in frame.tracks.values():
+                result = other.project(track.center, track.direction)
+                if result is None or result[1] > width:
+                    continue
+                gap = hypot(track.center[0] - frame.center[0], track.center[1] - frame.center[1])
+                if best is None or gap < best[0]:
+                    best = (gap, track.length)
+        return best
 
     def _foe_state(self, frame, connection):
         """교차 진입로에서 ToF로 보이는 차가 다가오면 +1, 진입로가 다 보이고 비었으면 −1, 가려서 모르면 0.
