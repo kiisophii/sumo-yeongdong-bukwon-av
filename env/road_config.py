@@ -342,6 +342,8 @@ if SCENARIO == "museum":
              "con": "env/patches_museum/tolls_bd_2.con.xml"},
             # 동수원IC 진출 램프 2차로의 0번 차로가 고리를 가로지르는 직선이 되는 문제 고정 (patch 파일 주석 참고)
             {"edg": "env/patches_museum/tolls_bd_3.edg.xml"},
+            # (팀14, 11/26) 신협오거리 5갈래 → 4갈래: 부곡시장2길(차없는거리) 첫 구간 삭제 (patch 파일 주석 참고)
+            {"edg": "env/patches_museum/fiveway_4leg.edg.xml"},
         ],
         "length": None,
         "num_lanes": None,
@@ -364,7 +366,7 @@ if SCENARIO == "museum":
         "bukwon_to_west_b":      ("582107260",   "41948037",  350),
         # (팀14, 11/23) 신협오거리·회전교차로 90 → 135대/시간: 실측 자료가 없는 일반도로라 AV와의 interaction 확보를 위해 상향
         "five_north_south":      ("155809507#1", "472043938#7", 135),
-        "five_east_northwest":   ("-155788504#0", "-40839116#1", 135),
+        # (팀14, 11/26) five_east_northwest(부곡시장2길 → 북서, 135) 삭제: 부곡시장2길은 차없는거리라 신협오거리 4갈래로 (fiveway_4leg.edg.xml)
         "five_south_east":       ("-472043938#7", "155788504#3", 135),
         "five_market_south":     ("461776049#5", "472043938#7", 60),
         "circle_north_east":     ("682100872#0", "452597718#1", 135),
