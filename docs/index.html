@@ -222,14 +222,19 @@ figure.card img{border-radius:8px;background:#fff}
           속도 상한으로 행동을 자르지 않고, 과속은 보상의 감점으로만 다룹니다.
           옮겨 갈 차로가 없거나 교차로 안이거나 안전 간격이 없는 차선변경 명령은 실행되지 않습니다.</p></div>
       <div class="card"><h3>보상 r<sub>t</sub></h3>
-        <p>
-          <span class="pill">+0.1 · 속도 / 차로 제한속도</span>
-          <span class="pill">과속 감점 (가중치 1.0)</span>
-          <span class="pill">−0.3 정지</span>
-          <span class="pill">−0.1 앞차 6 m 이내</span>
-          <span class="pill">−1 양보 위반</span>
-          <span class="pill">−5 빨간불 통과 (종료)</span>
-          <span class="pill">−30 차량 충돌·차로 끝 (종료)</span>
+        <p style="margin:0 0 4px;font-size:13px;color:var(--muted)">매 스텝 (0.5초마다)</p>
+        <p style="margin:0">
+          <span class="pill">+0.1 × 속도 ÷ 차로 제한속도 (최대 +0.1)</span>
+          <span class="pill">과속한 스텝 감점 (가중치 1.0)</span>
+          <span class="pill">−0.3 정지 (앞차·신호로 선 것은 제외)</span>
+          <span class="pill">−0.1 앞차 6 m 미만</span>
+        </p>
+        <p style="margin:10px 0 4px;font-size:13px;color:var(--muted)">위반한 스텝마다 (판은 계속)</p>
+        <p style="margin:0"><span class="pill">−1 양보 위반</span></p>
+        <p style="margin:10px 0 4px;font-size:13px;color:var(--muted)">종료할 때 한 번</p>
+        <p style="margin:0">
+          <span class="pill">−5 빨간불 통과</span>
+          <span class="pill">−30 차량 충돌 · 차로 끝</span>
           <span class="pill">+30 도착</span>
         </p>
         <p style="font-size:14px;color:var(--muted)">차선변경 감점과 앞차에 막힘 감점은 0입니다.</p></div>
