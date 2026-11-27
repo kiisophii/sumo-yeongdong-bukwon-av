@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>박물관→광교 자율주행 — Team 14</title>
-<meta name="description" content="의왕 철도박물관에서 수원광교박물관까지 실제 도로 13.5 km를 SUMO로 구축하고 PPO로 자율주행 차량을 학습한 팀 프로젝트">
+<meta name="description" content="의왕 철도박물관에서 수원광교박물관까지 실제 도로 약 13.6 km를 SUMO로 구축하고 PPO로 자율주행 차량을 학습한 팀 프로젝트">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -150,14 +150,14 @@ figure.card img{border-radius:8px;background:#fff}
 <header class="hero">
   <div class="wrap">
     <div class="sign">
-      <div class="shield"><span>13.5<small>km</small></span></div>
+      <div class="shield"><span>13.6<small>km</small></span></div>
       <div>
         <h1>철도박물관 → 광교 자율주행</h1>
         <div class="dir"><span>의왕 <b>→ 수원 광교</b></span><span>SUMO × PPO</span><span>Team 14</span></div>
       </div>
     </div>
     <div class="hero-sub">
-      <p>의왕 철도박물관 주차장에서 수원광교박물관 주차장까지, 실제 지도(OpenStreetMap)에서 가져온 13.5 km 도로를 SUMO로 만들고
+      <p>의왕 철도박물관 주차장에서 수원광교박물관 주차장까지, 실제 지도(OpenStreetMap)에서 가져온 약 13.6 km 도로를 SUMO로 만들고
         시내 교차로·회전교차로·고속도로 진입·합류·출구까지 주행 중 보조 규칙 없이 스스로 지나가는 자율주행 차량을 강화학습(PPO)으로 학습했습니다.</p>
       <span class="tag">2026-2 자율주행 인공지능 및 제어 · 성균관대학교</span>
     </div>
@@ -191,12 +191,12 @@ figure.card img{border-radius:8px;background:#fff}
       <li><b>고속도로</b>영동고속도로 본선</li>
       <li><b>고속도로</b>동수원IC 진출</li>
       <li><b>시내</b>창룡대로 · 광교로</li>
-      <li class="end"><b>도착 13.5 km</b>수원광교박물관 주차장</li>
+      <li class="end"><b>도착 13.6 km</b>수원광교박물관 주차장</li>
     </ol>
 
     <div class="grid g3" style="margin-top:34px">
       <div class="card"><h3>도로</h3><p>OSM 원본을 <code>netconvert</code>로 변환했습니다. 창룡대로, 동수원 요금소 뒤, 부곡 영업소 뒤, 동수원IC 진출 램프는 지도가 실제와 달라 카카오 로드뷰와 대조해 차로 수와 연결을 고쳤습니다.</p></div>
-      <div class="card"><h3>교통</h3><p>배경 차량은 SUMO가 운전합니다. 판마다 시드를 바꿔 배경 교통이 달라지게 하고, 판마다 SUMO를 새로 시작합니다.</p></div>
+      <div class="card"><h3>교통과 경로 선택</h3><p>배경 차량은 SUMO가 운전합니다. 판마다 시드를 바꿔 배경 교통이 달라지게 하고, 판마다 SUMO를 새로 시작합니다. 회전교차로 뒤부터 부곡 영업소 앞까지는 두 갈래(13.6 km, 14.5 km)가 있고, 판마다 예상 통행시간이 짧은 쪽을 달립니다.</p></div>
       <div class="card"><h3>끝나는 조건</h3><p>도착 주차장에 닿으면 완주입니다. 차량 충돌, 빨간불 통과, 경로에서 끊기는 차로 끝에 닿으면 그 판은 실패로 끝납니다.</p></div>
     </div>
   </div>
