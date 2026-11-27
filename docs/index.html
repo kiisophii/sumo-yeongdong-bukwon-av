@@ -171,7 +171,7 @@ figure.card img{border-radius:8px;background:#fff}
     <div class="hero-stats">
       <div><b>87.3%</b><span>완주율 (같은 시드 300판)</span></div>
       <div><b>2.0%</b><span>차량 충돌률 · 목표 5% 미만</span></div>
-      <div><b>1,026만</b><span>공개한 주행 스텝 수</span></div>
+      <div><b>1,270만</b><span>공개한 주행 스텝 수</span></div>
     </div>
   </div>
 </header>
@@ -298,11 +298,11 @@ figure.card img{border-radius:8px;background:#fff}
           <tr class="best"><td><b>같은 시드 300판 · SUMO 1.28.0</b></td><td class="num">300</td><td class="num"><b>262 (87.3%)</b></td><td class="num"><b>6 (2.0%)</b></td><td class="num">23</td><td class="num">9</td></tr>
           <tr><td>같은 시드 300판 · SUMO 1.27.1 (다른 PC)</td><td class="num">300</td><td class="num">268 (89.3%)</td><td class="num">12 (4.0%)</td><td class="num">16</td><td class="num">4</td></tr>
           <tr><td>무작위 시드 300판 · SUMO 1.27.1 (다른 PC)</td><td class="num">300</td><td class="num">267 (89.0%)</td><td class="num">11 (3.7%)</td><td class="num">19</td><td class="num">3</td></tr>
-          <tr><td>데이터 수집 주행 · SUMO 1.28.0</td><td class="num">4,200</td><td class="num">3,711 (88.4%)</td><td class="num">110 (2.6%)</td><td class="num">279</td><td class="num">95</td></tr>
+          <tr><td>데이터 수집 주행 · SUMO 1.28.0 (PC 2대)</td><td class="num">5,200</td><td class="num">4,597 (88.4%)</td><td class="num">133 (2.6%)</td><td class="num">338</td><td class="num">126</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="font-size:13px;color:var(--muted);margin-top:8px">같은 시드여도 SUMO 버전과 PC가 다르면 판별 결과가 달라집니다. 같은 PC에서는 같은 시드가 같은 결과로 재현됩니다. 데이터 수집 주행에는 텔레포트 4판과 시간 초과 1판이 더 있습니다.</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">같은 시드여도 SUMO 버전과 PC가 다르면 판별 결과가 달라집니다. 같은 PC에서는 같은 시드가 같은 결과로 재현됩니다. 데이터 수집 주행에는 텔레포트 5판과 시간 초과 1판이 더 있습니다.</p>
     <div class="grid g2" style="margin-top:22px">
       <div class="card">
         <h3>남은 실패가 몰린 곳</h3>
@@ -347,8 +347,8 @@ figure.card img{border-radius:8px;background:#fff}
     <p class="lead">최종 모델로 주행하며 매 스텝의 관측·행동·보상과 SUMO의 실제 상태를 저장했습니다.
       학습에 바로 쓰는 NPZ와 전체 기록 JSONL 두 형식이고, 100판 묶음마다 수집 조건 검사 결과를 함께 올렸습니다.</p>
     <div class="grid g3">
-      <div class="metric"><div class="v">4,200</div><div class="k">판 (시드 700000~704199)</div></div>
-      <div class="metric"><div class="v">10,258,086</div><div class="k">스텝</div></div>
+      <div class="metric"><div class="v">5,200</div><div class="k">판 (시드 700000~704199, 730000~730999)</div></div>
+      <div class="metric"><div class="v">12,695,332</div><div class="k">스텝</div></div>
       <div class="metric"><div class="v">37 / 2</div><div class="k">관측 / 행동 차원</div></div>
     </div>
     <div class="grid g2" style="margin-top:22px">
@@ -366,6 +366,7 @@ figure.card img{border-radius:8px;background:#fff}
         <ul class="clean">
           <li>결정적 행동(분포의 평균과 최빈값), 주행 중 보조 규칙 없음</li>
           <li>판의 시드가 SUMO 시드와 같아 같은 PC에서 재현됩니다</li>
+          <li>PC 2대에서 같은 조건으로 수집했고, 폴더(<code>data/s70</code>, <code>data/s73</code>)로 나눠 올렸습니다</li>
           <li>모델 파일 해시, 환경변수, 보상 설정, 코드 커밋을 판마다 기록</li>
           <li>평가에 쓴 시드(2026~2325)와 겹치지 않습니다</li>
         </ul>
