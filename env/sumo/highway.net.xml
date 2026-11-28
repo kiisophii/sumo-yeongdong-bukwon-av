@@ -4,11 +4,11 @@
 <netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env\sumo\highway.net.xml"/>
+        <sumo-net-file value="highway.net.xml"/>
     </input>
 
     <output>
-        <output-file value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env\sumo\highway.net.xml"/>
+        <output-file value="highway.net.xml"/>
         <output.street-names value="true"/>
     </output>
 
@@ -20,7 +20,7 @@
     </processing>
 
     <edge_removal>
-        <keep-edges.input-file value="C:\Users\S\AppData\Local\Temp\claude\9cbf23c949f44d4e\a6407cbd-7d1d-48c6-bd34-fcab13b2bc30\scratchpad\push_repo\env\sumo\kept_edges.txt"/>
+        <keep-edges.input-file value="kept_edges.txt"/>
     </edge_removal>
 
     <junctions>

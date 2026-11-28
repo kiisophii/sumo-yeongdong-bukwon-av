@@ -1,0 +1,33 @@
+{
+  "models\\map5_ft_200704.pt": {
+    "collision_rate": 0.06666666666666667,
+    "teleport_rate": 0.0,
+    "lane_end_rate": 0.06666666666666667,
+    "red_light_rate": 0.03333333333333333,
+    "vehicle_removed_rate": 0.0,
+    "arrival_rate": 0.8333333333333334,
+    "timeout_rate": 0.0,
+    "failure_rate": 0.16666666666666663,
+    "episodes": 60,
+    "transitions": [],
+    "failure_end_lanes": {
+      "568664967#0_1": 3,
+      "496583281#1_0": 2,
+      ":1681517542_4_0": 3,
+      "474882669#1-AddedOnRampEdge_0": 1,
+      ":4582364294_0_0": 1
+    },
+    "lane_end_lanes": {
+      "568664967#0_1": 3,
+      "474882669#1-AddedOnRampEdge_0": 1
+    },
+    "teleport_end_lanes": {},
+    "mean_speed_mps": 10.29939279477216,
+    "mean_return": 126.58628380919461,
+    "mean_length_steps": 2277.616666666667,
+    "mean_travel_time_s": 1138.8083333333334,
+    "lane_changes_per_ep": 9.75,
+    "min_gap_median_m": 0.7120610314228806,
+    "wall_time_s": 724.3470077514648
+  }
+}

@@ -1,135 +1,133 @@
-# Team 14 — 영동고속도로 북수원IC 자율주행 프로젝트
+# 14조 최종 코드 — 철도박물관 → 수원광교박물관 자율주행 (SUMO × PPO)
 
-> 자율주행 인공지능 및 제어 (ICE3052, 2026-2, 권민혜 교수) 팀 프로젝트
-> 수업에서 제공한 원래 README는 [README_course.md](README_course.md)에 있습니다.
-> 팀원: 김동주(팀장) · 김수아 · 김준희 · 조윤호
-> 최종 발표: **2026-11-28(토) 13:00–19:00, 제1공학관 21동 21502호 (전원 참석 필수)**
+자율주행 인공지능 및 제어 (ICE3052, 2026-2) 팀 프로젝트의 최종 제출 코드다.
+팀원: 김동주(팀장), 김수아, 김준희, 조윤호
 
-![주행](docs/img/drive.gif)
+- 프로젝트 페이지: https://kiisophii.github.io/sumo-yeongdong-bukwon-av/
+- 데이터(Hugging Face): https://huggingface.co/datasets/kimsua/team14-sumo-driving-data
+- 코드 저장소: https://github.com/kiisophii/sumo-yeongdong-bukwon-av (이 제출본은 `share/map6b-collect` 브랜치, 커밋 `c00ba3d` 기준)
 
-## 1. 한 줄 요약
+이 제출본은 최종 모델의 평가, 데이터 수집, 주행 영상 녹화에 실제로 쓴 코드다.
+외부 저장소는 제출 뒤에도 바뀔 수 있으므로 이 압축 파일을 최종본으로 본다.
 
-OpenStreetMap에서 가져온 **영동고속도로 북수원IC 일대(강릉 방향, 7.1 km)** 를 SUMO로 구축하고,
-그 위에서 **PPO**로 자율주행 차량을 학습해 램프 합류·차로 감소·분기를 통과하게 만들었습니다.
-결과 수치는 [§5 결과](#5-결과)에 있습니다.
+## 1. 결과 요약
 
-## 2. 평가 기준 ↔ 우리가 한 것
+의왕 철도박물관 주차장에서 수원광교박물관 주차장까지 약 13.6 km를, 주행 중 보조 규칙 없이 PPO 정책 하나가 주행한다.
 
-| 평가 항목 (0_Project_Introduction.md) | 이 프로젝트에서 |
+| 평가 | 판 수 | 완주 | 차량 충돌 | 차로 끝 이탈 | 신호 위반 |
+|---|---|---|---|---|---|
+| 같은 시드 300판, SUMO 1.28.0 | 300 | 262 (87.3%) | 6 (2.0%) | 23 | 9 |
+| 같은 시드 300판, SUMO 1.27.1 (다른 PC) | 300 | 268 (89.3%) | 12 (4.0%) | 16 | 4 |
+| 데이터 수집 주행, SUMO 1.28.0 (PC 3대) | 6,300 | 5,572 (88.4%) | 162 (2.6%) | 400 | 159 |
+
+- 같은 시드 = 2026, 2086, 2146, 2206, 2266에서 각 60판, 판마다 SUMO를 새로 시작.
+- 같은 시드여도 SUMO 버전과 PC가 다르면 판별 결과가 달라진다. 같은 PC에서는 같은 시드가 같은 결과로 재현된다.
+- 판별 결과 파일: `results/eval300_map6b_shinhyup_vs_detour/shinhyup/orig_*.json`, 설명은 같은 폴더의 `EVAL300.md`.
+
+## 2. 최종 모델
+
+| 항목 | 값 |
 |---|---|
-| 도로 구조 구현 (한국 실제 도로 반영) | OSM 원본으로 차로 수·제한속도·램프 형상 재현, 주변 건물/녹지/하천까지 표시 |
-| 도로 구조의 복잡성 / 완성도 | 진출 감속차로 → 2차로 램프 합류(5차로) → 차로 감소 5→4→3 → 차로 추가 → 분기, 반대 방향과 램프까지 포함 |
-| Simulation 안정성 | 교통류만 5시간 시뮬레이션: 24,000대 투입, 충돌·순간이동 0, 정체 대기 0초 |
-| 일반 차량 구성 | Krauss/IDM/EIDM/ACC 4종 혼합 + LC2013 차선변경, 9개 경로, 4,800대/시간 |
-| Collision Rate ≤ 5% | `tools/evaluate.py` 100에피소드 평가 (§5) |
-| Dataset 구축 | `collect_pomdp_data.py`로 학습된 정책 주행 데이터 수집, HF 데이터셋 카드 준비 |
-| Option | 경로 기반 관측(차선 연결성), 구간 제한속도 준수, 경로 이탈 판정, 규칙 기반 기준선 비교, BC(모방학습) 비교, 학습 속도 약 10배 개선 |
-| 완성도 | 프로젝트 페이지 `docs/index.html`, 보고서 초안, 발표 자료 초안 |
+| 파일 | `models/map5_ft_200704.pt` |
+| sha256 | `6ebdc4f6462497299d03b0197e3c9086dd3e20d9c7af31871a63abaa22d36b36` |
+| 정책 | PPO 하이브리드 정책. 가감속은 Normal 분포, 차선변경은 3-way Categorical 분포(왼쪽·유지·오른쪽) |
+| 네트워크 | 은닉층 256 × 256 |
+| 관측 | 실수 37칸 (`TEAM14_ROUTE_OBS=coarse`) |
+| 학습 | 갈림길 판정 수정 후 처음부터 100만 스텝(learning rate 1e-4) → 고친 지도(map5)에서 learning rate 5e-5로 이어 학습 → 10만 스텝마다 저장한 체크포인트를 같은 시드 300판으로 평가해 20만 스텝 체크포인트를 고름 |
+| PPO 설정 | n_steps 2048, n_epochs 10, minibatch 64, clip 0.2, gamma 0.995, GAE lambda 0.95 |
+| 보상 설정 | 충돌·차로 끝 −30, 도착 +30, 빨간불 통과 −5, 양보 위반 −1, 정지 −0.3, 앞차 6 m 미만 −0.1, 속도 +0.1 × (속도 ÷ 차로 제한속도), 과속 감점 가중치 1.0 |
 
-## 3. 기반 코드에서 바뀐 점
+이어 학습을 실행한 정확한 명령 줄은 기록이 남아 있지 않다. 위 값은 학습 로그의 하이퍼파라미터와 평가 기록에서 확인한 것이다.
 
-기반 코드: [bmil-ssu/Artificial-Intelligence-and-Control-for-Autonomous-Driving](https://github.com/bmil-ssu/Artificial-Intelligence-and-Control-for-Autonomous-Driving)
-(직선 12 km 편도 3차로). 모든 스크립트(`train.py`, `test.py`, `collect_pomdp_data.py`, `train_bc.py`, `view_road.py`)는
-그대로 쓸 수 있고, 도로를 바꾸는 곳은 `env/road_config.py` 하나입니다. `ROAD["type"] = "straight"`로 바꾸면 원래 직선 도로로 돌아갑니다.
+## 3. 실행 환경
 
-| 파일 | 변경 |
-|---|---|
-| `env/osm/*.osm` | 도로(고속도로 본선+램프)와 주변 지형 OSM 원본 |
-| `env/road_builder.py` | OSM 모드: `netconvert`로 도로망 생성, (출발, 도착) edge로 경로 자동 계산, 경로별 flow, `polyconvert`로 주변 지형 |
-| `env/road_config.py` | 북수원IC 도로, 교통 경로 9개, 컨트롤러별 희망속도 분포·차선변경 성향, warm-up |
-| `env/mdp_config.py` | `route_lookahead`(200 m), `speed_reference="lane"`, `privileged_radius`(150 m) |
-| `env/sumo_env.py` | ① 경로 기준 차선 연결성(`getBestLanes`) ② 구간 제한속도 준수 ③ 경로 이탈/순간이동 종료 ④ libsumo 자동 사용 ⑤ 에피소드 간 시뮬레이션 재사용 |
-| `tools/` | `plot_network.py`(개요도), `evaluate.py`(평가+기준선), `plot_learning_curve.py`, `record_gif.py`, `upload_hf.py` |
+**압축은 영문 경로에 풀 것.** 폴더 경로에 한글이 들어 있으면 SUMO의 `netconvert`가 도로망을 만들다 실패한다(Windows에서 확인). 영문과 숫자로만 된 폴더에 풀면 된다.
 
-### 왜 이렇게 했나 (발표 때 설명할 포인트)
-- **경로 기준 연결성:** 원래 관측은 "다음 edge로 링크가 있는가"만 봤습니다. 그런데 진출로로 이어지는 차선도 링크는 있어서,
-  "계속 가면 고속도로에서 빠져 버리는 차선"을 구분할 수 없었습니다. SUMO의 `getBestLanes`로 *내 경로를 따라* 그 차선으로 몇 m 더 갈 수 있는지를 관측에 넣었습니다.
-- **경로 이탈 = 실패:** 끝나는 차선에 갇히면 실제로는 정지나 사고입니다. 그래서 충돌과 같은 벌점(−5)을 주고 에피소드를 끝냅니다.
-- **속도 보상 기준을 구간 제한속도로:** 80 km/h 구간에서 80으로 달려도 만점이 되게 했습니다. 기준을 전체 최고속도(100)로 두면 80 구간에서 늘 손해로 학습됩니다.
-- **학습 속도:** 처음에는 41 steps/s였습니다. libsumo(소켓 왕복 제거)로 181 steps/s, 시뮬레이션 재사용(매 에피소드 재시작과 300초 warm-up 제거)으로 약 470 steps/s가 됐습니다.
-
-## 4. 실행 방법
+- Python 3 + `requirements.txt`의 패키지 (numpy, torch, gymnasium, sumolib, traci 등)
+- SUMO **1.28.0** (`SUMO_HOME` 설정). 위 결과는 `eclipse-sumo` 1.28.0과 `libsumo` 1.28.0에서 얻었다.
+- GPU는 필요 없다(CPU로 학습·평가).
 
 ```bash
 pip install -r requirements.txt
-pip install libsumo==1.27.1          # 선택. 설치된 SUMO 버전과 같아야 함
-python view_road.py                  # 도로 GUI 확인 (▶ 눌러 재생)
-python train.py                      # PPO 학습 (CPU, 50만 스텝 ≈ 2시간)
-python tools/evaluate.py --model results/team14_ppo_v1/model.pt --episodes 100
-python test.py results/team14_ppo_v1/model.pt     # GUI로 주행 보기
-python collect_pomdp_data.py --model results/team14_ppo_v1/model.pt --episodes 200 --name team14_ppo
-python train_bc.py --data data/team14_ppo.npz      # (Option) 모방학습
-python tools/plot_network.py && python tools/plot_learning_curve.py results/team14_ppo_v1
-python tools/record_gif.py results/team14_ppo_v1/model.pt
+pip install eclipse-sumo==1.28.0 libsumo==1.28.0 traci==1.28.0 sumolib==1.28.0
 ```
 
-Windows에서 한글 경로 문제가 생기면 `set PYTHONUTF8=1`을 먼저 실행하세요.
+## 4. 꼭 맞춰야 하는 환경변수
 
-## 5. 결과
+최종 모델은 아래 조건에서 학습·평가했다. 이 값이 아니면 같은 37칸이어도 일부 칸의 의미가 달라져 모델이 제대로 주행하지 못한다.
 
-`tools/evaluate.py`로 정책마다 300에피소드를 같은 시드로 평가했습니다 (`results/evaluation_summary_300.json`).
+```bash
+export TEAM14_SCENARIO=museum          # 철도박물관 → 광교 시나리오
+export TEAM14_ROUTE_OBS=coarse         # 경로 관측 3칸(차로 끝, 갈림길 거리·방향)
+export TEAM14_NO_SPEED_CAP=1           # 속도 상한으로 행동을 자르지 않음
+export TEAM14_OVERSPEED_W=1.0          # 과속 감점 가중치 (보상)
+export TEAM14_IDLE_PEN=0.3             # 정지 감점 (보상)
+export TEAM14_ROUTE_NO_SHINHYUP=0      # 신협오거리를 지나는 기존 경로
+export SIM_REUSE=1                     # 판마다 SUMO를 새로 시작
+```
 
-| 정책 | 충돌 | 경로이탈 | 완주 | 평균속도 | 통과시간 | 차선변경/회 |
-|---|---:|---:|---:|---:|---:|---:|
-| 규칙 기반 기준선 (학습 없음) | 0 / 300 | 0 | 100% | 77.7 km/h | 333 s | 0.0 |
-| **PPO** (강화학습, 50만 스텝) | **0 / 300** | 0 | 100% | **83.4 km/h** | **311 s** | 1.0 |
-| BC (PPO 데이터 9.4만 스텝으로 모방학습) | 0 / 300 | 0 | 100% | 83.6 km/h | 310 s | 1.0 |
+주행 중 보조 규칙에 해당하는 환경변수(`ROUTE_ASSIST_M`, `MERGE_SUMO`, `MERGE_STOP`, `RED_STOP`, `JUNCTION_YIELD`, `LC_REVERSE_COOLDOWN` 등)는 모두 설정하지 않는다. `tools/collect_map6b.sh`가 이 조건을 맞추는 방법을 그대로 보여 준다.
 
-- **충돌률 목표(≤ 5%) 달성:** 300회 모두 무사고입니다.
-- **기준선보다 7% 빠름:** 규칙 기반 운전자는 느린 차(Krauss, 제한속도의 약 85%) 뒤에 갇힙니다. PPO는 에피소드당 약 1회 안전한 틈을 골라 차선을 바꿉니다.
-- **경로 이탈 0회:** 진출 전용 차로와 끝나는 차선에 들어가지 않는 것을 학습했습니다.
-- **Option A (BC):** 환경과 상호작용 없이 데이터만으로 학습해도 PPO와 같은 수준이 나왔습니다.
+## 5. 실행 방법
 
-### 출발 직후 충돌 분석과 수정
-처음 100회 평가에서 충돌이 1회(ep79, 출발 5.5초) 있었습니다. 같은 시드로 재현해 보니 원인은 안전 게이트였습니다.
-- 출발 3.5초, 24.5 m/s로 달리다 왼쪽 차선으로 바꿨는데 11 m 앞에 15 m/s 차량이 있었습니다(접근 9.5 m/s).
-- 기존 게이트는 `간격 > 3 + 0.15·v`와 `간격 > 접근속도 × 0.6 s`만 검사해 이 변경을 통과시켰습니다.
-- 최대 제동(5.4 m/s²)으로도 8.4 m가 필요한데 남은 간격은 6.3 m여서 추돌했습니다.
-- "출발이 느려 뒤에서 받혔다"는 처음 추정은 틀렸습니다.
+### 5-1. 평가 (같은 시드 300판 중 한 시드)
 
-**수정:** `env/mdp_config.py`의 `lane_change_safety`에 제동 가능성 검사를 추가했습니다. 앞차와는 `간격 > 3 + (v − v_앞)² / (2 × 4.0)`, 뒤차와는 `간격 > 3 + (v_뒤 − v)² / (2 × 3.0)`이어야 차선을 바꿀 수 있습니다. 같은 모델과 같은 시드로 300회 비교했습니다(`tools/compare_gate.py`).
+```bash
+python tools/evaluate.py --no-baseline --independent-seeds --episodes 60 --seed 2026 \
+    --model models/map5_ft_200704.pt --out results/eval_2026.json
+```
 
-| 게이트 | 충돌 | 평균속도 | 통과시간 | 차선변경/회 |
-|---|---:|---:|---:|---:|
-| 수정 전 | 1 / 300 | 83.1 km/h | 310.5 s | 1.02 |
-| 수정 후 | 0 / 300 | 83.4 km/h | 310.5 s | 0.99 |
+시드 2026, 2086, 2146, 2206, 2266으로 다섯 번 실행하면 300판이다.
 
-수정 전에도 충돌은 300회 중 1회였으므로 이 숫자만으로 개선을 통계적으로 단정할 수는 없습니다. 근거는 충돌을 일으킨 메커니즘을 규칙이 직접 막는다는 점입니다. 정책은 수정 전 게이트로 학습됐으므로, 새 게이트로 재학습하면 무리한 변경 시도 자체가 줄 것으로 기대합니다.
+### 5-2. 데이터 수집
 
-### 재학습 실험 (v2) — 실패, 최종 모델은 v1 유지
-새 게이트로 같은 설정의 PPO를 다시 학습했습니다(`results/team14_ppo_v2`). 4가지 조건을 같은 시드로 300회씩 평가했습니다(`tools/compare_policies.py`, `results/policy_*.json`).
+```bash
+bash tools/collect_map6b.sh <시작 시드> <판 수> <저장 폴더> [이름]
+# 예) bash tools/collect_map6b.sh 700000 100 data/map6b s700000
+python tools/check_collect_map6b.py data/map6b/s700000.jsonl.gz   # 수집 조건 15개 검사, 마지막 줄 PASS
+```
 
-| 조건 | 충돌 | 평균속도 | 통과시간 | 차선변경 명령 비율 | 게이트가 막은 위험 시도/회 |
-|---|---:|---:|---:|---:|---:|
-| v1 + 새 게이트 (**최종**) | **0** | 83.4 km/h | 310.5 s | 43% | 14.4 |
-| v2 + 새 게이트 | 4 | 83.7 km/h | 305.3 s | 79% | 10.2 |
-| v1 + 제동검사 끔 | 1 | 83.1 km/h | 310.5 s | 43% | 12.6 |
-| v2 + 제동검사 끔 | 8 | 83.7 km/h | 301.6 s | 79% | 10.9 |
+- 판 i의 시드 = 시작 시드 + i. 판 시드가 SUMO 시드다.
+- 표준 조건(환경변수, 보상 설정, 모델 해시)과 다르면 수집이 시작되지 않는다.
+- 수집 방법은 `docs/DATA_COLLECT_MAP6B.md`, 칼럼 설명은 `docs/DATASET_README.md`(Hugging Face 데이터셋 카드와 같은 내용).
 
-v2의 충돌 4건은 모두 출발 4–10초 안에 같은 차선의 앞차를 들이받은 것입니다(재현: ep66). 매 스텝 왼쪽 차선변경을 명령했지만 게이트가 막았고, 그동안 간격이 23 m에서 0으로 줄 때까지 감속하지 않았습니다. 위험한 시도는 줄었지만, 막혔을 때 감속으로 대처하지 못하는 부작용이 생겼습니다.
+### 5-3. 학습
 
-다음 시도 후보: 막힌 명령에 대한 `invalid_action_penalty`(0.02–0.05), 앞차와의 충돌까지 남은 시간(TTC) 기반 벌점, 또는 종방향 안전 필터(명시적 안전장치로 보고서에 밝힐 것).
+```bash
+python train.py --lr 5e-5 --gamma 0.995 --collision-penalty 30 --arrival-bonus 30 --blocked-penalty 0 \
+    --timesteps 200000 --ckpt-every 102400 --init-model <시작 모델> --tag <이름>
+```
 
-![학습 곡선](docs/img/learning_curve.png)
+위는 옵션의 사용 예이고, 최종 모델을 만든 정확한 명령 줄은 2절에 적은 대로 기록이 없다.
 
-**데이터셋:** `data/release/`에 PPO 주행 200 에피소드, 125,059 transition (결정적 150 + 확률적 50)을 담았습니다. 형식은 NPZ와 JSONL이고, 데이터셋 카드는 `docs/hf_dataset_card.md`입니다.
+## 6. 폴더 구성
 
-### 한계와 다음 단계 (컨설팅 때 논의할 거리)
-1. 새 게이트로 재학습한 v2는 오히려 충돌이 늘었습니다(위 표). 차선변경이 막혔을 때 감속하도록 보상을 보강해야 합니다.
-2. 정책은 차선변경 명령을 자주 내지만 대부분 실행되지 않습니다. 안전 게이트에 막히거나 없는 차선을 가리키는 경우입니다 (명령 비율 약 42%, 실제 실행 1.1회/에피소드). `invalid_action_penalty`를 0.02~0.05로 다시 넣으면 행동이 더 깔끔해질 수 있습니다.
-3. 현재 ego 경로는 본선 직진뿐입니다. 진출(분기) 경로를 섞으면 "목적지에 맞춰 미리 차선 옮기기"까지 학습시킬 수 있습니다 (`ROAD["ego_route"]`).
-4. 교통량을 출퇴근 수준으로 올리면 합류부 상호작용이 더 많아집니다 (`TRAFFIC["routes"]`의 `vehs_per_hour`).
+| 경로 | 내용 |
+|---|---|
+| `env/` | SUMO 환경. `env/sumo_env.py`(관측·행동·보상·종료), `env/road_config.py`·`env/museum/`(경로와 지도 원본, 로드뷰로 고친 차로 수·연결) |
+| `algorithms/`, `train.py` | PPO 구현과 학습 스크립트 |
+| `tools/evaluate.py` | 평가 |
+| `collect_pomdp_data.py`, `tools/collect_map6b.sh`, `tools/check_collect_map6b.py` | 데이터 수집, 표준 조건 실행, 수집 조건 검사 |
+| `models/map5_ft_200704.pt` | 최종 모델 가중치 |
+| `results/` | 평가 결과(JSON). 최종 300판은 `results/eval300_map6b_shinhyup_vs_detour/`, 그 밖에 map5·map6 단계의 300판 결과와 이전 실험 기록 |
+| `docs/DATASET_README.md`, `docs/DATA_COLUMNS_MAP6B.md`, `docs/DATA_COLLECT_MAP6B.md` | 데이터 칼럼과 수집 방법 |
+| `docs/README_old_bukwon_ic.md` | 프로젝트 초기(북수원IC 구간) README. 지금 내용과 다르며 기록용으로만 둠 |
+| `project_materials/`, `README_course.md` | 수업에서 제공한 자료 |
 
-## 6. 남은 일 / 역할 분담 제안
+## 7. 이 제출본에서 뺀 것
 
-| 할 일 | 마감 | 비고 |
-|---|---|---|
-| 팀 저장소(GitHub) 만들고 이 브랜치 push | 10/13 수업 전 | 팀장 계정 권장 |
-| 10/6 수업의 `5_Project_Preparation` 내용 반영 | 10/6 이후 | 수업 코드가 바뀌면 병합 필요 |
-| HuggingFace 데이터 업로드 | 발표 전 | `tools/upload_hf.py` (본인 계정으로 로그인) |
-| 프로젝트 페이지 공개 (GitHub Pages: `docs/` 폴더) | 발표 전 | Settings → Pages → `/docs` |
-| 보고서 다듬기 / 발표 자료 다듬기 | 11/28 전 | 초안은 claude.ai의 보고서 문서와 발표 슬라이드(김수아 계정, 공유 필요). Word·PDF·PPTX로 내보내기 가능 |
-| 팀별 컨설팅(10/27, 11/10, 11/17, 11/24) 피드백 반영 | 매 컨설팅 후 | |
-| 로보월드 보고서 | 11/9 23:59 | **개인 과제**, 각자 작성 |
+과제 안내에 따라 최종 모델 가중치 하나만 남기고 불필요한 파일을 뺐다.
 
-> 프로젝트 종료 후 **피어평가**(free rider 확인)가 있습니다. 팀원 모두가 코드와 결과를 이해하고 발표 질문에 답할 수 있게 함께 검토하세요.
+- 학습 중간 체크포인트와 이전 실험의 모델 파일 (남긴 것은 `models/map5_ft_200704.pt` 하나)
+- 학습 로그, 평가 로그, TensorBoard 기록, 캐시
+- 주행 영상, 발표 자료, 프로젝트 페이지 파일 (위 링크의 프로젝트 페이지에서 볼 수 있다)
+- 수집한 주행 데이터. Hugging Face와 데이터셋 제출 압축 파일에 있다.
+
+`results/`에는 평가 결과 JSON과 하이퍼파라미터 기록만 남아 있다. 이전 실험 폴더의 모델 파일은 없으므로 그 실험을 다시 평가하려면 저장소에서 받아야 한다.
+
+## 8. 알아 둘 점
+
+- 이 제출본을 영문 경로에 풀어 5-1의 평가 명령을 시드 2026으로 1판 실행해 완주하는 것을 확인했다(SUMO 1.28.0).
+- `env/sumo/highway.net.xml` 머리말의 파일 경로는 제출본에서 파일 이름만 남겼다. 도로망 내용은 바꾸지 않았다.
+- 경로는 의왕역 회전교차로 뒤부터 부곡 영업소 앞까지 두 갈래(약 13.6 km, 약 14.5 km)이고, 환경이 판마다 예상 통행시간이 짧은 쪽을 고른다.
+- 남은 실패는 부곡IC 가속차로(95 m), 의왕역 회전교차로와 진입로, 동수원IC 진출, 신협오거리에 몰려 있다. 위치별 판 수는 `results/eval300_map6b_shinhyup_vs_detour/EVAL300.md`에 있다.
